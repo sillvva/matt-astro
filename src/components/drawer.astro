@@ -2,6 +2,12 @@
 import { Image } from "astro:assets";
 import { cn } from "../util";
 
+interface Props {
+	defaultOpen?: boolean;
+}
+
+const { defaultOpen } = Astro.props;
+
 const items = [
 	{ link: "/about", label: "About Me" },
 	{ link: "/experience", label: "Experience" },
@@ -11,7 +17,7 @@ const items = [
 ];
 ---
 
-<div class="drawer lg:drawer-open">
+<div class={cn("drawer", defaultOpen && "lg:drawer-open")}>
 	<input id="my-drawer-2" type="checkbox" class="drawer-toggle" />
 	<div class="drawer-content flex flex-col items-start justify-start">
 		<slot />

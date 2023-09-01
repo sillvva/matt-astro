@@ -14,7 +14,7 @@ const { title, description, image, articleMeta, stylesheets } = Astro.props;
 		<Head {title} {description} {image} {articleMeta} {stylesheets} />
 	</head>
 	<body data-theme="black" class="bg-img min-h-screen bg-cover bg-left-bottom bg-no-repeat">
-		<Drawer>
+		<Drawer defaultOpen>
 			<header class="flex h-20 w-full items-center justify-center gap-4">
 				<div class="w-20">
 					<label for="my-drawer-2" class="btn btn-ghost drawer-button lg:hidden">
