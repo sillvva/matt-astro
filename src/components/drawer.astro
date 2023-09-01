@@ -19,12 +19,12 @@ const items = [
 ---
 
 <div class={cn("drawer", !home && "lg:drawer-open")}>
-	<input id="my-drawer-2" type="checkbox" class="drawer-toggle" />
+	<input id="my-drawer" type="checkbox" class="drawer-toggle" aria-label="Toggle Drawer" />
 	<div class="drawer-content flex flex-col items-start justify-start">
 		<slot />
 	</div>
 	<div class="drawer-side z-20">
-		<label for="my-drawer-2" class="drawer-overlay"></label>
+		<label for="my-drawer" class="drawer-overlay"></label>
 		<div class="menu min-h-full w-80 bg-base-100 p-0 text-base-content">
 			<nav class="px-4 py-8">
 				<div class="flex pb-4">
