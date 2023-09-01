@@ -1,8 +1,9 @@
 ---
+import me from "$assets/images/me3x.webp";
+import type { Item } from "$components/hex-menu.astro";
+import HexMenu from "$components/hex-menu.astro";
+import HomeLayout from "$layouts/home.astro";
 import { Image } from "astro:assets";
-import type { Item } from "../components/hex-menu.astro";
-import HexMenu from "../components/hex-menu.astro";
-import HomeLayout from "../layouts/home.astro";
 
 const items: (Item | null)[] = [
 	{ link: "/about", label: "About Me" },
@@ -17,14 +18,7 @@ const items: (Item | null)[] = [
 <HomeLayout>
 	<main class="fixed inset-0 grid grid-cols-12 grid-rows-6">
 		<span class="fixed inset-0 -left-28 bg-none transition-all duration-500 2xs:-left-16 sm:-left-4 md:-left-0 lg:left-0">
-			<Image
-				src="/images/me3x.webp"
-				id="me"
-				alt=""
-				width={1104}
-				height={828}
-				class="h-full w-full object-cover object-left md:object-center"
-			/>
+			<Image src={me} id="me" alt="" width={1104} height={828} class="h-full w-full object-cover object-left md:object-center" />
 		</span>
 		<div class="col-span-6 col-start-6 row-span-3 row-start-2 2xl:col-start-5">
 			<div class="fixed bottom-12 left-0 right-0 z-10 mt-0 text-center font-montserrat lg:relative lg:bottom-0 lg:text-right">

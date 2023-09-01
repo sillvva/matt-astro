@@ -1,7 +1,7 @@
 ---
 title: Extended Map/Set for SvelteKit
 description: Extended classes for Svelte to assist with reactivity.
-layout: ../../layouts/post.astro
+layout: $layouts/post.astro
 date: 2023-08-24T11:39:14Z
 image: https://slxazldgfeytirfrculz.supabase.co/storage/v1/object/public/images/migrating-to-svelte-kit-preview.webp
 tags:
@@ -9,7 +9,7 @@ tags:
   - SvelteKit
   - Svelte
 ---
-import { all } from "../../components/markdown/all.astro";
+import { all } from "$components/markdown/all.astro";
 export const components = all;
 
 In SvelteKit, whenever data is changed in a Set or Map, it will not trigger reactivity unless the Map or Set is reassigned to the variable. Consider the following example:

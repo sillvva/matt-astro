@@ -1,6 +1,7 @@
 ---
+import me from "$assets/images/me3x.webp";
+import { cn } from "$src/util";
 import { Image } from "astro:assets";
-import { cn } from "../util";
 
 interface Props {
 	home?: boolean;
@@ -28,7 +29,7 @@ const items = [
 			<nav class="px-4 py-8">
 				<div class="flex pb-4">
 					<div class="relative w-20 bg-base-100">
-						<Image src="/images/me3x.webp" id="me" alt="" width={276} height={207} class="w-full" />
+						<Image src={me} id="me" alt="" width={276} height={207} class="w-full" />
 						<div class="absolute bottom-0 h-1/2 w-full bg-gradient-to-t from-base-100 to-transparent"></div>
 					</div>
 					<div class="flex flex-col">

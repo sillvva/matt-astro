@@ -8,5 +8,8 @@ export default defineConfig({
 	integrations: [tailwind(), mdx()],
 	markdown: {
 		syntaxHighlight: "prism"
+	},
+	image: {
+		domains: ["slxazldgfeytirfrculz.supabase.co"]
 	}
 });

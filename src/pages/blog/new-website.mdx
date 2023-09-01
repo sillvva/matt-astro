@@ -1,7 +1,7 @@
 ---
 title: New Website
 description: I talk about why I built a personal website and how it evolved over time.
-layout: ../../layouts/post.astro
+layout: $layouts/post.astro
 date: 2021-03-27T23:09:21.438Z
 image: https://slxazldgfeytirfrculz.supabase.co/storage/v1/object/public/images/preview-me.jpg
 tags:
@@ -11,7 +11,7 @@ tags:
   - React
   - Angular
 ---
-import { all } from "../../components/markdown/all.astro";
+import { all } from "$components/markdown/all.astro";
 export const components = all;
 
 ## How It All Started

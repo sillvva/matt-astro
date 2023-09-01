@@ -1,6 +1,6 @@
 ---
+import type { Props as HeadProps } from "$components/head.astro";
 import { Image } from "astro:assets";
-import type { Props as HeadProps } from "../components/head.astro";
 import PortfolioLayout from "./portfolio.astro";
 
 interface Props extends HeadProps {
@@ -51,8 +51,8 @@ const formattedUpdate = new Date(updated).toLocaleDateString("en-US", {
 						src={image}
 						alt={title}
 						transition:name={`image_${slug}`}
-						width={100}
-						height={100}
+						width={900}
+						height={900}
 						class="h-full w-full object-cover object-center pb-4"
 					/>
 				</div>

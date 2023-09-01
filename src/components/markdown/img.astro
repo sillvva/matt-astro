@@ -1,6 +1,6 @@
 ---
+import { cn } from "$src/util";
 import { Image } from "astro:assets";
-import { cn } from "../../util";
 const alt = Astro.props.alt || "";
 ---
 
@@ -13,7 +13,7 @@ const alt = Astro.props.alt || "";
 	>
 		<Image
 			src={Astro.props.src}
-			alt={Astro.props.alt}
+			alt={alt}
 			width={800}
 			height={400}
 			loading="lazy"

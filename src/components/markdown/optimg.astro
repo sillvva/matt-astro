@@ -1,0 +1,23 @@
+---
+import { cn } from "$src/util";
+import { Image } from "astro:assets";
+
+interface Props {
+	import: ImageMetadata;
+	alt?: string;
+}
+
+const alt = Astro.props.alt || "";
+---
+
+<figure class={cn("mb-6 mt-6 flex flex-col max-w-[800px] relative mx-auto", !alt.includes("no-aspect") && "aspect-video")}>
+	<Image
+		src={Astro.props.import}
+		alt={alt}
+		width={800}
+		height={400}
+		loading="lazy"
+		class={cn("mb-2", !alt.includes("no-aspect") && "object-cover md:object-contain")}
+	/>
+	<figcaption class="block text-center text-sm text-white/70">Click to open full screen</figcaption>
+</figure>

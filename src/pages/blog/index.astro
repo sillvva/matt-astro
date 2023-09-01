@@ -1,7 +1,7 @@
 ---
+import PortfolioLayout from "$layouts/portfolio.astro";
+import { cn, sorter } from "$src/util";
 import { Image } from "astro:assets";
-import PortfolioLayout from "../../layouts/portfolio.astro";
-import { cn, sorter } from "../../util";
 
 const posts = await Astro.glob("./*.mdx");
 const sluggedPosts = posts.map((post) => ({
@@ -41,8 +41,8 @@ const sluggedPosts = posts.map((post) => ({
 								src={post.frontmatter.image}
 								alt={post.frontmatter.title}
 								transition:name={`image_${post.slug}`}
-								width={100}
-								height={100}
+								width={400}
+								height={400}
 								class="h-full w-full object-cover object-center"
 							/>
 						</figure>

@@ -1,14 +1,14 @@
 ---
 title: Redis Data Cache
 description: Functions that make working with a Redis data cache simple
-layout: ../../layouts/post.astro
+layout: $layouts/post.astro
 date: 2023-08-24T15:32:12Z
 image: https://slxazldgfeytirfrculz.supabase.co/storage/v1/object/public/images/R.webp
 tags:
   - TypeScript
   - Database
 ---
-import { all } from "../../components/markdown/all.astro";
+import { all } from "$components/markdown/all.astro";
 export const components = all;
 
 Aside from cold starts, often the slowest part of an application is fetching data. Caching data requests can speed up loading times. Using an internal store is one way to do it, or you can use a Redis cache. These functions can make working with a Redis cache extremely simple.
