@@ -18,13 +18,17 @@ const {
 	stylesheets = []
 } = Astro.props;
 
+const domain = import.meta.env.VERCEL_URL || import.meta.env.PUBLIC_DOMAIN;
+const protocol = domain.startsWith("localhost") ? "http://" : "https://";
+const baseUrl = `${protocol}${domain}`;
+
 const color = "#00aa99";
 const dtitle = title ? `${title} - Matt DeKok` : "Matt DeKok";
 const ogProperties: Record<string, string> = {
 	title: dtitle,
 	description: description,
-	image: image && image.startsWith("http") ? image : new URL(image, import.meta.env.PUBLIC_DOMAIN).toString(),
-	url: new URL(Astro.url.pathname, import.meta.env.PUBLIC_DOMAIN).toString()
+	image: image && image.startsWith("http") ? image : new URL(image, baseUrl).toString(),
+	url: new URL(Astro.url.pathname, baseUrl).toString()
 };
 const ogOnlyProperties: Record<string, string> = {
 	...ogProperties,
