@@ -51,7 +51,7 @@ const articleProperties: Record<string, string> = {
 <title>{dtitle}</title>
 <meta name="description" content={description} />
 <link rel="icon" href="/favicon.png" />
-<link rel="apple-touch-icon" href={`${ogProperties.url}/icon_x128.png`} />
+<link rel="apple-touch-icon" href={new URL("/icon_x128.png", baseUrl).toString()} />
 <link rel="manifest" href="/manifest.webmanifest" />
 <link rel="canonical" href={ogProperties.url} />
 
