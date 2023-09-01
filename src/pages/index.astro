@@ -1,8 +1,8 @@
 ---
 import { Image } from "astro:assets";
-import type { Item } from '../components/hex-menu.astro';
-import HexMenu from '../components/hex-menu.astro';
-import HomeLayout from '../layouts/home.astro';
+import type { Item } from "../components/hex-menu.astro";
+import HexMenu from "../components/hex-menu.astro";
+import HomeLayout from "../layouts/home.astro";
 
 const items: (Item | null)[] = [
 	{ link: "/about", label: "About Me" },
@@ -15,8 +15,8 @@ const items: (Item | null)[] = [
 ---
 
 <HomeLayout>
-	<main class="absolute inset-0 grid grid-cols-12 grid-rows-6">
-		<span class="absolute inset-0 -left-36 bg-none transition-all duration-500 sm:-left-12 md:-left-4 lg:left-0">
+	<main class="fixed inset-0 grid grid-cols-12 grid-rows-6">
+		<span class="fixed inset-0 -left-28 bg-none transition-all duration-500 2xs:-left-16 sm:-left-4 md:-left-0 lg:left-0">
 			<Image
 				src="/images/me3x.webp"
 				id="me"
@@ -28,15 +28,28 @@ const items: (Item | null)[] = [
 		</span>
 		<div class="col-span-6 col-start-6 row-span-3 row-start-2 2xl:col-start-5">
 			<div class="fixed bottom-12 left-0 right-0 z-10 mt-0 text-center font-montserrat lg:relative lg:bottom-0 lg:text-right">
-				<h1 transition:name="name" class="drop-shadow-theme-text-thick font-montserrat text-3xl font-semibold tracking-widest sm:text-5xl lg:text-5xl">
+				<h1
+					transition:name="name"
+					class="drop-shadow-theme-text-thick font-montserrat text-3xl font-semibold tracking-widest sm:text-5xl lg:text-5xl"
+				>
 					Matt DeKok
 				</h1>
-				<h2 transition:name="profession" class="drop-shadow-theme-text-thick font-montserrat text-xl font-medium tracking-normal sm:text-3xl xl:text-4xl">
+				<h2
+					transition:name="profession"
+					class="drop-shadow-theme-text-thick font-montserrat text-xl font-medium tracking-normal sm:text-3xl xl:text-4xl"
+				>
 					Full&nbsp;Stack Web&nbsp;Developer
 				</h2>
 			</div>
 			<div class="menu-container mt-8 hidden flex-row justify-end md:flex">
-				<HexMenu {items} pathname={Astro.url.pathname} maxLength={3} classes={["lg:[--scale:1.2]"]} itemClasses={["Bounce"]} rotated={true} />
+				<HexMenu
+					{items}
+					pathname={Astro.url.pathname}
+					maxLength={3}
+					classes={["lg:[--scale:1.2]"]}
+					itemClasses={["Bounce"]}
+					rotated={true}
+				/>
 			</div>
 		</div>
 	</main>

@@ -1,10 +1,20 @@
 ---
+import { Image } from "astro:assets";
 import type { Props as HeadProps } from "../components/head.astro";
 import Head from "../components/head.astro";
+import { cn } from "../util";
 
 interface Props extends HeadProps {}
 
 const { title, description, image, articleMeta } = Astro.props;
+
+const items = [
+	{ link: "/about", label: "About Me" },
+	{ link: "/experience", label: "Experience" },
+	{ link: "/skills", label: "Skills" },
+	{ link: "/projects", label: "Projects" },
+	{ link: "/blog", label: "Blog" }
+];
 ---
 
 <html lang="en">
@@ -12,6 +22,55 @@ const { title, description, image, articleMeta } = Astro.props;
 		<Head {title} {description} {image} {articleMeta} />
 	</head>
 	<body data-theme="black" class="bg-img min-h-screen bg-cover bg-left-bottom bg-no-repeat">
-		<slot />
+		<div class="drawer z-10">
+			<input id="my-drawer-2" type="checkbox" class="drawer-toggle" />
+			<div class="drawer-content">
+				<label for="my-drawer-2" class="btn btn-ghost drawer-button fixed left-4 top-4 md:hidden">
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+						><path fill="currentColor" d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"></path></svg
+					>
+				</label>
+				<slot />
+			</div>
+			<div class="drawer-side">
+				<label for="my-drawer-2" class="drawer-overlay"></label>
+				<div class="menu min-h-full w-80 bg-base-100 p-0 text-base-content">
+					<nav class="px-4 py-8">
+						<div class="flex pb-4">
+							<div class="relative w-20 bg-base-100">
+								<Image src="/images/me3x.webp" id="me" alt="" width={276} height={207} class="w-full" />
+								<div class="absolute bottom-0 h-1/2 w-full bg-gradient-to-t from-base-100 to-transparent"></div>
+							</div>
+							<div class="flex flex-col">
+								<h1
+									transition:name="name"
+									class="drop-shadow-theme-text-thick font-montserrat text-2xl font-semibold tracking-widest"
+								>
+									Matt DeKok
+								</h1>
+								<h2
+									transition:name="profession"
+									class="drop-shadow-theme-text-thick text- font-montserrat font-medium tracking-normal"
+								>
+									Full&nbsp;Stack Web&nbsp;Developer
+								</h2>
+							</div>
+						</div>
+						<ul>
+							<li><a href="/" transition:name="Home">Home</a></li>
+							{
+								items.map((item) => (
+									<li>
+										<a href={item.link} class={cn(Astro.url.pathname.startsWith(item.link) && "active")}>
+											{item.label}
+										</a>
+									</li>
+								))
+							}
+						</ul>
+					</nav>
+				</div>
+			</div>
+		</div>
 	</body>
 </html>
