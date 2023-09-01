@@ -1,0 +1,58 @@
+---
+import { Image } from "astro:assets";
+import { cn } from "../util";
+
+const items = [
+	{ link: "/about", label: "About Me" },
+	{ link: "/experience", label: "Experience" },
+	{ link: "/skills", label: "Skills" },
+	{ link: "/projects", label: "Projects" },
+	{ link: "/blog", label: "Blog" }
+];
+---
+
+<div class="drawer lg:drawer-open">
+	<input id="my-drawer-2" type="checkbox" class="drawer-toggle" />
+	<div class="drawer-content flex flex-col items-start justify-start">
+		<slot />
+	</div>
+	<div class="drawer-side z-20">
+		<label for="my-drawer-2" class="drawer-overlay"></label>
+		<div class="menu min-h-full w-80 bg-base-100 p-0 text-base-content">
+			<nav class="px-4 py-8">
+				<div class="flex pb-4">
+					<div class="relative w-20 bg-base-100">
+						<Image src="/images/me3x.webp" id="me" alt="" width={276} height={207} class="w-full" />
+						<div class="absolute bottom-0 h-1/2 w-full bg-gradient-to-t from-base-100 to-transparent"></div>
+					</div>
+					<div class="flex flex-col">
+						<h1
+							transition:name="name"
+							class="drop-shadow-theme-text-thick font-montserrat text-2xl font-semibold tracking-widest"
+						>
+							Matt DeKok
+						</h1>
+						<h2
+							transition:name="profession"
+							class="drop-shadow-theme-text-thick text- font-montserrat font-medium tracking-normal"
+						>
+							Full&nbsp;Stack Web&nbsp;Developer
+						</h2>
+					</div>
+				</div>
+				<ul>
+					<li><a href="/" transition:name="Home">Home</a></li>
+					{
+						items.map((item) => (
+							<li>
+								<a href={item.link} class={cn(Astro.url.pathname.startsWith(item.link) && "active")}>
+									{item.label}
+								</a>
+							</li>
+						))
+					}
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
