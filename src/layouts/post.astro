@@ -1,6 +1,6 @@
 ---
 import type { Props as HeadProps } from "$components/head.astro";
-import { Image } from "astro:assets";
+import ResponsiveImage from "$src/components/responsive-image.astro";
 import PortfolioLayout from "./portfolio.astro";
 
 interface Props extends HeadProps {
@@ -60,12 +60,11 @@ const formattedUpdate = new Date(updated || "").toLocaleDateString("en-US", {
 		{
 			!full && (
 				<div class="relative aspect-video">
-					<Image
+					<ResponsiveImage
 						src={image}
 						alt={title}
 						transition:name={`image_${slug}`}
-						width={900}
-						height={900}
+						sizes={[300, 600, 900]}
 						class="h-full w-full object-cover object-center pb-4"
 					/>
 				</div>

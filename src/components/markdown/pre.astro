@@ -16,8 +16,10 @@ import { cn } from "$src/util";
 		this.innerHTML = "Copied";
 	}
 
-	document.querySelectorAll(".copy").forEach((btn) => {
-		btn.addEventListener("click", copyBlock);
+	document.addEventListener("astro:page-load", () => {
+		document.querySelectorAll(".copy").forEach((btn) => {
+			btn.addEventListener("click", copyBlock);
+		});
 	});
 </script>
 

@@ -1,6 +1,6 @@
 ---
 import { cn } from "$src/util";
-import { Image } from "astro:assets";
+import ResponsiveImage from "../responsive-image.astro";
 const alt = Astro.props.alt || "";
 ---
 
@@ -11,12 +11,10 @@ const alt = Astro.props.alt || "";
 		rel="noreferrer noopener"
 		class={cn("relative mx-auto mb-2 flex w-full max-w-[800px] justify-center", !alt.includes("no-aspect") && "aspect-video")}
 	>
-		<Image
+		<ResponsiveImage
 			src={Astro.props.src}
 			alt={alt}
-			width={800}
-			height={400}
-			loading="lazy"
+			sizes={[300, 600, 900]}
 			class={cn(!alt.includes("no-aspect") && "object-cover md:object-contain")}
 		/>
 	</a>
