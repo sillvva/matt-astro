@@ -26,9 +26,15 @@ const classes = ["Button", active ? "Active" : "", ...propClasses];
 const style = {
 	...(active && !activeClick && { cursor: "default" })
 };
+
+const props = {
+	class: cn(...classes),
+	...(Object.keys(style).length && { style }),
+	...(link.startsWith("http") && { target: "_blank" })
+};
 ---
 
-<a href={link} class={cn(...classes)} style={style}>
+<a href={link} {...props}>
 	{label}
 </a>
 
