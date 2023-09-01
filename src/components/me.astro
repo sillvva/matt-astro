@@ -1,0 +1,34 @@
+---
+interface Props {
+	name: string;
+	value: string | number;
+	full?: boolean;
+}
+
+const { name, value, full } = Astro.props;
+---
+
+<div
+	class={[
+		"py-1 px-1.5 text-theme-faded",
+		full
+			? "w-full pb-0 text-center sm:w-3/12 sm:text-right md:w-full md:text-center 2xl:w-3/12 2xl:text-right"
+			: "w-6/12 text-right sm:w-3/12 md:w-6/12 md:text-right 2xl:w-3/12"
+	]
+		.filter((c) => !!c)
+		.join(" ")}
+>
+	{name}:
+</div>
+<div
+	class={[
+		"py-1 px-1.5 font-robo-flex",
+		full
+			? "w-full pt-0 text-center sm:w-9/12 sm:text-left md:w-full md:text-center 2xl:w-9/12 2xl:text-left"
+			: "w-6/12 text-left sm:w-3/12 md:w-6/12 md:text-left 2xl:w-3/12"
+	]
+		.filter((c) => !!c)
+		.join(" ")}
+>
+	{value}
+</div>

@@ -1,0 +1,9 @@
+---
+import { cn } from "../../util";
+---
+
+<pre
+	class={cn(
+		Astro.props.class,
+		"max-w-portfolio mb-4 overflow-x-auto rounded-lg !bg-base-300 text-sm text-base-content md:p-4"
+	)}><slot /></pre>

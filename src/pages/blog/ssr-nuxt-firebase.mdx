@@ -1,0 +1,189 @@
+---
+title: SSR with Firebase Storage and Nuxt Content
+description: Firebase Storage and Nuxt Content integration on a server-side rendered Nuxt app
+layout: ../../layouts/post.astro
+date: 2021-04-10T00:13:53.597Z
+updated: 2021-04-10T14:51:13.827Z
+image: https://slxazldgfeytirfrculz.supabase.co/storage/v1/object/public/images/code.jpg
+tags:
+  - Vue
+  - Github
+  - CI/CD
+  - Heroku
+---
+import { all } from "../../components/markdown/all.astro";
+export const components = all;
+
+## Introduction
+
+This is an extension to my [previous post](/blog/firebase-storage-and-nuxt-content-integration) about how to integrate Firebase Hosting and Nuxt Content on a static Nuxt app. Previously this site was hosted as a static site on Firebase Hosting. However, this caused issues with using dynamic Open Graph meta tags based on the content of the page. Simply put, it didn't work, because the dynamic meta tags were loaded after the page was rendered. This means crawlers wouldn't see them. So to make it work, the site needs to be rendered on the server. This will allow the meta tags to be pre-rendered for social media crawlers.
+
+This is a post about how to integrate Firebase Hosting and Nuxt Content on a server-side rendered website. I'm now using Heroku to host this site.
+
+## Github Actions
+
+Again, we'll need to set up workflows to handle the build and deployment of the site. This time, however, I'm dividing the process into two workflows. One to handle the build and deployment of the site itself, and another to handle a rebuild in the event of a new or updated post stored in Firebase Storage.
+
+Github Actions workflows are stored in the `.github/workflow` directory of your project. Github will automatically process the jobs in the workflow when any of the `on` triggers are met.
+
+### The Build/Deploy Workflow
+
+```yaml
+# .github/workflows/deploy.yml
+name: mattdekok.dev CD
+
+# Controls when the action will run. 
+on:
+  workflow_dispatch:
+  push:
+    branches: [ master ]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@master
+
+      - name: Setup Node
+        uses: actions/setup-node@master
+        with:
+          node-version: 12
+      
+      - name: Build Functions
+        run: cd functions && npm ci && npm run build
+
+      - name: Deploy Functions to Firebase
+        uses: w9jds/firebase-action@master
+        with:
+          # Hosting is needed only if creating functions 
+          # used as restful API endpoints
+          args: deploy --only functions,hosting
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+
+      - name: Deploy App to Heroku
+        uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
+          heroku_email: ${{ secrets.MY_EMAIL }}
+          branch: "master"
+```
+
+### The Updated Posts Workflow
+
+```yaml
+# .github/workflows/blog.yml
+name: mattdekok.dev BLOG
+
+# Controls when the action will run. 
+on: workflow_dispatch
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@master
+
+      - name: Login to Heroku
+        uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
+          heroku_email: ${{ secrets.MY_EMAIL }}
+          justlogin: true
+
+      - name: Install Heroku Builds Plugin
+        run: heroku plugins:install heroku-builds
+      
+      - name: Rebuild Heroku App
+        run: heroku builds:create --version "Update blog posts" -a ${{ secrets.HEROKU_APP_NAME }}
+```
+
+### Github Secrets
+
+Like last time, you'll want to set up Github Secrets in your repository settings.
+
+* *FIREBASE_TOKEN* - This token can be acquired through the `firebase login:ci` command.
+* *HEROKU_API_KEY* - This key can be acquired at the bottom of your Account Settings page.
+
+The other secrets should be self-explanatory by their name.
+
+## Some Things Don't Change
+
+As in my previous post, you'll want to set up Firebase Functions. You can set this up as [previously explained](/blog/firebase-storage-and-nuxt-content-integration#step-2-trigger-the-workflow-automatically), however this time you'll want to point the handler function to the *updated posts* workflow above instead of the build/deploy workflow.
+
+You'll also want to create the `updateBlog.js` file [that I provided](/blog/firebase-storage-and-nuxt-content-integration#the-update-blog-script). The script can be left unchanged.
+
+## Setting up the Heroku App
+
+There are a few things you'll need to do before deploying to Heroku. You'll need to create a `Procfile` file, create `build` and `start` scripts in your `package.json` file, and set up environment variables in your Heroku app settings.
+
+### The Procfile
+
+The Procfile is the easiest thing to set up. It is one line of code and goes in your repo's root directory. It tells Heroku what to do after your app finishes building.
+
+```yaml
+web: npm start
+```
+
+That's it!
+
+### The `build` and `start` Scripts
+
+You'll need to add `build` and `start` scripts to the `package.json` folder in your repo's root directory. This is the package file that Heroku will read. In my case, they look like this:
+
+```json
+// package.json
+{
+  ...
+  "scripts": {
+    "build": "cd frontend && npm install && npm run build",
+    "start": "cd frontend && npm start"
+  },
+  ...
+}
+```
+
+`frontend/` is the directory of my Nuxt app. And the important scripts that I've setup in that `package.json` file look like:
+
+```json
+// frontend/package.json
+{
+  ...
+  "scripts": {
+    "start": "nuxt start",
+    "build": "npm run update-blog && nuxt build",
+    "update-blog": "node updateBlog.js"
+  },
+  ...
+}
+```
+
+Heroku will always run the `build` script when an app is deployed. Once the build is finished, it will run the script specified in the `Procfile` file.
+
+### The Environment Variables
+
+The two environment variables you need are the same as before: `FIREBASE_ADMIN_CREDENTIAL` and `FIREBASE_STORAGE_BUCKET`.
+
+You can get your admin credentials in your Firebase Console by going to Project Settings > Service Accounts > Generate new private key. It will provide you with a .json file. Convert the JSON to a string with `JSON.stringify` and then save the result as a secret.
+
+The Firebase Storage Bucket is just `your-project-id.appspot.com`.
+
+These environment variables need to be stored in the **Config Var** section of your Heroku app settings page.
+
+## Conclusion
+
+And that should be everything you need to integrate Firebase Hosting and Nuxt Content on a Heroku-hosted Nuxt app.

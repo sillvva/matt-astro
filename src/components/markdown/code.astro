@@ -1,0 +1,8 @@
+---
+import { cn } from "../../util";
+---
+
+<code
+	class={cn(Astro.props.class, Astro.props.class ? "!bg-transparent text-xs" : "rounded-sm bg-white/10 px-1 text-base-content")}
+	><slot /></code
+>

@@ -1,0 +1,78 @@
+---
+import PageArticle from "../components/page/article.astro";
+import PageBody from "../components/page/body.astro";
+import PageSection from "../components/page/section.astro";
+import RatingItem from "../components/rating/item.astro";
+import RatingSection from "../components/rating/section.astro";
+import PortfolioLayout from "../layouts/portfolio.astro";
+import { sorter } from "../util";
+
+const skills = [
+	{
+		name: "Web Development",
+		skills: [
+			{ name: "Angular", category_id: 1, rating: 2 },
+			{ name: "Astro", category_id: 1, rating: 2 },
+			{ name: "Bootstrap", category_id: 1, rating: 4 },
+			{ name: "CSS3", category_id: 1, rating: 5 },
+			{ name: "Express", category_id: 1, rating: 3 },
+			{ name: "Firebase Firestore", category_id: 1, rating: 2.5 },
+			{ name: "Firebase Storage", category_id: 1, rating: 2.5 },
+			{ name: "Github Actions", category_id: 1, rating: 1.5 },
+			{ name: "HTML5", category_id: 1, rating: 5 },
+			{ name: "JavaScript", category_id: 1, rating: 5 },
+			{ name: "Next.js", category_id: 1, rating: 3.5 },
+			{ name: "Node.js", category_id: 1, rating: 4 },
+			{ name: "PHP", category_id: 1, rating: 4 },
+			{ name: "React", category_id: 1, rating: 4.5 },
+			{ name: "SCSS", category_id: 1, rating: 3.5 },
+			{ name: "Supabase", category_id: 1, rating: 2 },
+			{ name: "SvelteKit", category_id: 1, rating: 4.5 },
+			{ name: "TailwindCSS", category_id: 1, rating: 4.5 },
+			{ name: "TypeScript", category_id: 1, rating: 3.5 },
+			{ name: "Vue / Nuxt", category_id: 1, rating: 3 },
+			{ name: "jQuery", category_id: 1, rating: 4 }
+		].sort((a, b) => sorter(a.name, b.name))
+	},
+	{
+		name: "Software",
+		skills: [
+			{ name: "Adobe Photoshop", category_id: 2, rating: 3 },
+			{ name: "Affinity Photo", category_id: 2, rating: 3 },
+			{ name: "Excel", category_id: 2, rating: 4.5 },
+			{ name: "PowerPoint", category_id: 2, rating: 2 },
+			{ name: "VBA", category_id: 2, rating: 2 },
+			{ name: "VS Code", category_id: 2, rating: 5 },
+			{ name: "Word", category_id: 2, rating: 3 }
+		].sort((a, b) => sorter(a.name, b.name))
+	}
+];
+
+const cols = {
+	sm: 12,
+	md: 6,
+	xl: 4
+};
+---
+
+<PortfolioLayout title="Skills">
+	<PageBody>
+		<PageArticle class="w-full max-w-4xl">
+			<PageSection>
+				<p>
+					The following are personal measurements based on years of experience and the amount of dedication to the subject over
+					those years. They reflect my confidence in my abilities with the subject.
+				</p>
+			</PageSection>
+			{
+				skills.map((section, i) => (
+					<RatingSection name={section.name} columns={cols}>
+						{section.skills.map((skill, j) => (
+							<RatingItem name={skill.name} rating={skill.rating} />
+						))}
+					</RatingSection>
+				))
+			}
+		</PageArticle>
+	</PageBody>
+</PortfolioLayout>

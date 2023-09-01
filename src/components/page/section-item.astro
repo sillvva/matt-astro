@@ -1,0 +1,26 @@
+---
+import { Image } from "astro:assets";
+import { cn } from "../../util";
+
+interface Props {
+	class?: string;
+	image: string;
+}
+
+const className = Astro.props.class || "";
+const { image } = Astro.props;
+---
+
+<div
+	class={cn(
+		"min-h-[60px] overflow-hidden text-[color:var(--text)]",
+		"border-[1px] border-solid border-black/15 last:border-0 lg:border-0",
+		"pb-5 last:pb-0 lg:pb-0",
+		className
+	)}
+>
+	<div class={"relative float-left grid h-14 w-14 items-center justify-center rounded-md bg-white p-1"}>
+		<Image src={image} alt="" width={56} height={56} class="rounded-sm" />
+	</div>
+	<div class="ml-20"><slot /></div>
+</div>

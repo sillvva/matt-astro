@@ -1,0 +1,257 @@
+---
+import { cn } from "../util";
+
+interface Props {
+	link?: string;
+	label: string;
+	active?: boolean;
+	activeClick?: boolean;
+	itemClasses: string[];
+}
+
+const { active = false, itemClasses = ["Button5"], activeClick = false, link = "", label } = Astro.props;
+
+const buttons = {
+	Button1: "Button1",
+	Button2: "Button2",
+	Button3: "Button3",
+	Button4: "Button4",
+	Button5: "Button5",
+	Button6: "Button6"
+} as Record<string, string>;
+
+const propClasses = itemClasses.map((c) => buttons[c] ?? c);
+const classes = ["Button", active ? "Active" : "", ...propClasses];
+
+const style = {
+	...(active && !activeClick && { cursor: "default" })
+};
+---
+
+<a href={link} class={cn(...classes)} style={style}>
+	{label}
+</a>
+
+<style lang="scss">
+	a.Button {
+		@apply relative select-none px-6 py-4 uppercase text-primary no-underline duration-200 ease-linear;
+		text-shadow: 1px 1px 1px rgb(var(--background));
+	}
+
+	.Button1 {
+		border-radius: 0.5rem;
+		box-shadow: 0 0 0 #0ca;
+		overflow: hidden;
+		&::after {
+			@apply bg-primary;
+			content: "";
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			width: 0;
+			height: 3px;
+			transition: 0.25s linear;
+		}
+		&.Active {
+			@apply bg-base-300;
+		}
+		&:hover {
+			@apply bg-base-300/60;
+			box-shadow: 0 0 10px currentcolor;
+		}
+		&:hover,
+		&.Active,
+		&:focus {
+			&::after {
+				width: 100%;
+			}
+		}
+	}
+
+	.Button2 {
+		border-radius: 0.5rem;
+		box-shadow: 0 0 0 currentcolor;
+		overflow: hidden;
+		&::after {
+			content: "";
+			@apply bg-primary;
+			position: absolute;
+			bottom: 0;
+			left: 50%;
+			width: 0;
+			height: 3px;
+			transition: 0.25s linear;
+		}
+		&.Active {
+			@apply bg-base-300;
+		}
+		&:hover {
+			@apply bg-base-300/60;
+			box-shadow: 0 0 10px currentcolor;
+		}
+		&:hover,
+		&.Active,
+		&:focus {
+			&::after {
+				left: 0;
+				width: 100%;
+			}
+		}
+	}
+
+	.Button3 {
+		&::before,
+		&::after {
+			content: "";
+			position: absolute;
+			width: 0; // 1rem
+			height: 0; // 1rem
+			transition: 0.3s linear;
+		}
+		&::before {
+			top: 0;
+			left: 0;
+			border-color: transparent;
+			border-top: 0 solid currentcolor;
+			border-left: 0 solid currentcolor;
+		}
+		&::after {
+			bottom: 0;
+			right: 0;
+			border-color: transparent;
+			border-bottom: 0 solid currentcolor;
+			border-right: 0 solid currentcolor;
+		}
+		&.Active {
+			@apply bg-base-300;
+		}
+		&:hover {
+			@apply bg-base-300/60;
+			box-shadow: 0 0 10px currentcolor;
+		}
+		&:hover,
+		&.Active,
+		&:focus {
+			&::before,
+			&::after {
+				width: 100%;
+				height: 100%;
+				border-width: 3px;
+			}
+		}
+	}
+
+	.Button4 {
+		&::before,
+		&::after {
+			content: "";
+			position: absolute;
+			width: 1rem;
+			height: 1rem;
+			transition: 0.3s linear;
+		}
+		&::before {
+			top: 0;
+			left: 0;
+			border-color: transparent;
+			border-top: 3px solid currentcolor;
+			border-left: 3px solid currentcolor;
+		}
+		&::after {
+			bottom: 0;
+			right: 0;
+			border-color: transparent;
+			border-bottom: 3px solid currentcolor;
+			border-right: 3px solid currentcolor;
+		}
+		&.Active {
+			@apply bg-base-300;
+		}
+		&:hover {
+			@apply bg-base-300/60;
+			box-shadow: 0 0 10px currentcolor;
+		}
+		&:hover,
+		&.Active,
+		&:focus {
+			&::before,
+			&::after {
+				width: 100%;
+				height: 100%;
+				border-width: 3px;
+			}
+		}
+	}
+
+	.Button5 {
+		&::before,
+		&::after {
+			transition: 0.35s linear;
+			content: "";
+			border: 1px solid currentcolor;
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: calc(100% - 2px);
+			height: calc(100% - 2px);
+			opacity: 0;
+		}
+		&.Active {
+			// @apply bg-base-300;
+		}
+		&:hover:not(.Active) {
+			@apply bg-base-300/60;
+			// box-shadow: 0 0 10px currentcolor;
+		}
+		&:hover,
+		&:focus,
+		&.Active {
+			&::before,
+			&::after {
+				opacity: 1;
+			}
+			&::before {
+				transform: translate(-3px, -3px);
+			}
+			&::after {
+				transform: translate(3px, 3px);
+			}
+		}
+	}
+
+	.Button6 {
+		&::before,
+		&::after {
+			transition: 0.35s linear;
+			content: "";
+			border: 1px solid currentcolor;
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: calc(100% - 2px);
+			height: calc(100% - 2px);
+			opacity: 0;
+		}
+		&.Active {
+			@apply bg-base-300;
+		}
+		&:hover:not(.Active) {
+			@apply bg-base-300/60;
+		}
+		&:hover,
+		&:focus,
+		&.Active {
+			&::before,
+			&::after {
+				opacity: 1;
+				box-shadow: 0 0 10px currentcolor;
+			}
+			&::before {
+				transform: translate(-3px, -3px);
+			}
+			&::after {
+				transform: translate(3px, 3px);
+			}
+		}
+	}
+</style>

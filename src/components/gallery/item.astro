@@ -1,0 +1,33 @@
+---
+import { Image } from "astro:assets";
+import Wrapper from "./wrapper.astro";
+
+interface Props {
+	link: string | null | undefined;
+	image: string | null;
+	title: string;
+	subtitle: string;
+	description: string | null;
+}
+
+const props = Astro.props;
+---
+
+<Wrapper link={props.link || ""}>
+	{
+		props.image && (
+			<Image
+				src={props.image.startsWith("http") ? props.image : `/images/preview-${props.image}.jpg`}
+				alt={props.title}
+				class="h-full w-full object-cover object-center"
+				width={500}
+				height={500}
+			/>
+		)
+	}
+	<div class="absolute inset-0 m-2 flex flex-col justify-end bg-gradient-to-b from-transparent to-black p-2 text-white">
+		<h3 class="my-0 text-xl font-semibold drop-shadow-sm">{props.title}</h3>
+		{props.subtitle && <h4 class="m-0 text-sm font-light drop-shadow-sm">{props.subtitle}</h4>}
+		{props.description && <div class="mt-1 text-xs font-light text-white/75 drop-shadow-sm">{props.description}</div>}
+	</div>
+</Wrapper>

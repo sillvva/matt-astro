@@ -1,0 +1,151 @@
+---
+title: Useful Custom Svelte Stores
+description: A series of useful custom stores for Svelte that I've found online. Credit given to original authors.
+layout: ../../layouts/post.astro
+date: 2022-07-12T15:49:56Z
+updated: 2022-07-18T13:58:28Z
+image: https://slxazldgfeytirfrculz.supabase.co/storage/v1/object/public/images/svelte.webp
+tags:
+  - WebSockets
+---
+import { all } from "../../components/markdown/all.astro";
+export const components = all;
+
+## History
+
+This store tracks this history of its value and provides undo and redo functions. [Demo REPL](https://svelte.dev/repl/c43afaefbd1c4bfe86a1d9868acdb00a?version=3.49.0)
+
+Credit for this code goes to [/u/Graineon and /u/Mustard_kat on Reddit](https://www.reddit.com/r/sveltejs/comments/vx86oo/comment/ifupe23/?utm_source=reddit&utm_medium=web2x&context=3).
+
+```typescript
+import { writable } from "svelte/store";
+
+export function history<T>(initial: T) {
+  const current = writable(initial);
+  const history = [initial];
+  let index = 0;
+
+  const refresh = () => current.set(history[index]);
+
+  const set = (newState: T) => {
+    history.push(newState);
+    index++;
+    refresh();
+  };
+
+  return {
+    set,
+    subscribe: current.subscribe,
+    undo: () => {
+      index = Math.max(0, index - 1);
+      refresh();
+    },
+    redo: () => {
+      index = Math.min(history.length - 1, index + 1);
+      refresh();
+    }
+  };
+}
+```
+
+## WebSockets
+
+This is a read-only store I wrote to track the state of a WebSocket connection. It is a very basic example.
+
+```typescript
+import { writable } from "svelte/store";
+
+export default function createSocket<T>(initial?: T) {
+  const { subscribe, set } = writable(initial || null);
+
+  let websocket: WebSocket;
+
+  return {
+    subscribe,
+    connect(url: string) {
+      if (websocket) {
+        websocket.close();
+      }
+
+      websocket = new WebSocket(url);
+
+      websocket.onopen = () => {
+        console.log("Websocket connected!");
+      };
+
+      websocket.onerror = error => {
+        console.log("Websocket error:", error);
+      };
+
+      websocket.onmessage = event => {
+        const data = JSON.parse(event.data);
+        set(data);
+      };
+    },
+    send(data: T) {
+      if (websocket.readyState !== websocket.OPEN) throw new Error("No websocket connection");
+      websocket.send(JSON.stringify(data));
+    }
+  };
+}
+```
+
+Then in your Svelte component:
+
+```html
+<script lang="ts">
+  import { onMount } from 'svelte';
+  import createSocket from "$lib/stores/websocket"
+  import { WEBSOCKET_URL } from "$lib/env"
+
+  const store = createSocket();
+
+  onMount(() => {
+    store.connect(WEBSOCKET_URL)
+  });
+
+  $: console.log($store)
+</script>
+```
+
+## Toasts
+
+This is another store I had written to manage toast messages.
+
+```typescript
+import { writable } from "svelte/store";
+
+export type ToastType = "success" | "error" | "warning" | "info";
+
+export interface Toast {
+  id: number;
+  type: ToastType;
+  message: string;
+}
+
+export const toasts = (() => {
+  const { update, set, subscribe } = writable<Toast[]>([]);
+  const remove = (id: number) => update(t => t.filter(t => t.id !== id));
+  const reset = () => set([]);
+  const add = (type: ToastType, message: string, timer = 5000) =>
+    update(t => {
+      const toast: Toast = {
+        id: Math.random(),
+        type,
+        message
+      };
+      if (timer)
+        setTimeout(() => {
+          remove(toast.id || 0);
+        }, timer);
+      return [...t, toast];
+    });
+
+  return {
+    subscribe,
+    add,
+    remove,
+    reset
+  };
+})();
+```

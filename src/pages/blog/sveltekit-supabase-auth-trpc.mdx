@@ -1,0 +1,405 @@
+---
+title: SvelteKit + Supabase Auth + tRPC
+description: A follow-up to my previous tutorial based on the official Auth Helpers documentation.
+layout: ../../layouts/post.astro
+date: 2022-07-16T21:22:27Z
+image: https://slxazldgfeytirfrculz.supabase.co/storage/v1/object/public/images/svelte-supabase-trpc.webp
+tags:
+  - Authentication
+  - Tutorial
+---
+import { all } from "../../components/markdown/all.astro";
+export const components = all;
+
+In my [previous post](/blog/supabase-auth-in-sveltekit) I walked through how to authenticate with Supabase Auth in SvelteKit, and about 3-4 days later Supabase announced its auth helpers for Sveltekit. I like that it uses the Sveltekit session store and locals. This makes it integrate with tRPC nicely. This tutorial walks through adding both Supabase Auth and tRPC to your Sveltekit app.
+
+## Installation
+
+```bash
+# Supabase Auth Helpers
+npm install @supabase/auth-helpers-sveltekit @supabase/auth-helpers-svelte
+# TRPC
+npm install @trpc/server @trpc/client trpc/sveltekit
+```
+
+The following version of Node is required:
+
+- Node.js: `^16.15.0`
+
+## Getting Started
+
+### Configuration
+
+Set up the fillowing env vars. For local development you can set them in a `.env` file. See an example [here](https://github.com/supabase-community/auth-helpers/blob/main/examples/sveltekit/example.env).
+
+```bash
+# Find these in your Supabase project settings > API
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_ANON_KEY=your-anon-key
+```
+
+### SupabaseClient and SupaAuthHelper component setup
+
+Start off by creating a `db.ts` file inside of your `src/lib` directory. Then instantiate your `supabaseClient` by using the `createSupabaseClient` function from the `@supabase/auth-helpers-sveltekit` library. The `supabaseClient` is safe to be imported to the client-side code, because it only uses the anon key. RLS (row-level security) policies will ensure that the user is authenticated before accessing data they would otherwise not be supposed to.
+
+```ts
+// $lib/supabase/db.ts
+import { createSupabaseClient } from '@supabase/auth-helpers-sveltekit';
+
+const { supabaseClient } = createSupabaseClient(
+  import.meta.env.VITE_SUPABASE_URL as string,
+  import.meta.env.VITE_SUPABASE_ANON_KEY as string
+);
+
+export { supabaseClient };
+```
+
+Edit your `__layout.svelte` file and add import the `SupaAuthHelper` component, the `supabaseClient` we just instantiated and the `session` store. In addition, add the `QueryClientProvider` provided by the `@sveltestack/svelte-query` library.
+
+```html
+<!-- $src/routes/__layout.svelte -->
+<script>
+import { session } from '$app/stores';
+import { supabaseClient } from '$lib/supabase/db';
+import { SupaAuthHelper } from '@supabase/auth-helpers-svelte';
+</script>
+
+<SupaAuthHelper {supabaseClient} {session}>
+  <slot />
+</SupaAuthHelper>
+````
+
+### Typings
+
+In order to get the most out of TypeScript and its intellisense, you should import our types into the `app.d.ts` type definition file that comes with your SvelteKit project.
+
+```ts
+// $src/app.d.ts
+
+/// <reference types="@sveltejs/kit" />
+// See https://kit.svelte.dev/docs/types#app
+// for information about these interfaces
+declare namespace App {
+  interface UserSession {
+    user: import('@supabase/supabase-js').User;
+    accessToken?: string;
+  }
+  
+  interface Locals extends UserSession {
+    serverClient: import('@supabase/supabase-js').SupabaseClient;
+    error: import('@supabase/supabase-js').ApiError;
+  }
+
+  interface Session extends UserSession {}
+  
+  // interface Platform {}
+  // interface Stuff {}
+}
+```
+
+### tRPC Setup
+
+The `index.ts` file is where you'll create the tRPC context and router.
+
+```ts
+// $lib/trpc/index.ts
+import * as trpc from "@trpc/server";
+import type { RequestEvent } from "@sveltejs/kit";
+
+export const createContext = async ({ request, locals }: RequestEvent) => {
+  return {
+    req: request,
+    locals
+  };
+};
+
+export type Context = trpc.inferAsyncReturnType<typeof createContext>;
+
+export const createRouter = () => trpc.router<Context>();
+```
+
+The `server.ts` file is where you'll merge the individual routers that handle your API endpoints. The example router will be explained later in the tutorial.
+
+```ts
+// $lib/trpc/server.ts
+import { createRouter } from "./context";
+import { exampleRouter } from "./routers/example"; 
+
+export const router = createRouter()
+  .merge("example:", exampleRouter)
+
+// export type definition of API
+export type Router = typeof router;
+```
+
+The `client.ts` file is where you'll create the client-side tRPC client. This is the only code you'll import to your client-side code. 
+
+There are some additional helper types that can be used to assign types to variables prior to calling the query. You'll see an example of these types used in the server-side fetching example below.
+
+```ts
+// $lib/trpc/client.ts
+import { createTRPCClient } from "@trpc/client";
+import type { Router } from "./server"; // 👈 only the types are imported from the server
+
+export default createTRPCClient<Router>({
+  url: "/trpc"
+});
+
+type Query = keyof Router['_def']['queries'];
+type Mutation = keyof Router['_def']['mutations'];
+
+// Useful types 👇👇👇
+export type InferQueryOutput<RouteKey extends Query> = inferProcedureOutput<Router['_def']['queries'][RouteKey]>;
+export type InferQueryInput<RouteKey extends Query> = inferProcedureInput<Router['_def']['queries'][RouteKey]>;
+export type InferMutationOutput<RouteKey extends Mutation> = inferProcedureOutput<
+  Router['_def']['mutations'][RouteKey]
+>;
+export type InferMutationInput<RouteKey extends Mutation> = inferProcedureInput<Router['_def']['mutations'][RouteKey]>;
+```
+
+So far, so good. The last piece of the puzzle is a tRPC middleware for verifying that the user is authenticated. As we defined in the `app.d.ts` declaration file, the `App.Locals` includes the user information if the user is authenticated.
+
+The `MiddlewareFunction` type takes 3 properties: the `InputContext` type, the tRPC `Context` type, and the tRPC `ResponseMeta` type. For more information about the `ResponseMeta` type, see the `trpc-sveltekit` package documentation. It is not required for this tutorial.
+
+```ts
+// $lib/trpc/middlewares.ts
+import type { MiddlewareFunction } from "@trpc/server/dist/declarations/src/internals/middlewares";
+import { TRPCError } from "@trpc/server";
+import { Context } from "$lib/trpc";
+
+export const authMiddleware: MiddlewareFunction<{ req: Request; locals: App.Locals }, Context, unknown> = async ({
+  ctx: { locals },
+  next
+}) => {
+  if (!locals.user) throw new TRPCError({ message: `Unauthorized`, code: "UNAUTHORIZED" });
+  return next();
+};
+```
+
+### Hooks setup
+
+The `hooks.ts` file is where the heavy lifting of this library happens, you need to import the `handleAuth` function to handle the signing in, signing out, and cookie creation phase. You can import all the hooks using the function and destructure its returned data.
+
+After the hooks are imported, you can set up a custom hook for implementing the `createTRPCHandle` function. These handles can be combined with the built-in `sequence` function provided by SvelteKit. 
+
+The `supabaseServerClient` is assigned to the app locals, which are only accessed on the server. You will see an example of this in use in the example router later in the tutorial. For [RLS](https://supabase.com/docs/learn/auth-deep-dive/auth-row-level-security) to work in a server environment, you need to inject the user's access token into the server client.
+
+```ts
+// $src/hooks.ts
+import type { Handle, GetSession } from "@sveltejs/kit";
+import { sequence } from "@sveltejs/kit/hooks";
+import { handleAuth, supabaseServerClient } from "@supabase/auth-helpers-sveltekit";
+import { router } from "$lib/trpc/server";
+import { createContext } from "$lib/trpc/context";
+import { createTRPCHandle } from "trpc-sveltekit";
+
+export const handle: Handle = sequence(
+  ...handleAuth({
+    // the logout handler 
+    logout: { returnTo: "/" }
+  }),
+  async ({ event, resolve }) => {
+    event.locals.serverClient = supabaseServerClient(event.locals.accessToken || "");
+
+    const response = await createTRPCHandle({
+      url: "/trpc",
+      router,
+      createContext,
+      event,
+      resolve
+    });
+
+    return response;
+  }
+);
+
+// The session information returned here will be available to the client via the `session` store.
+export const getSession: GetSession = async event => {
+  const { user, accessToken, error } = event.locals;
+  return {
+    user,
+    accessToken,
+    error
+  };
+};
+
+```
+
+These will create the handlers under the hood that perform different parts of the authentication flow:
+
+- `/api/auth/callback`: The `UserHelper` forwards the session details here every time `onAuthStateChange` fires on the client side. This is needed to set up the cookies for your application so that SSR works seamlessly.
+- `/api/auth/user`: You can fetch user profile information in JSON format.
+- `/api/auth/logout`: You can logout the user.
+- `/trpc/[endpoints]`: The endpoints handled by the tRPC router.
+
+### Signing in
+
+```html
+<script lang="ts">
+import { supabase } from "$lib/supabase/client";
+import { page, session } from "$app/stores";
+
+let user = $session.user;
+
+async function signin() {
+  if (!user && supabase) {
+    return await supabase.auth.signIn(
+      {
+        provider: "github"
+      },
+      {
+        redirectTo: `${$page.url.origin}/redirect?to=${encodeURIComponent($page.url.pathname)}`
+      }
+    );
+  }
+};
+</script>
+```
+
+### Signing out
+
+This library has provided a dedicated endpoint for you to use to sign a user out. This endpoint will sign the user out of the Gotrue server, clear the cookies that were set when the user logged in and redirect the user to a configurable path.
+
+The logout handler endpoint is `/api/auth/logout`, this will take a `GET` request which means it can be used as the href for a normal `a` tag in your html.
+
+```html
+<a href="/api/auth/logout">Sign out</a>
+```
+
+### Basic Setup
+
+You can now determine if a user is authenticated on the client-side by checking that the `user` object returned by the `$session` store is defined.
+
+```html
+<script>
+import { session } from '$app/stores';
+</script>
+
+{#if !$session.user}
+  <h1>I am not logged in</h1>
+{:else}
+  <h1>Welcome {$session.user.email}</h1>
+  <p>I am logged in!</p>
+{/if}
+```
+
+## Data Fetching
+
+### Client-side data fetching with RLS
+
+For [RLS](https://supabase.com/docs/learn/auth-deep-dive/auth-row-level-security) to work properly when fetching data client-side, you need to make sure to import the `{ supabaseClient }` from `@supabase/auth-helpers-sveltekit` and only run your query once the user is defined client-side in the `$session`:
+
+```html
+<script>
+import Auth from 'supabase-ui-svelte';
+import { error, isLoading } from '@supabase/auth-helpers-svelte';
+import { supabaseClient } from '$lib/supabase/db';
+import { session } from '$app/stores';
+
+let loadedData = [];
+async function loadData() {
+  const { data } = await supabaseClient.from('test').select('*');
+  loadedData = data
+}
+
+$: {
+  if ($session.user && $session.user.id) {
+    loadData();
+  }
+}
+</script>
+
+{#if !$session.user}
+  {#if $error}
+    <p>{$error.message}</p>
+  {/if}
+  <h1>{$isLoading ? `Loading...` : `Loaded!`}</h1>
+  <Auth {supabaseClient} providers={["github"]} />
+{:else}
+  <a href=="/api/auth/logout">Sign out</a>
+  <p>user:</p>
+  <pre>{JSON.stringify($session.user, null, 2)}</pre>
+  <p>client-side data fetching with RLS</p>
+  <pre>{JSON.stringify(loadedData, null, 2)}</pre>
+{/if}
+```
+
+### Server-side data fetching with RLS and tRPC
+
+This is the same as the client-side example above, but this time we are using tRPC to fetch the data from supabase on the server.
+
+```ts
+// src/trpc/routers/example.ts
+import Auth from 'supabase-ui-svelte';
+import { authMiddleware, createRouter } from "$lib/trpc";
+import { TRPCError } from "@trpc/server";
+import { z } from "zod";
+
+interface ExampleData {
+  ...
+}
+
+export const exampleRouter = createRouter()
+  .query("greeting", {
+    input: z.object({
+      text: z.string().nullish(),
+    }).nullish(),
+    async resolve({ input: { text } }) {
+      return `Hello ${text || 'world'}!`;
+    }
+  });
+  // anything after this line is a protected endpoint and should use the Supabase server client
+  .middleware(authMiddleware)
+  .query("protected", {
+    async resolve({ ctx: { locals } }) {
+      const { data /* any[] */, error /* PostgresError */ } = await locals.serverClient.from('test').select('*');
+
+      if (error) throw new TRPCError({ message: error, code: "INTERNAL_SERVER_ERROR" });
+      
+      // the ExampleData type will be returned to the client.
+      const result: ExampleData[] = data;
+
+      return result;
+    }
+  });
+```
+
+```html
+<script lang="ts">
+import { session } from "$app/stores";
+import { browser } from "$app/env";
+import { error, isLoading } from "@supabase/auth-helpers-svelte";
+import trpc, { InferQueryOutput } from "$lib/trpc/client";
+
+let errorMessage: string = "";
+
+// greeter is automatically type-safe
+$: greeter = trpc.query("example:greeting", { text: $session.user?.name });
+
+// exampleData infers the type of the data returned from the specified endpoint
+let exampleData: InferQueryOutput<"example:protected"> = [];
+async function loadData() {
+  data = await trpc.query("example:protected");
+}
+
+$: { if ($session.user) loadData(); }
+$: { if ($error) errorMessage = $error.message; }
+</script>
+
+{#await greeter then greeting}
+  <p>{greeting}</p>
+{/await}
+{#if errorMessage}
+  <p>{errorMessage}</p>
+{/if}
+{#if !$session.user}
+  <h1>{$isLoading ? `Loading...` : `Loaded!`}</h1>
+  <Auth {supabaseClient} providers={["github"]} />
+{:else}
+  <a href="/api/auth/logout">Sign out</a>
+  <p>user:</p>
+  <pre>{JSON.stringify($session.user, null, 2)}</pre>
+  <p>client-side data fetching with RLS</p>
+  <pre>{JSON.stringify(exampleData, null, 2)}</pre>
+{/if}
+```

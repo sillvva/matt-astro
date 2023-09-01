@@ -1,0 +1,23 @@
+---
+import { cn } from "../../util";
+
+interface Props {
+	class?: string;
+	bgImage?: string;
+}
+
+const className = Astro.props.class || "";
+const { bgImage } = Astro.props;
+---
+
+<section
+	class={cn(
+		"section-divider p-5 text-base-content",
+		"last:border-b-0",
+		className,
+		bgImage ?? `bg-[image:url(${bgImage}))]`,
+		`bg-cover bg-center`
+	)}
+>
+	<slot />
+</section>

@@ -1,0 +1,53 @@
+---
+import { Image } from "astro:assets";
+import PortfolioLayout from "../../layouts/portfolio.astro";
+import { cn, sorter } from "../../util";
+
+const posts = await Astro.glob("./*.mdx");
+const sluggedPosts = posts.map((post) => ({
+	...post,
+	slug: post.url?.replace("/blog", "")
+}));
+---
+
+<PortfolioLayout title="Blog">
+	<div class="mx-auto grid grid-cols-[repeat(auto-fit,minmax(16rem,1fr))] gap-5">
+		{
+			sluggedPosts
+				.sort((a, b) => sorter(b.frontmatter.date, a.frontmatter.date))
+				.map((post) => (
+					<a
+						href={post.url}
+						class={cn(
+							"card min-w-[15rem] rounded-lg bg-base-200 transition-all motion-safe:hover:scale-105",
+							"shadow-md shadow-black/15 hover:shadow-lg hover:shadow-black/25"
+						)}
+					>
+						<div class="card-body p-4">
+							<h2 class="card-title text-lg text-theme-heading">{post.frontmatter.title}</h2>
+							{post.frontmatter.date && (
+								<span class="mb-2 text-sm text-theme-faded underline decoration-dotted underline-offset-2">
+									{new Date(post.frontmatter.date).toLocaleDateString("en-US", {
+										month: "long",
+										day: "numeric",
+										year: "numeric"
+									})}
+								</span>
+							)}
+							<p class="text-sm">{post.frontmatter.description}</p>
+						</div>
+						<figure class="h-40">
+							<Image
+								src={post.frontmatter.image}
+								alt={post.frontmatter.title}
+								transition:name={`image_${post.slug}`}
+								width={100}
+								height={100}
+								class="h-full w-full object-cover object-center"
+							/>
+						</figure>
+					</a>
+				))
+		}
+	</div>
+</PortfolioLayout>

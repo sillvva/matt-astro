@@ -1,0 +1,46 @@
+---
+import { cn } from "../../util";
+import PageSection from "../page/section.astro";
+
+type RatingColumnBreakpoints = {
+	sm?: number;
+	md?: number;
+	lg?: number;
+	xl?: number;
+	"2xl"?: number;
+};
+
+interface Props {
+	name: string;
+	columns: RatingColumnBreakpoints;
+}
+
+const { name, columns } = Astro.props;
+
+const colClasses = [
+	...(columns.sm ? ["sm:block"] : []),
+	...(columns.md ? ["md:block"] : []),
+	...(columns.xl ? ["xl:block"] : []),
+	...(columns.lg ? ["lg:block"] : []),
+	...(columns["2xl"] ? ["2xl:block"] : [])
+];
+---
+
+<PageSection class="sm:block md:block lg:block xl:block 2xl:block">
+	<h2 class="section-heading">{name}</h2>
+	<div class="-m-3 mb-2 mt-4 flex flex-wrap">
+		{
+			colClasses.map((col, c) => (
+				<Fragment key={`col${c}`}>
+					<div class={cn("grow basis-0 p-3 pt-0.5 text-theme-faded even:max-w-max even:text-right", c > 0 && `hidden ${col}`)}>
+						<strong>Skills</strong>
+					</div>
+					<div class={cn("grow basis-0 p-3 pt-0.5 text-theme-faded even:max-w-max even:text-right", c > 0 && `hidden ${col}`)}>
+						<strong>Rating</strong>
+					</div>
+				</Fragment>
+			))
+		}
+	</div>
+	<div class="-m-3 flex flex-wrap"><slot /></div>
+</PageSection>

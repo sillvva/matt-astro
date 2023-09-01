@@ -1,0 +1,85 @@
+---
+title: Render Different UI for Mobile and Desktop
+description: Three different methods to render different user interfaces on mobile and desktop
+layout: ../../layouts/post.astro
+date: 2022-07-15T22:54:18Z
+image: https://slxazldgfeytirfrculz.supabase.co/storage/v1/object/public/images/devices.webp
+---
+import { all } from "../../components/markdown/all.astro";
+export const components = all;
+
+There are three different methods to render different user interfaces on mobile and desktop - CSS, `window.matchMedia()`, and User Agent String. These techniques can be combined.
+
+## CSS
+
+The first one involves using CSS to render the same UI with different layouts for different screen sizes.
+
+```css
+@media screen and (max-width: 600px) {
+  // Mobile
+}
+@media screen and (min-width: 601px) and (max-width: 940px) {
+  // Tablet
+}
+@media screen and (min-width: 941px) {
+  // Desktop
+}
+```
+
+## Match Media API
+
+`window.matchMedia()` is a browser API that can be listened to and used to check whether the a CSS media query is true or false.
+
+```javascript
+function addMQListener(mq, callback) {
+  if (mq.addEventListener) {
+    mq.addEventListener("change", callback);
+  } else {
+    mq.addListener(callback);
+  }
+}
+
+addMQListener(window.matchMedia("(orientation:landscape)"),
+  event => {
+    if (event.matches) {
+      /* now in landscape orientation */
+    } else {
+      /* now in portrait orientation */
+    }
+  }
+);
+```
+
+## User Agent String
+
+The final option is useful if SSR is important. The browser will send the `user-agent` header on requests to the server. This gives the server information about the device that is making the request. You can then use a regular expression to determine whether the request is coming from a mobile device or a desktop device.
+
+Here is an example with Sveltekit pages and endpoints:
+
+```typescript
+// src/routes/page.ts
+export const get: RequestHandler = async ({ event }) => {
+  const mobileRegex = /Mobile|iP(hone|od|ad)|Android|BlackBerry/;
+  const isMobile = mobileRegex.test(event.request.headers.get("user-agent") || "");
+
+  return {
+    status: 200,
+    body: {
+      isMobile // pass this boolean to Svelte page
+    },
+  }
+};
+```
+
+```html
+<!-- src/routes/page.svelte -->
+<script lang="ts">
+export let isMobile: boolean;
+</script>
+
+{#if isMobile}
+  <!-- MobileComponent -->
+{:else}
+  <!-- DesktopComponent -->
+{/else}
+```

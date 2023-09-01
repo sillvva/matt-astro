@@ -1,0 +1,13 @@
+---
+import { cn } from "../../util";
+
+interface Props {
+	class?: string;
+}
+
+const className = Astro.props.class || "";
+---
+
+<article class={cn("mb-4 overflow-hidden rounded-lg bg-theme-article shadow-xl ring-1 ring-gray-900/5", className)}>
+	<slot />
+</article>

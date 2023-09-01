@@ -1,0 +1,310 @@
+---
+title: Firebase Storage and Nuxt Content Integration
+description: A walkthrough on how I did it
+layout: ../../layouts/post.astro
+date: 2021-04-05T19:53:13.612Z
+updated: 2021-04-09T03:50:32.984Z
+image: https://slxazldgfeytirfrculz.supabase.co/storage/v1/object/public/images/code.jpg
+tags:
+  - Vue
+  - Github
+  - CI/CD
+---
+import { all } from "../../components/markdown/all.astro";
+export const components = all;
+
+## Introduction
+
+This project started because I wanted to keep my markdown files separate from my web app deployment process. I initially tried to find a way to fetch the markdown files from Firebase Storage via an API and then use the @nuxt/content built-in parser to convert them to JSON that could be passed to the `<nuxt-content />` element. Alas, I could not get this to work. The best I got was a mostly unformatted output.
+
+## Step 1: Dynamically Generate the Content Directory
+
+### Cue Github Actions
+
+I had already set up a CI/CD process for building and deploying pull requests into my master branch on Github to Firebase Hosting. Github Actions use workflow .yml files to create build, testing, and deployment jobs. They are stored in the `.github/workflows` directory. Here is my up-to-date workflow file for build and deploy:
+
+```yaml
+# .github/workflows/deploy.yml
+name: mattdekok.dev CD
+
+# Controls when the action will run. 
+on:
+  # Manual trigger via workflow_dispatch event
+  workflow_dispatch:
+  # Trigger when push or pull request into master is complete
+  push:
+    branches: [ master ]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@master
+
+      - name: Setup Node
+        uses: actions/setup-node@master
+        with:
+          node-version: 12
+      
+      - name: Generate Frontend
+        env:
+          FIREBASE_ADMIN_CREDENTIAL: ${{ secrets.FIREBASE_ADMIN_CREDENTIAL }}
+          FIREBASE_STORAGE_BUCKET: ${{ secrets.FIREBASE_STORAGE_BUCKET }}
+        run: cd frontend && npm ci && npm run update-blog && npm run generate
+      
+      - name: Build Functions
+        run: cd functions && npm ci && npm run build
+
+      - name: Deploy to Firebase
+        uses: w9jds/firebase-action@master
+        with:
+          args: deploy --only functions,hosting
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+```
+
+The important parts to consider for generating the content directory dynamically are the `workflow_dispatch` trigger and the `npm run update-blog` command and two environment variables in the Generate Frontend step. Github provides an API that, when called, can manually trigger a workflow that contains the `workflow_dispatch` trigger.
+
+### The Environment Variables
+
+The two environment variables (`FIREBASE_ADMIN_CREDENTIAL` and `FIREBASE_STORAGE_BUCKET`) are fetched from Github Secrets.
+
+![image](https://slxazldgfeytirfrculz.supabase.co/storage/v1/object/public/images/github-secrets-firebase.webp)
+
+You can get your admin credentials in your Firebase Console by going to Project Settings > Service Accounts > Generate new private key. It will provide you with a .json file. Convert the JSON to a string with `JSON.stringify` and then save the result as a secret.
+
+The Firebase Storage Bucket is just `your-project-id.appspot.com`.
+
+### The `update-blog` Script
+
+The `npm run update-blog` command runs the following Node.js script. The script deletes the `content/articles` directory where the markdown files are normally stored before it then recreates the directory. After the empty directory is created, it fetches all of the markdown files from Firebase Storage `blog/articles` directory and stores them in the recreated `content/articles` directory. 
+
+After that, it proceeds to run the `npm run generate` command as normal.
+
+```javascript 
+// frontend/updateBlog.js
+const admin = require("firebase-admin");
+const path = require("path");
+const fs = require("fs");
+
+const articleDir = "content/articles"; // The directory where your markdown files are stored in your nuxt app
+const storageDir = "blog/articles"; // The directory where your markdown files are stored in Firebase Storage
+
+(async () => {
+  const dirRemoved = await new Promise((resolve, reject) => {
+    fs.rmdir(articleDir, { recursive: true }, err => {
+      if (err) {
+        console.log(err);
+        resolve(false);
+      } else {
+        resolve(true);
+      }
+    });
+  });
+
+  if (!dirRemoved) return false;
+
+  const dirCreated = await new Promise((resolve, reject) => {
+    fs.mkdir(articleDir, { recursive: true }, (err, path) => {
+      if (err) {
+        console.log(err);
+        resolve(false);
+      } else {
+        resolve(path);
+      }
+    });
+  });
+
+  if (!dirCreated) return false;
+
+  admin.initializeApp({
+    credential: admin.credential.cert(
+      JSON.parse(process.env.FIREBASE_ADMIN_CREDENTIAL)
+    ),
+    storageBucket: process.env.FIREBASE_STORAGE_BUCKET
+  });
+
+  const files = await admin
+    .storage()
+    .bucket()
+    .getFiles({ directory: storageDir });
+  const mdFiles = files[0].filter(file => file.name.includes(".md"));
+  for (let i = 0; i < mdFiles.length; i++) {
+    const file = mdFiles[i];
+    new Promise(resolve => {
+      try {
+        const filePath = file.name || "";
+        const fileExtension = path.extname(filePath);
+        const baseFileName = path.basename(filePath, fileExtension);
+        const createPath = `${articleDir}/${baseFileName}${fileExtension}`;
+
+        let fileContent = "";
+        file
+          .createReadStream()
+          .on("data", chunk => {
+            fileContent += chunk.toString();
+          })
+          .on("end", async () => {
+            fs.appendFileSync(createPath, fileContent);
+            console.log(`Created: ${createPath}`);
+            resolve(true);
+          });
+      } catch (err) {
+        console.log("Error:", createPath);
+        console.log(err);
+        resolve(false);
+      }
+    });
+  }
+})();
+```
+
+### Add the script to your package.json
+
+In order for the Github Actions workflow to run the script, you need to add it to your `package.json` file.
+
+```json 
+// functions/package.json
+{
+  ...
+  "scripts": {
+    "dev": "nuxt",
+    "build": "nuxt build",
+    "start": "nuxt start",
+    "generate": "nuxt generate",
+    "update-blog": "node updateBlog.js"
+  },
+  ...
+}
+```
+
+## Step 2: Trigger the Workflow Automatically
+
+So now your markdown files will be fetched whenever your Github workflow runs. The next step is to trigger the workflow whenever markdown files in Firebase Storage are created, updated, or deleted. You can do this with Firebase Functions. Firebase Functions can react to events in Firebase such as Firestore or Storage updates.
+
+### Get Your Github Personal Auth Key
+
+Go to https://github.com/settings/tokens and click `Generate new token`. Then copy your token into your Firebase Functions config with the following command-line script:
+
+```bash
+firebase functions:config:set github.personal_access_token=YOUR_TOKEN
+```
+
+
+### Create a Handler Function
+
+This is the handler function that will be used by functions to handle sending the `workflow_dispatch` call to Github's API.
+
+```typescript 
+// functions/src/handlers/workflowDispatch.ts
+import * as functions from "firebase-functions";
+import * as path from "path";
+import { Octokit } from "@octokit/core";
+
+export default async (object: functions.storage.ObjectMetadata, context: functions.EventContext) => {
+  const filePath = object.name || "";
+  const fileExtension = path.extname(filePath);
+  const fileDir = path.dirname(filePath);
+
+  if (fileDir === "blog/articles" && fileExtension == ".md") {
+    functions.logger.log(`Storage Trigger: ${context.eventType.replace("google.storage.object.", "")}: ${filePath}`);
+
+    const octokit = new Octokit({ auth: functions.config().github.personal_access_token });
+    try {
+      await octokit.request("POST /repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches", {
+        owner: "GITHUB_USERNAME",
+        repo: "REPO_NAME",
+        workflow_id: "WORKFLOW_FILENAME",
+        ref: "master",
+      });
+    } catch (err) {
+      console.log(err.toString());
+      console.log("Documentation:", err.documentation_url);
+      return false;
+    }
+  }
+
+  return true;
+};
+```
+
+### Create The Functions
+
+The following Firebase Functions will trigger whenever a file is created or deleted. The workflow dispatch handler will check if the file is in the correct directory and has the correct file extension before triggering the Github workflow. You can perform some additional validation steps in the handler function, if necessary.
+
+**Known Issue:** One thing I haven't been able to figure out is how to prevent both of these functions from triggering when a file is updated. In Firebase Storage, when a file with the same name as an existing file is uploaded, it triggers both a create and delete. This creates two workflow events on Github. However, this isn't a big issue. One will fail at the deploy step, and the other will succeed.
+
+```typescript 
+// functions/src/blog/reactive/onPostCreated.function.ts
+import * as functions from "firebase-functions";
+import workflowDispatchHandler from "../../handlers/workflowDispatch";
+
+exports.onPostCreated = functions.storage
+  .bucket(functions.config().fb.storage_bucket)
+  .object()
+  .onFinalize(workflowDispatchHandler);
+```
+
+```typescript 
+// functions/src/blog/reactive/onPostDeleted.function.ts
+import * as functions from "firebase-functions";
+import workflowDispatchHandler from "../../handlers/workflowDispatch";
+
+exports.onPostDeleted = functions.storage
+  .bucket(functions.config().fb.storage_bucket)
+  .object()
+  .onDelete(workflowDispatchHandler);
+```
+
+## Conclusion
+
+Now that you have your Github workflow and Firebase Functions setup, the magic should happen automatically whenever your markdown files update in Firebase Storage or you push a new app update.
+
+## Bonus: Running the Script Locally
+
+Running the `update-blog` script requires environment variables. To run the script locally, you'll need to install the `dotenv` package in your Nuxt source directory.
+
+```bash
+cd frontend
+npm install -D dotenv
+```
+
+Then you'll need to create a `.env` file containing the environment variables. The credential should be the same JSON string you entered as a secret on Github. Make sure to add the .env file to your `.gitignore` file.
+
+```yaml
+# frontend/.env
+FIREBASE_ADMIN_CREDENTIAL="YOUR CREDENTIAL HERE"
+FIREBASE_STORAGE_BUCKET="YOUR BUCKET HERE"
+```
+
+Create a script to load the environment variables and call the `updateBlog.js` script.
+
+```javascript 
+// frontend/updateBlogDev.js
+require('dotenv').config({ path: './.env' });
+require('./updateBlog.js');
+```
+
+Finally, add a script to your package.json to call this script.
+
+```json 
+// frontend/package.json
+{
+  ...
+  "scripts": {
+    "dev": "nuxt",
+    "build": "nuxt build",
+    "start": "nuxt start",
+    "generate": "nuxt generate",
+    "update-blog": "node updateBlog.js",
+    "update-blog:dev": "node updateBlogDev.js"
+  },
+  ...
+}
+```

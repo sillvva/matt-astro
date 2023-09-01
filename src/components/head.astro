@@ -1,0 +1,78 @@
+---
+import { ViewTransitions } from "astro:transitions";
+import "../styles/base.scss";
+
+export interface Props {
+	title?: string;
+	description?: string;
+	image?: string;
+	articleMeta?: Record<string, string>;
+	stylesheets?: string[];
+}
+
+const {
+	title,
+	description = "Experienced full stack web developer with a demonstrated history of working in the wireless industry.",
+	image = "/images/preview-me3.jpeg",
+	articleMeta,
+	stylesheets = []
+} = Astro.props;
+
+const color = "#00aa99";
+const dtitle = title ? `${title} - Matt DeKok` : "Matt DeKok";
+const ogProperties: Record<string, string> = {
+	title: dtitle,
+	description: description,
+	image: image && image.startsWith("http") ? image : new URL(image, import.meta.env.PUBLIC_DOMAIN).toString(),
+	url: new URL(Astro.url.pathname, import.meta.env.PUBLIC_DOMAIN).toString()
+};
+const ogOnlyProperties: Record<string, string> = {
+	...ogProperties,
+	type: "website",
+	site_name: dtitle
+};
+const twProperties: Record<string, string> = {
+	creator: "@sillvvasensei",
+	card: "summary_large_image",
+	...ogProperties
+};
+const articleProperties: Record<string, string> = {
+	...articleMeta
+};
+---
+
+<meta charset="utf-8" />
+<meta name="generator" content={Astro.generator} />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>{dtitle}</title>
+<meta name="description" content={description} />
+<link rel="icon" href="/favicon.png" />
+<link rel="apple-touch-icon" href={`${ogProperties.url}/icon_x128.png`} />
+<link rel="manifest" href="/manifest.webmanifest" />
+<link rel="canonical" href={ogProperties.url} />
+
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="msapplication-TileColor" content={color} />
+<meta name="msapplication-tap-highlight" content="no" />
+<meta name="theme-color" content={color} />
+{
+	Object.keys(articleProperties).map((t) => {
+		return <meta property={`article:${t}`} content={articleProperties[t]} />;
+	})
+}
+{
+	Object.keys(ogOnlyProperties).map((t) => {
+		return <meta name={t} property={`og:${t}`} content={ogOnlyProperties[t]} />;
+	})
+}
+{
+	Object.keys(twProperties).map((t) => {
+		return <meta name={`twitter:${t}`} content={twProperties[t]} />;
+	})
+}
+{
+	stylesheets.map((href) => {
+		return <link rel="stylesheet" href={href} />;
+	})
+}
+<ViewTransitions />

@@ -1,0 +1,22 @@
+---
+interface Props {
+	link: string;
+}
+---
+
+{
+	Astro.props.link ? (
+		<a
+			href={Astro.props.link}
+			target="_blank"
+			rel="noopener noreferrer"
+			class="gallery-item p-2 hover:shadow-xl motion-safe:hover:scale-105"
+		>
+			<slot />
+		</a>
+	) : (
+		<div class="gallery-item">
+			<slot />
+		</div>
+	)
+}

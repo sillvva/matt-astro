@@ -1,0 +1,48 @@
+---
+interface Props {
+	hash: string;
+	user: string;
+	title?: string;
+	defaultTab?: string;
+	height?: number;
+	preview?: boolean;
+	editable?: boolean;
+	themeId?: string | number;
+	version?: number;
+};
+
+const {
+  defaultTab = "result",
+	height = 500,
+	preview = true,
+	editable = false,
+	themeId = "dark",
+	version = 2,
+  user,
+  hash,
+  title
+} = Astro.props;
+
+const penLink = `https://codepen.io/${user}/pen/${hash}/`;
+const userProfileLink = `https://codepen.io/${user}`;
+---
+
+<script async src="https://static.codepen.io/assets/embed/ei.js"></script>
+
+
+<div class="codepen-container">
+  <div
+    data-height={height}
+    data-theme-id={themeId}
+    data-slug-hash={hash}
+    data-default-tab={defaultTab}
+    data-user={user}
+    data-embed-version={version}
+    data-pen-title={title}
+    data-preview={preview}
+    data-editable={editable}
+    class="codepen">
+    See the <a href={penLink}>{title}</a> Pen by <a href={userProfileLink}>@{user}</a> on{" "}
+    <a href="https://codepen.io">CodePen</a>.
+  </div>
+</div>

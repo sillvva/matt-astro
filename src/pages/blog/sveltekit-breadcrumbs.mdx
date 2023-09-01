@@ -1,0 +1,117 @@
+---
+title: Svelte Breadcrumbs Made Easy
+description: A method to create a single breadcrumbs component which uses route data to generate breadcrumbs.
+layout: ../../layouts/post.astro
+date: 2023-07-14T03:53:16.000Z
+image: https://slxazldgfeytirfrculz.supabase.co/storage/v1/object/public/images/breadcrumbs.jpg
+tags:
+  - TypeScript
+  - SvelteKit
+---
+import { all } from "../../components/markdown/all.astro";
+export const components = all;
+
+Making breadcrumbs base on routes is straightforward. In SvelteKit, `+page.server.ts`, `+page.ts`, `+layout.server.ts`, and `+layout.ts` load functions have an event parameter with an async `parent()` method that returns data from parent `+layout.server.ts` and `+layout.ts` load functions.
+
+By placing a `breadcrumbs` array in the root layout, you can use `event.parent()` and `Array.concat` to append breadcrumbs at each route segment which requires a breadcrumb. And you can use data from that route segment to make the breadcrumb value and href dynamic.
+
+Here is an example used on my [Adventurers League Log Sheet](https://ddal.dekok.app/) app.
+
+Root layout:
+
+```ts
+// src/routes/+layout.server.ts
+export const load = async (event) => {
+    return {
+        breadcrumbs: [] as { name: string; href: string }[],
+    };
+};
+```
+
+First breadcrumb segment:
+
+```ts
+// src/routes/characters/+layout.server.ts
+export const load = async (event) => {
+    const parent = await event.parent();
+
+    return {
+        breadcrumbs: parent.breadcrumbs.concat(
+            {
+                name: "Characters",
+                href: `/characters`
+            }
+        )
+    };
+};
+```
+
+Next breadcrumb segment with param:
+
+```ts
+// src/routes/characters/[characterId]/+layout.server.ts
+import { getCharacter } from "$src/server/data/characters";
+import { error, redirect } from "@sveltejs/kit";
+
+export const load = async (event) => {
+    const parent = await event.parent();
+
+    if (event.params.characterId === "new") throw redirect(301, "/characters/new/edit");
+    const character = await getCharacter(event.params.characterId);
+    if (!character) throw error(404, "Character not found");
+
+    return {
+        breadcrumbs: parent.breadcrumbs.concat(
+            {
+                name: character.name,
+                href: `/characters/${character.id}`
+            }
+        )
+    };
+};
+```
+
+Now the resulting array in `data.breadcrumbs` for `/characters/[characterId]` is:
+
+```js
+[
+  { name: 'Characters', href: '/characters' },
+  { name: 'Rimurus', href: '/characters/cl7gfkggq002009mluw41peqd' }
+]
+```
+
+From there, you can create a breadcrumbs component like this:
+
+```html
+<!-- src/lib/components/Breadcrumbs.svelte -->
+<script lang="ts">
+    import { page } from "$app/stores";
+    import Icon from "./Icon.svelte";
+
+    let breadcrumbs = ($page.data.breadcrumbs as { name: string, href?: string }[]).map((bc, i) => ({
+        name: bc.name,
+        href: !bc.href || i === $page.data.breadcrumbs.length - 1 ? null : bc.href,
+    }));
+</script>
+
+<div class="breadcrumbs mb-4 hidden flex-1 text-sm sm:flex">
+    <ul>
+        <li>
+            <Icon src="home" class="w-4" />
+        </li>
+        {#each breadcrumbs as bc}
+            {#if bc.href}
+                <li>
+                    <a href={bc.href} class="text-secondary">
+                        {bc.name}
+                    </a>
+                </li>
+            {:else}
+                <li class="overflow-hidden text-ellipsis whitespace-nowrap dark:drop-shadow-md">
+                    {bc.name}
+                </li>
+            {/if}
+        {/each}
+    </ul>
+</div>
+```

@@ -1,0 +1,19 @@
+---
+import RatingStars from "./stars.astro";
+
+interface Props {
+	name: string;
+	rating: number;
+}
+
+const { name, rating } = Astro.props;
+---
+
+<div class="grow-0 basis-full p-3 md:basis-6/12 xl:basis-4/12">
+	<div class="-m-3 flex">
+		<div class="grow basis-0 p-3 pt-0.5">{name}</div>
+		<div class="max-w-max grow basis-0 whitespace-nowrap p-3 pt-0.5 text-right">
+			<RatingStars rating={rating} />
+		</div>
+	</div>
+</div>

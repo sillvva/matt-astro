@@ -1,0 +1,83 @@
+---
+interface Props {
+	rating: number;
+}
+
+const rating = Astro.props.rating;
+
+const getStars = () => {
+	const max = 5;
+	let full = Math.floor(rating);
+	let half = full === rating ? 0 : 1;
+	let empty = max - full - half;
+	if (rating - full !== 0) {
+		if (rating - full >= 3 / 4) {
+			half = 0;
+			full += 1;
+		} else if (rating - full < 1 / 4) {
+			half = 0;
+			empty += 1;
+		}
+	}
+
+	return [...Array(full).fill(1), ...Array(half).fill(0.5), ...Array(empty).fill(0)];
+};
+---
+
+<div class={`rating flex text-right`}>
+	{
+		getStars().map((star, s) => {
+			if (star === 0) {
+				return (
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						width="24"
+						height="24"
+						viewBox="0 0 24 24"
+						class="inline-block w-4 motion-safe:scale-0 motion-safe:animate-zoom-bounce"
+						style={{ color: star === 0 ? `var(--ratingOff)` : `var(--ratingOn)`, animationDelay: `${400 + s * 125}ms` }}
+					>
+						<path
+							fill="currentColor"
+							d="m12 15.39l-3.76 2.27l.99-4.28l-3.32-2.88l4.38-.37L12 6.09l1.71 4.04l4.38.37l-3.32 2.88l.99 4.28M22 9.24l-7.19-.61L12 2L9.19 8.63L2 9.24l5.45 4.73L5.82 21L12 17.27L18.18 21l-1.64-7.03L22 9.24Z"
+						/>
+					</svg>
+				);
+			}
+
+			if (star === 0.5) {
+				return (
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						width="24"
+						height="24"
+						viewBox="0 0 24 24"
+						class="inline-block w-4 motion-safe:scale-0 motion-safe:animate-zoom-bounce"
+						style={{ color: star === 0 ? `var(--ratingOff)` : `var(--ratingOn)`, animationDelay: `${400 + s * 125}ms` }}
+					>
+						<path
+							fill="currentColor"
+							d="M12 15.4V6.1l1.71 4.03l4.38.37l-3.32 2.89l.99 4.28M22 9.24l-7.19-.61L12 2L9.19 8.63L2 9.24l5.45 4.73L5.82 21L12 17.27L18.18 21l-1.64-7.03L22 9.24Z"
+						/>
+					</svg>
+				);
+			}
+
+			return (
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					width="24"
+					height="24"
+					viewBox="0 0 24 24"
+					class="inline-block w-4 motion-safe:scale-0 motion-safe:animate-zoom-bounce"
+					style={{ color: star === 0 ? `var(--ratingOff)` : `var(--ratingOn)`, animationDelay: `${400 + s * 125}ms` }}
+				>
+					<path
+						fill="currentColor"
+						d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.62L12 2L9.19 8.62L2 9.24l5.45 4.73L5.82 21L12 17.27Z"
+					/>
+				</svg>
+			);
+		})
+	}
+</div>
