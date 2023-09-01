@@ -1,15 +1,12 @@
 ---
 title: SvelteKit + Supabase Auth + tRPC
 description: A follow-up to my previous tutorial based on the official Auth Helpers documentation.
-layout: $layouts/post.astro
 date: 2022-07-16T21:22:27Z
-image: https://slxazldgfeytirfrculz.supabase.co/storage/v1/object/public/images/svelte-supabase-trpc.webp
+image: ../../assets/images/svelte-supabase-trpc.webp
 tags:
   - Authentication
   - Tutorial
 ---
-import { all } from "$components/markdown/all.astro";
-export const components = all;
 
 In my [previous post](/blog/supabase-auth-in-sveltekit) I walked through how to authenticate with Supabase Auth in SvelteKit, and about 3-4 days later Supabase announced its auth helpers for Sveltekit. I like that it uses the Sveltekit session store and locals. This makes it integrate with tRPC nicely. This tutorial walks through adding both Supabase Auth and tRPC to your Sveltekit app.
 

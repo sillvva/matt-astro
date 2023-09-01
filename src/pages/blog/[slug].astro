@@ -1,0 +1,42 @@
+---
+import { all } from "$components/markdown/all.astro";
+import PostLayout from "$layouts/post.astro";
+import { getCollection, getEntry } from "astro:content";
+
+export async function getStaticPaths() {
+	const posts = await getCollection("blog");
+
+	return posts.map((post) => ({
+		params: {
+			slug: post.slug
+		},
+		props: {
+			post
+		}
+	}));
+}
+
+const { slug, data } = Astro.props.post;
+const entry = await getEntry("blog", slug);
+
+if (!entry) {
+	return {
+		status: 404
+	};
+}
+
+const { Content } = await entry.render();
+---
+
+<PostLayout {slug} {data}>
+	<Content components={all} />
+</PostLayout>
+
+<style>
+	:global(p:has(> img)) {
+		@apply !mb-6 mt-6 flex flex-col;
+	}
+	:global(p:has(> img) > img) {
+		@apply relative mx-auto mb-2 flex w-full max-w-[800px] justify-center;
+	}
+</style>

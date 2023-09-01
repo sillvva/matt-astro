@@ -4,19 +4,32 @@ import { Image } from "astro:assets";
 import PortfolioLayout from "./portfolio.astro";
 
 interface Props extends HeadProps {
-	frontmatter?: Record<string, any>;
-	url: string;
+	slug: string;
+	data: {
+		updated?: Date | undefined;
+		title: string;
+		description: string;
+		image: {
+			height: number;
+			src: string;
+			width: number;
+			format: "png" | "webp" | "jpeg" | "jpg" | "svg" | "tiff" | "gif";
+		};
+		full: boolean;
+		date: Date;
+		tags: string[];
+	};
 }
 
-const { title, description, image, full, date, updated } = Astro.props.frontmatter || {};
-const slug = Astro.props.url.replace("/blog", "");
+const { title, description, image, full, date, updated } = Astro.props.data;
+const slug = Astro.props.slug;
 
 const formattedDate = new Date(date).toLocaleDateString("en-US", {
 	month: "long",
 	day: "numeric",
 	year: "numeric"
 });
-const formattedUpdate = new Date(updated).toLocaleDateString("en-US", {
+const formattedUpdate = new Date(updated || "").toLocaleDateString("en-US", {
 	month: "long",
 	day: "numeric",
 	year: "numeric"
@@ -26,11 +39,11 @@ const formattedUpdate = new Date(updated).toLocaleDateString("en-US", {
 <PortfolioLayout
 	{title}
 	{description}
-	{image}
+	image={image.src}
 	stylesheets={["/styles/prism-one-dark.css"]}
 	articleMeta={{
-		published_date: date,
-		...(updated && { modified_date: updated })
+		published_date: date.toISOString(),
+		...(updated && { modified_date: updated.toISOString() })
 	}}
 >
 	<article class="mx-auto max-w-4xl">
@@ -58,6 +71,8 @@ const formattedUpdate = new Date(updated).toLocaleDateString("en-US", {
 				</div>
 			)
 		}
-		<slot />
+		<section>
+			<slot />
+		</section>
 	</article>
 </PortfolioLayout>

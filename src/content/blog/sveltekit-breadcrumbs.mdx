@@ -1,15 +1,12 @@
 ---
 title: Svelte Breadcrumbs Made Easy
 description: A method to create a single breadcrumbs component which uses route data to generate breadcrumbs.
-layout: $layouts/post.astro
 date: 2023-07-14T03:53:16.000Z
-image: https://slxazldgfeytirfrculz.supabase.co/storage/v1/object/public/images/breadcrumbs.jpg
+image: ../../assets/images/breadcrumbs.webp
 tags:
   - TypeScript
   - SvelteKit
 ---
-import { all } from "$components/markdown/all.astro";
-export const components = all;
 
 Making breadcrumbs base on routes is straightforward. In SvelteKit, `+page.server.ts`, `+page.ts`, `+layout.server.ts`, and `+layout.ts` load functions have an event parameter with an async `parent()` method that returns data from parent `+layout.server.ts` and `+layout.ts` load functions.
 

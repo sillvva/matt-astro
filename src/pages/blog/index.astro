@@ -2,44 +2,41 @@
 import PortfolioLayout from "$layouts/portfolio.astro";
 import { cn, sorter } from "$src/util";
 import { Image } from "astro:assets";
+import { getCollection } from "astro:content";
 
-const posts = await Astro.glob("./*.mdx");
-const sluggedPosts = posts.map((post) => ({
-	...post,
-	slug: post.url?.replace("/blog", "")
-}));
+const posts = await getCollection("blog");
 ---
 
 <PortfolioLayout title="Blog">
 	<div class="mx-auto grid grid-cols-[repeat(auto-fit,minmax(16rem,1fr))] gap-5">
 		{
-			sluggedPosts
-				.sort((a, b) => sorter(b.frontmatter.date, a.frontmatter.date))
+			posts
+				.sort((a, b) => sorter(b.data.date, a.data.date))
 				.map((post) => (
 					<a
-						href={post.url}
+						href={`/blog/${post.slug}`}
 						class={cn(
 							"card min-w-[15rem] rounded-lg bg-base-200 transition-all motion-safe:hover:scale-105",
 							"shadow-md shadow-black/15 hover:shadow-lg hover:shadow-black/25"
 						)}
 					>
 						<div class="card-body p-4">
-							<h2 class="card-title text-lg text-theme-heading">{post.frontmatter.title}</h2>
-							{post.frontmatter.date && (
+							<h2 class="card-title text-lg text-theme-heading">{post.data.title}</h2>
+							{post.data.date && (
 								<span class="mb-2 text-sm text-theme-faded underline decoration-dotted underline-offset-2">
-									{new Date(post.frontmatter.date).toLocaleDateString("en-US", {
+									{new Date(post.data.date).toLocaleDateString("en-US", {
 										month: "long",
 										day: "numeric",
 										year: "numeric"
 									})}
 								</span>
 							)}
-							<p class="text-sm">{post.frontmatter.description}</p>
+							<p class="text-sm">{post.data.description}</p>
 						</div>
 						<figure class="h-40">
 							<Image
-								src={post.frontmatter.image}
-								alt={post.frontmatter.title}
+								src={post.data.image}
+								alt={post.data.title}
 								transition:name={`image_${post.slug}`}
 								width={400}
 								height={400}
