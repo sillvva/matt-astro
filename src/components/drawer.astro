@@ -3,10 +3,10 @@ import { Image } from "astro:assets";
 import { cn } from "../util";
 
 interface Props {
-	defaultOpen?: boolean;
+	home?: boolean;
 }
 
-const { defaultOpen } = Astro.props;
+const { home } = Astro.props;
 
 const items = [
 	{ link: "/about", label: "About Me" },
@@ -17,7 +17,7 @@ const items = [
 ];
 ---
 
-<div class={cn("drawer", defaultOpen && "lg:drawer-open")}>
+<div class={cn("drawer", !home && "lg:drawer-open")}>
 	<input id="my-drawer-2" type="checkbox" class="drawer-toggle" />
 	<div class="drawer-content flex flex-col items-start justify-start">
 		<slot />
@@ -33,13 +33,13 @@ const items = [
 					</div>
 					<div class="flex flex-col">
 						<h1
-							transition:name="name"
+							transition:name={!home ? "name" : undefined}
 							class="drop-shadow-theme-text-thick font-montserrat text-2xl font-semibold tracking-widest"
 						>
 							Matt DeKok
 						</h1>
 						<h2
-							transition:name="profession"
+							transition:name={!home ? "profession" : undefined}
 							class="drop-shadow-theme-text-thick text- font-montserrat font-medium tracking-normal"
 						>
 							Full&nbsp;Stack Web&nbsp;Developer
@@ -47,7 +47,7 @@ const items = [
 					</div>
 				</div>
 				<ul>
-					<li><a href="/" transition:name="Home">Home</a></li>
+					<li><a href="/">Home</a></li>
 					{
 						items.map((item) => (
 							<li>
