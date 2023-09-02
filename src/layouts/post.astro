@@ -47,11 +47,11 @@ const formattedUpdate = new Date(updated || "").toLocaleDateString("en-US", {
 	}}
 >
 	<article class="mx-auto max-w-4xl">
-		<p class="mb-2 text-sm text-theme-faded" aria-label="Date published">
-			Posted: <span class="underline decoration-dotted underline-offset-2">{formattedDate}</span>
+		<p class="mb-2 text-center text-sm text-theme-faded md:text-left" aria-label="Date published">
+			Published: <span class="underline decoration-dotted underline-offset-2">{formattedDate}</span>
 			{
 				updated && (
-					<span class="block sm:inline sm:pl-4">
+					<span class="block 2xs:inline 2xs:pl-4">
 						Updated: <span class="underline decoration-dotted underline-offset-2">{formattedUpdate}</span>
 					</span>
 				)
@@ -63,9 +63,9 @@ const formattedUpdate = new Date(updated || "").toLocaleDateString("en-US", {
 					<ResponsiveImage
 						src={image}
 						alt={title}
-						transition={`image_${slug}`}
 						sizes={[300, 600, 900]}
 						class="h-full w-full object-cover object-center pb-4"
+						trname={`image_${slug}`}
 					/>
 				</div>
 			)

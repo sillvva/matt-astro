@@ -16,8 +16,8 @@ const { title, description, image, articleMeta, stylesheets } = Astro.props;
 	<body data-theme="black" class="bg-img min-h-screen bg-cover bg-left-bottom bg-no-repeat">
 		<Drawer>
 			<header class="flex h-20 w-full items-center justify-center gap-4">
-				<div class="w-20">
-					<label for="my-drawer" class="btn btn-ghost drawer-button lg:hidden">
+				<div class="w-16">
+					<label for="my-drawer" class="btn btn-ghost drawer-button w-full lg:hidden">
 						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
 							><path fill="currentColor" d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"></path></svg
 						>
@@ -26,13 +26,14 @@ const { title, description, image, articleMeta, stylesheets } = Astro.props;
 				<h1
 					transition:name={title}
 					class={cn(
-						"flex-1 font-montserrat font-medium text-base-content",
-						"text-center text-sm sm:text-lg md:text-2xl lg:text-3xl"
+						"flex-1 font-sans md:font-montserrat font-medium text-base-content",
+						"text-center text-2xl md:text-2xl lg:text-3xl",
+						(title?.length || 0) > 24 && "text-sm 3xs:text-base"
 					)}
 				>
 					{title}
 				</h1>
-				<div class="w-20"></div>
+				<div class="w-16"></div>
 			</header>
 			<main class="w-full px-4 pb-8 md:px-8">
 				<slot />

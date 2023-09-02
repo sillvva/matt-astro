@@ -1,12 +1,22 @@
 ---
 import { cn } from "$src/util";
-
-const onclick =
-	`const icon = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="h-4 w-4"><path fill="currentColor" d="M19 21H8V7h11m0-2H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2m-3-4H4a2 2 0 0 0-2 2v14h2V3h12V1Z"></path></svg>';` +
-	'navigator.clipboard.writeText(this.parentNode?.querySelector("pre")?.innerText || "");' +
-	'document.querySelectorAll(".copy").forEach((btn) => (btn.innerHTML = icon));' +
-	'this.innerHTML = "Copied"';
 ---
+
+<script>
+	function copyBlock(el: Element) {
+		const icon =
+			'<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="h-4 w-4"><path fill="currentColor" d="M19 21H8V7h11m0-2H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2m-3-4H4a2 2 0 0 0-2 2v14h2V3h12V1Z"></path></svg>';
+		navigator.clipboard.writeText(el.parentNode?.querySelector("pre")?.innerText || "");
+		document.querySelectorAll(".copy").forEach((btn) => (btn.innerHTML = icon));
+		el.innerHTML = "Copied";
+	}
+
+	document.addEventListener("astro:page-load", () => {
+		document.querySelectorAll(".copy").forEach((btn) => {
+			btn.addEventListener("click", () => copyBlock(btn));
+		});
+	});
+</script>
 
 <div class="relative">
 	<pre
@@ -16,7 +26,6 @@ const onclick =
 		)}><slot /></pre>
 	<button
 		role="button"
-		{onclick}
 		class="copy absolute right-2 top-2 flex items-center justify-center rounded-md bg-primary p-2 font-sans text-xs font-bold"
 	>
 		<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="h-4 w-4"
