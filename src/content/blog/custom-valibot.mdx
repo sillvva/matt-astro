@@ -11,7 +11,12 @@ tags:
 
 ## What is Valibot?
 
-If you're here, you probably already know what [Valibot](https://valibot.dev/) ([Github](https://github.com/fabian-hiller/valibot)) is. But if not, the core function of Valibot is to create a schema. A schema can be compared to a type definition in TypeScript. The big difference is that TypeScript types are "not executed" and are more or less a DX feature. A schema on the other hand, apart from the inferred type definition, can also be executed at runtime to guarantee type safety of unknown data.
+If you're here, you probably already know what [Valibot](https://valibot.dev/) 
+([Github](https://github.com/fabian-hiller/valibot)) is. But if not, the core function of Valibot 
+is to create a schema. A schema can be compared to a type definition in TypeScript. The big 
+difference is that TypeScript types are "not executed" and are more or less a DX feature. A schema 
+on the other hand, apart from the inferred type definition, can also be executed at runtime to 
+guarantee type safety of unknown data.
 
 ## The Ultimate ISO Validator
 
@@ -106,7 +111,8 @@ The number of days in a month are also validated, including leap year.
 
 ### Using the Validator
 
-Here is an example using the `iso()` validator. This date schema will validate the Date constructor input and output a valid Date object.
+Here is an example using the `iso()` validator. This date schema will validate the Date constructor 
+input and output a valid Date object.
 
 ```typescript
 // Transforms a Date, string, or number into a Date
@@ -131,7 +137,9 @@ This is the entire uncut regex. It behaves the same as the validator if no optio
 
 ## Custom `withDefault`
 
-The built-in validator only uses the default value if the input is undefined. This one coerces the value is the input is an empty string (trimmed), NaN, or falsy. I believe this fits more use cases for a default value.
+The built-in validator only uses the default value if the input is undefined. This one coerces the 
+value if the input is an empty string (trimmed), NaN, or falsy. I believe this fits more use cases 
+for a default value.
 
 ```typescript
 export function withDefault<TSchema extends BaseSchema>(schema: TSchema, value: Input<TSchema>) {
