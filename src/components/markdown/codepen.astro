@@ -28,13 +28,10 @@ const userProfileLink = `https://codepen.io/${user}`;
 ---
 
 <script>
-	document.addEventListener("astro:page-load", () => {
-		// Load CodePen embed script
-		const script = document.createElement("script");
-		script.src = "https://static.codepen.io/assets/embed/ei.js";
-		script.async = true;
-		document.body.appendChild(script);
-	});
+	const script = document.createElement("script");
+	script.src = "https://static.codepen.io/assets/embed/ei.js";
+	script.async = true;
+	document.body.appendChild(script);
 </script>
 
 <div class="codepen-container hidden sm:block">
