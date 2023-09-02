@@ -4,7 +4,7 @@ import { Image } from "astro:assets";
 
 interface Props {
 	class?: string;
-	image: string;
+	image: ImageMetadata;
 }
 
 const className = Astro.props.class || "";

@@ -3,13 +3,21 @@ import GalleryItem from "$components/gallery/item.astro";
 import PortfolioLayout from "$layouts/portfolio.astro";
 import { sorter } from "$src/util";
 
+import ddal from "$assets/images/ddal-log.jpg";
+import me from "$assets/images/preview-me.webp";
+import me2 from "$assets/images/preview-me2.jpg";
+import me3 from "$assets/images/preview-me3.jpeg";
+import npm from "$assets/images/preview-npm.jpg";
+import rpg from "$assets/images/preview-rpgschedule.webp";
+import v365 from "$assets/images/preview-valley-365.jpg";
+
 const projects = [
 	{
 		created_at: "2023-07-01T20:00:00.000Z",
 		title: "D&D Adventurers League Log Sheet",
 		subtitle: "Version 2 (Sveltekit)",
 		description: "Sveltekit, TypeScript, Auth.js, Prisma, Planetscale, TailwindCSS, DaisyUI",
-		image: "https://slxazldgfeytirfrculz.supabase.co/storage/v1/object/public/images/ddal-log.jpg",
+		image: ddal,
 		link: "https://github.com/sillvva/ddal-svelte"
 	},
 	{
@@ -18,7 +26,7 @@ const projects = [
 		subtitle: "Version 1 (T3 Stack)",
 		description:
 			"T3 Stack (Next.js, NextAuth, TypeScript, tRPC, Prisma, TailwindCSS), Vercel, Google OAuth, Planetscale, DaisyUI",
-		image: "https://slxazldgfeytirfrculz.supabase.co/storage/v1/object/public/images/ddal-log.jpg",
+		image: ddal,
 		link: "https://github.com/sillvva/adventurers-league-log"
 	},
 	{
@@ -27,7 +35,7 @@ const projects = [
 		subtitle: "Version 6 (T3 Stack)",
 		description:
 			"T3 Stack (create.t3.gg), Next.js, Supabase, TypeScript, Prisma, tRPC, Vercel, Cloudflare, Tailwind CSS, Daisy UI",
-		image: "https://slxazldgfeytirfrculz.supabase.co/storage/v1/object/public/images/preview-me3.jpeg",
+		image: me3,
 		link: "https://github.com/sillvva/t3.dekok.app"
 	},
 	{
@@ -35,7 +43,7 @@ const projects = [
 		title: "Personal Website",
 		subtitle: "Version 5 (SvelteKit)",
 		description: "Vercel, Supabase, Cloudflare, SvelteKit, TypeScript, HTML, SCSS, TailwindCSS",
-		image: "https://slxazldgfeytirfrculz.supabase.co/storage/v1/object/public/images/preview-me3.jpeg",
+		image: me3,
 		link: "https://github.com/sillvva/sveltekit.dekok.app"
 	},
 	{
@@ -43,7 +51,7 @@ const projects = [
 		title: "Personal Website",
 		subtitle: "Version 4 (Next.js)",
 		description: "Firebase, Vercel, Cloudflare, Node.js, NextJS, React, TypeScript, HTML, SCSS, TailwindCSS",
-		image: "https://slxazldgfeytirfrculz.supabase.co/storage/v1/object/public/images/preview-me3.jpeg",
+		image: me3,
 		link: "https://github.com/sillvva/mattdekok.react"
 	},
 	{
@@ -51,7 +59,7 @@ const projects = [
 		title: "Personal Website",
 		subtitle: "Version 3 (Nuxt 3, Unfinished)",
 		description: "Node.js, Nuxt 3, Vue 3, JavaScript, HTML, SCSS, TailwindCSS",
-		image: "https://slxazldgfeytirfrculz.supabase.co/storage/v1/object/public/images/preview-me2.jpg",
+		image: me2,
 		link: "https://github.com/sillvva/mattdekok.nuxt3"
 	},
 	{
@@ -59,7 +67,7 @@ const projects = [
 		title: "Personal Website",
 		subtitle: "Version 2 (Nuxt 2)",
 		description: "Firebase, Heroku, Node.js, Nuxt 2, Vue 2, JavaScript, HTML, SCSS, Vuetify, Github Actions",
-		image: "https://slxazldgfeytirfrculz.supabase.co/storage/v1/object/public/images/preview-me2.jpg",
+		image: me2,
 		link: "https://github.com/sillvva/mattdekok.dev"
 	},
 	{
@@ -67,7 +75,7 @@ const projects = [
 		title: "Personal Website",
 		subtitle: "Version 1 (React)",
 		description: "Heroku, Node.js, React, TypeScript, HTML, SCSS, Bootstrap, Stripe",
-		image: "https://slxazldgfeytirfrculz.supabase.co/storage/v1/object/public/images/preview-me.jpg",
+		image: me,
 		link: "https://github.com/sillvva/mattdekok.me"
 	},
 	{
@@ -75,7 +83,7 @@ const projects = [
 		title: "Valley 365",
 		subtitle: "Valmont Industries, Inc. - Web App",
 		description: "Angular, TypeScript, jQuery, HTML, SCSS",
-		image: "https://slxazldgfeytirfrculz.supabase.co/storage/v1/object/public/images/preview-valley-365.jpg",
+		image: v365,
 		link: "https://www.valley365.com/"
 	},
 	{
@@ -83,7 +91,7 @@ const projects = [
 		title: "RPG Schedule",
 		subtitle: "Discord Bot",
 		description: "Google Cloud, Node.js, Nuxt 2, Vue 2, TypeScript, discord.js, MongoDB, HTML, CSS, Web Sockets",
-		image: "https://slxazldgfeytirfrculz.supabase.co/storage/v1/object/public/images/preview-rpgschedule.jpg",
+		image: rpg,
 		link: "https://github.com/sillvva/rpg-schedule"
 	},
 	{
@@ -91,7 +99,7 @@ const projects = [
 		title: "@sillvva/react-styled-flexgrid",
 		subtitle: "NPM Module - React Components",
 		description: "NPM, React, TypeScript, JavaScript, Styled Components",
-		image: "https://slxazldgfeytirfrculz.supabase.co/storage/v1/object/public/images/preview-npm.jpg",
+		image: npm,
 		link: "https://www.npmjs.com/package/@sillvva/react-styled-flexgrid"
 	},
 	{
@@ -99,7 +107,7 @@ const projects = [
 		title: "Personal Website",
 		subtitle: "Version 7 (Astro)",
 		description: "Asro, TypeScript, Vercel, Cloudflare, Tailwind CSS, Daisy UI",
-		image: "https://slxazldgfeytirfrculz.supabase.co/storage/v1/object/public/images/preview-me3.jpeg",
+		image: me3,
 		link: "https://github.com/sillvva/matt-astro"
 	}
 ].sort((a, b) => sorter(b.created_at, a.created_at));
