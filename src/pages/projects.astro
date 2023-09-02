@@ -114,18 +114,16 @@ const projects = [
 ---
 
 <PortfolioLayout title="Projects">
-	<div class="grid grid-cols-[repeat(auto-fill,minmax(22rem,1fr))] gap-5">
+	<div class="grid grid-cols-[repeat(auto-fill,minmax(20rem,1fr))] gap-5 md:gap-8">
 		{
 			projects.map((project, i) => (
-				<div class="p-1 px-0 sm:p-3">
-					<GalleryItem
-						image={project.image}
-						title={project.title}
-						subtitle={project.subtitle}
-						description={project.description}
-						link={project.link}
-					/>
-				</div>
+				<GalleryItem
+					image={project.image}
+					title={project.title}
+					subtitle={project.subtitle}
+					description={project.description}
+					link={project.link}
+				/>
 			))
 		}
 	</div>

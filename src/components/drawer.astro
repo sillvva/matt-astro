@@ -27,7 +27,7 @@ const items = [
 		<label for="my-drawer" class="drawer-overlay"></label>
 		<div class="menu min-h-full w-80 bg-base-100 p-0 text-base-content">
 			<nav class="px-4 py-8">
-				<div class="flex pb-4">
+				<a href="/" class="flex pb-4">
 					<div class="relative w-20 bg-base-100">
 						<Image src={me} id="me" alt="" width={276} height={207} class="w-full" />
 						<div class="absolute bottom-0 h-1/2 w-full bg-gradient-to-t from-base-100 to-transparent"></div>
@@ -46,13 +46,12 @@ const items = [
 							Full&nbsp;Stack Web&nbsp;Developer
 						</h2>
 					</div>
-				</div>
+				</a>
 				<ul>
-					<li><a href="/">Home</a></li>
 					{
 						items.map((item) => (
 							<li>
-								<a href={item.link} class={cn(Astro.url.pathname.startsWith(item.link) && "active")}>
+								<a href={item.link} class={cn("text-lg", Astro.url.pathname.startsWith(item.link) && "active")}>
 									{item.label}
 								</a>
 							</li>
