@@ -27,7 +27,15 @@ const penLink = `https://codepen.io/${user}/pen/${hash}/`;
 const userProfileLink = `https://codepen.io/${user}`;
 ---
 
-<script async src="https://static.codepen.io/assets/embed/ei.js"></script>
+<script>
+	document.addEventListener("astro:page-load", () => {
+		// Load CodePen embed script
+		const script = document.createElement("script");
+		script.src = "https://static.codepen.io/assets/embed/ei.js";
+		script.async = true;
+		document.body.appendChild(script);
+	});
+</script>
 
 <div class="codepen-container hidden sm:block">
 	<div
@@ -43,7 +51,7 @@ const userProfileLink = `https://codepen.io/${user}`;
 		class="codepen"
 	>
 		See the <a href={penLink} class="text-primary">{title}</a> Pen by <a href={userProfileLink} class="text-primary">@{user}</a>
-		on{" "}
+		 on{" "}
 		<a href="https://codepen.io" class="text-primary">CodePen</a>.
 	</div>
 </div>
