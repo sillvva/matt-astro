@@ -9,6 +9,8 @@ tags:
   - Github
   - CI/CD
 ---
+import MDImage from "$components/markdown/mdimage.astro";
+import secrets from "$assets/images/github-secrets-firebase.webp";
 
 ## Introduction
 
@@ -72,7 +74,7 @@ The important parts to consider for generating the content directory dynamically
 
 The two environment variables (`FIREBASE_ADMIN_CREDENTIAL` and `FIREBASE_STORAGE_BUCKET`) are fetched from Github Secrets.
 
-![image]($assets/images/github-secrets-firebase.webp)
+<MDImage src={secrets} alt="" />
 
 You can get your admin credentials in your Firebase Console by going to Project Settings > Service Accounts > Generate new private key. It will provide you with a .json file. Convert the JSON to a string with `JSON.stringify` and then save the result as a secret.
 

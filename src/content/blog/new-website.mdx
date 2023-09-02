@@ -10,12 +10,16 @@ tags:
   - React
   - Angular
 ---
+import MDImage from "$components/markdown/mdimage.astro";
+import v365 from "$assets/images/valley365-demo.webp";
+import me from "$assets/images/preview-me.webp";
+import rpg from "$assets/images/preview-rpgschedule.webp";
 
 ## How It All Started
 
 At the time, I was working for a company called Valmont Industries. I was learning Angular and using that to develop what would become [Valley 365](https://www.valley365.com). I wasn't really enjoying Angular very much. It was clunky and complicated to learn.
 
-![image]($assets/images/valley365-demo.webp)
+<MDImage src={v365} alt="" />
 
 I decided to give React a try after hearing about it from the same [Udemy course instructor](https://www.udemy.com/user/academind/) via their YouTube channel. I actually enjoyed learning and using React and decided to take the time to build a full fledge web app.
 
@@ -23,7 +27,7 @@ I decided to give React a try after hearing about it from the same [Udemy course
 
 Before I built my [first personal website](https://mattdekok.herokuapp.com), it took me a while to decide on what my first React project would be. Eventually, I decided to build a personal website that could act as a resume of sorts.
 
-![image]($assets/images/preview-me.webp)
+<MDImage src={me} alt="" />
 
 I used the knowledge I learned to not only build a website, but also a [react-styled-flexgrid](https://github.com/sillvva/react-styled-flexgrid) component that could be used to implement a Boostrap-like grid system. Later I took it a step further and expanded the component into a combined CSS Flexbox / Grid container component that makes uses of the same system's media query breakpoints.
 
@@ -33,7 +37,7 @@ After learning React and building my website as a practice project, I decided to
 
 My first project with Nuxt was a Discord bot and website called RPG Schedule - a bot and web dashboard for scheduling games on Discord. Due to an API change on Discord and a lack of support, the website has since shut down. The bot and website code is still available [on Github](/projects).
 
-![image]($assets/images/preview-rpgschedule.webp)
+<MDImage src={rpg} alt="" />
 
 ## New Website
 
