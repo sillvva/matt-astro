@@ -1,0 +1,74 @@
+---
+interface Props {
+	start?: number;
+	end?: number;
+	size?: number;
+	total?: number;
+	currentPage: number;
+	lastPage: number;
+	url: {
+		format: string;
+		next?: string;
+		prev?: string;
+	};
+}
+
+function* range(start: number, end: number, step: number) {
+	while (start <= end) {
+		yield start;
+		start += step;
+	}
+}
+
+const { start, end, size, total, currentPage, lastPage, url } = Astro.props;
+const first = Math.max(1, currentPage - 2);
+const last = Math.min(lastPage, currentPage + 2);
+const pages = Array.from(range(first, last, 1));
+---
+
+<div class="join">
+	{
+		url.prev && (
+			<a href={url.prev} class="btn join-item">
+				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+					<path fill="currentColor" d="M15.41 16.58L10.83 12l4.58-4.59L14 6l-6 6l6 6l1.41-1.42Z" />
+				</svg>
+			</a>
+		)
+	}
+	{
+		currentPage > 3 && (
+			<a href={url.format.replace(":page", "1")} class="btn join-item">
+				1
+			</a>
+		)
+	}
+	{currentPage > 4 && <span class="btn btn-disabled join-item">...</span>}
+	{
+		pages.map((p) => (
+			<a
+				href={url.format.replace(":page", p == 1 ? "" : p.toString())}
+				class={`btn join-item ${p === currentPage ? "btn-primary" : ""}`}
+			>
+				{p}
+			</a>
+		))
+	}
+	{lastPage - currentPage > 3 && <span class="btn btn-disabled join-item">...</span>}
+	{
+		lastPage - currentPage > 2 && (
+			<a href={url.format.replace(":page", lastPage.toString())} class="btn join-item">
+				{lastPage}
+			</a>
+		)
+	}
+	{
+		url.next && (
+			<a href={url.next} class="btn join-item">
+				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+					<path fill="currentColor" d="M8.59 16.58L13.17 12L8.59 7.41L10 6l6 6l-6 6l-1.41-1.42Z" />
+				</svg>
+			</a>
+		)
+	}
+</div>
