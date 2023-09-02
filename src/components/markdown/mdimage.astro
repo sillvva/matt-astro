@@ -15,7 +15,10 @@ const alt = Astro.props.alt || "";
 			src={Astro.props.src}
 			alt={alt}
 			sizes={[300, 600, 900]}
-			class={cn(!alt.includes("no-aspect") && "object-cover md:object-contain")}
+			class={cn(
+				"shadow-md shadow-black/15 motion-safe:hover:shadow-lg motion-safe:hover:shadow-black/25",
+				!alt.includes("no-aspect") && "object-cover md:object-contain"
+			)}
 		/>
 	</a>
 	<figcaption class="block text-center text-sm text-white/70">Click to open full screen</figcaption>
