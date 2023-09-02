@@ -40,8 +40,7 @@ const props = {
 
 <style lang="scss">
 	a.Button {
-		@apply relative select-none px-6 py-4 uppercase text-primary no-underline duration-200 ease-linear;
-		text-shadow: 1px 1px 1px rgb(var(--background));
+		@apply relative select-none px-6 py-4 uppercase no-underline duration-200 ease-linear;
 	}
 
 	.Button1 {
@@ -49,7 +48,7 @@ const props = {
 		box-shadow: 0 0 0 #0ca;
 		overflow: hidden;
 		&::after {
-			@apply bg-primary;
+			background-color: currentcolor;
 			content: "";
 			position: absolute;
 			bottom: 0;
@@ -80,7 +79,7 @@ const props = {
 		overflow: hidden;
 		&::after {
 			content: "";
-			@apply bg-primary;
+			background-color: currentcolor;
 			position: absolute;
 			bottom: 0;
 			left: 50%;

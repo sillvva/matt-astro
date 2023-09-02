@@ -51,7 +51,13 @@ const items = [
 					{
 						items.map((item) => (
 							<li>
-								<a href={item.link} class={cn("text-lg", Astro.url.pathname.startsWith(item.link) && "active")}>
+								<a
+									href={item.link}
+									class={cn(
+										"text-lg hover:bg-accent focus:!bg-accent",
+										Astro.url.pathname.startsWith(item.link) && "bg-primary font-bold"
+									)}
+								>
 									{item.label}
 								</a>
 							</li>

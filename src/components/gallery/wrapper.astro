@@ -10,12 +10,12 @@ interface Props {
 			href={Astro.props.link}
 			target="_blank"
 			rel="noopener noreferrer"
-			class="gallery-item p-2 hover:shadow-xl motion-safe:hover:scale-105"
+			class="relative block aspect-video h-full w-full overflow-hidden rounded-md bg-base-300 p-2 shadow-lg transition-all duration-500 ease-in-out hover:shadow-xl motion-safe:hover:scale-105"
 		>
 			<slot />
 		</a>
 	) : (
-		<div class="gallery-item">
+		<div class="relative block aspect-video h-full w-full overflow-hidden rounded-md bg-base-300 shadow-lg transition-all duration-500 ease-in-out">
 			<slot />
 		</div>
 	)
