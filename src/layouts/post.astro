@@ -59,13 +59,12 @@ const formattedUpdate = new Date(updated || "").toLocaleDateString("en-US", {
 		</p>
 		{
 			!full && (
-				<div class="relative aspect-video">
+				<div class="relative aspect-video" transition:name={`image_${slug}`}>
 					<ResponsiveImage
 						src={image}
 						alt={title}
 						sizes={[300, 600, 900]}
 						class="h-full w-full object-cover object-center pb-4"
-						trname={`image_${slug}`}
 					/>
 				</div>
 			)

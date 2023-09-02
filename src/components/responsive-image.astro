@@ -8,7 +8,6 @@ type Props = {
 	format?: ImageOutputFormat;
 	sizes: number[];
 	class: string;
-	trname?: string;
 };
 
 async function generateResponsiveImage({ src, format, sizes }: Omit<Props, "alt" | "class">) {
@@ -25,7 +24,7 @@ async function generateResponsiveImage({ src, format, sizes }: Omit<Props, "alt"
 	};
 }
 
-const { src, sizes, format, alt, trname } = Astro.props;
+const { src, sizes, format, alt } = Astro.props;
 const className = Astro.props.class;
 
 const { srcSet, imgSrc } = await generateResponsiveImage({
@@ -35,4 +34,4 @@ const { srcSet, imgSrc } = await generateResponsiveImage({
 });
 ---
 
-<img srcset={srcSet.join(", ")} {alt} src={imgSrc} class={className} loading="lazy" transition:name={trname} />
+<img srcset={srcSet.join(", ")} {alt} src={imgSrc} class={className} loading="lazy" />

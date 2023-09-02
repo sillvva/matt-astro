@@ -3,11 +3,14 @@ title: Authentication with Supabase + Sveltekit
 description: Redirecting after a user has authenticated is very straightforward.
 date: 2022-07-09T15:33:01Z
 updated: 2022-07-15T14:44:13Z
-image: ../../assets/images/svelte-supabase.webp
+image: $assets/images/svelte-supabase.webp
 tags:
   - Authentication
   - Tutorial
 ---
+import MDImage from "$components/markdown/mdimage.astro";
+import auth from "$assets/images/auth-settings.webp";
+import providers from "$assets/images/auth-providers.webp";
 
 Authenticating a user in Sveltekit with Supabase Auth is very straightforward. And redirecting a user after they have authenticated is also very easy.
 
@@ -19,11 +22,11 @@ The information in this article is out of date. It is recommended to use [@supab
 
 In Supabase, go to your Authentication Settings and make sure you have set your Site URL and Additional Redirect URLs.
 
-![Auth Settings](../../assets/images/auth-settings.webp)
+<MDImage src={auth} alt="Auth Settings" />
 
 Then scroll down and select your preferred auth provider(s).
 
-![Auth Providers:no-aspect](../../assets/images/auth-providers.webp)
+<MDImage src={providers} alt="Auth Providers:no-aspect" />
 
 Finally, go to your Supabase API Settings and get your Project URL and Anon Key. Store them in environment variables like so:
 

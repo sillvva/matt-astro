@@ -6,7 +6,7 @@ const alt = Astro.props.alt || "";
 
 <figure class="mb-6 mt-6 flex flex-col">
 	<a
-		href={Astro.props.src}
+		href={Astro.props.src.src}
 		target="_blank"
 		rel="noreferrer noopener"
 		class={cn("relative mx-auto mb-2 flex w-full max-w-[800px] justify-center", !alt.includes("no-aspect") && "aspect-video")}

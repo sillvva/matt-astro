@@ -3,7 +3,7 @@ title: Custom Valibot Validators
 description: Custom schema validator functions for Valibot
 date: 2023-08-25T18:01:12Z
 updated: 2023-08-27T19:24:22.675Z
-image: ../../assets/images/valibot.webp
+image: $assets/images/valibot.webp
 tags:
   - TypeScript
   - RegEx
@@ -60,8 +60,7 @@ export function iso<TInput extends string>(options?: {
 			error = "Invalid ISO string",
 		} = options || {};
 
-		const dateRegex =
-			"((\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-((0[13578]|1[02])-(0[1-9]|[12]\\d|3[01])|(0[469]|11)-(0[1-9]|[12]\\d|30)|(02)-(0[1-9]|1\\d|2[0-8])))";
+		const dateRegex = "((\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-((0[13578]|1[02])-(0[1-9]|[12]\\d|3[01])|(0[469]|11)-(0[1-9]|[12]\\d|30)|(02)-(0[1-9]|1\\d|2[0-8])))";
 		const millisecondsRegex = milliseconds ? `(\\.\\d{3})${milliseconds === "optional" ? "?" : ""}` : "";
 		const secondsRegex = seconds ? `(:[0-5]\\d${millisecondsRegex})${seconds === "optional" ? "?" : ""}` : "";
 		const timezoneRegex = timezone ? `([+-]([01]\\d|2[0-3]):[0-5]\\d|Z)${timezone === "optional" ? "?" : ""}` : "";
@@ -85,15 +84,15 @@ export function iso<TInput extends string>(options?: {
 ### Valid Examples
 
 ```typescript
-"2023-08-05T12:24:59.000Z"; // options undefined
-"2023-08-05T12:24:59.000-05:00"; // options undefined
-"2023-08-05T12:24-05:00"; // options undefined
+"2023-08-05T12:24:59.000Z"; 			// options undefined
+"2023-08-05T12:24:59.000-05:00"; 	// options undefined
+"2023-08-05T12:24-05:00"; 				// options undefined
 
 // seconds, milliseconds, and timezone are optional by default, or you can explicitly exclude them
 "2023-08-05T12:24"; // { seconds: false, timezone: false }
 
 // date and time are required by default, but you can exclude them
-"2023-08-05"; // { time: false }
+"2023-08-05"; 		// { time: false }
 "T12:24:59.000Z"; // { date: false }
 
 // If date is excluded, the T is optional
@@ -113,7 +112,10 @@ Here is an example using the `iso()` validator. This date schema will validate t
 // Transforms a Date, string, or number into a Date
 export const dateSchema = transform(
 	// Input types: Date, string, number
-	union([date(), string([iso()]), number([minValue(0)])], "Must be a valid Date object, ISO string, or UNIX timestamp"),
+	union(
+		[date(), string([iso()]), number([minValue(0)])], 
+		"Must be a valid Date object, ISO string, or UNIX timestamp"
+	),
 	// Output type: Date
 	(input) => new Date(input)
 );
@@ -134,7 +136,11 @@ The built-in validator only uses the default value if the input is undefined. Th
 ```typescript
 export function withDefault<TSchema extends BaseSchema>(schema: TSchema, value: Input<TSchema>) {
 	return coerce(schema, (input) =>
-		typeof value === "string" ? `${input}`.trim() || value : !input || (typeof value == "number" && isNaN(Number(input))) ? value : input
+		typeof value === "string" 
+			? `${input}`.trim() || value 
+			: !input || (typeof value == "number" && isNaN(Number(input))) 
+			? value 
+			: input
 	);
 }
 ```
