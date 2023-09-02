@@ -75,8 +75,8 @@ const formattedUpdate = new Date(updated || "").toLocaleDateString("en-US", {
 		</section>
 	</article>
 
-	<script is:inline>
-		function copyBlock(el) {
+	<script>
+		function copyBlock(el: Element) {
 			const icon = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="h-4 w-4"
 				><path
 					fill="currentColor"
@@ -87,5 +87,13 @@ const formattedUpdate = new Date(updated || "").toLocaleDateString("en-US", {
 			document.querySelectorAll(".copy").forEach((btn) => (btn.innerHTML = icon));
 			el.innerHTML = "Copied";
 		}
+
+		document.addEventListener("astro:page-load", () => {
+			document.querySelectorAll("button.copy").forEach((button) => {
+				button.addEventListener("click", () => {
+					copyBlock(button);
+				});
+			});
+		});
 	</script>
 </PortfolioLayout>

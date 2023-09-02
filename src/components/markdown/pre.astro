@@ -10,7 +10,7 @@ import { cn } from "$src/util";
 		)}><slot /></pre>
 	<button
 		role="button"
-		onclick="copyBlock(this)"
+		transition:persist
 		class="copy absolute right-2 top-2 flex items-center justify-center rounded-md bg-primary p-2 font-sans text-xs font-bold"
 	>
 		<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="h-4 w-4"
