@@ -84,8 +84,9 @@ module.exports = {
 			{
 				black: {
 					...require("daisyui/src/theming/themes")["[data-theme=black]"],
-					primary: "rgb(0, 161, 144)",
-					secondary: "rgb(0, 84, 84)"
+					primary: "rgb(0, 136, 121)",
+					secondary: "rgb(0, 187, 167)",
+					accent: "rgb(0, 85, 76)"
 				}
 			}
 		]

@@ -1,18 +1,38 @@
 ---
+import Pagination from "$components/pagination.astro";
 import PortfolioLayout from "$layouts/portfolio.astro";
 import { cn, sorter } from "$src/util";
+import type { GetStaticPaths, InferGetStaticPropsType } from "astro";
 import { Image } from "astro:assets";
 import { getCollection } from "astro:content";
 
-const posts = await getCollection("blog");
+export const getStaticPaths = (async ({ paginate }) => {
+	const posts = await getCollection("blog");
+	return paginate(
+		posts.sort((a, b) => sorter(b.data.date, a.data.date)),
+		{
+			pageSize: 12
+		}
+	);
+}) satisfies GetStaticPaths;
+
+type Props = InferGetStaticPropsType<typeof getStaticPaths>;
+
+const {
+	page: {
+		data,
+		currentPage,
+		lastPage,
+		url: { next, prev }
+	}
+} = Astro.props;
 ---
 
 <PortfolioLayout title="Blog">
-	<div class="mx-auto grid grid-cols-[repeat(auto-fit,minmax(16rem,1fr))] gap-5">
-		{
-			posts
-				.sort((a, b) => sorter(b.data.date, a.data.date))
-				.map((post) => (
+	<div class="flex flex-col items-center gap-8">
+		<div class="grid w-full grid-cols-[repeat(auto-fill,minmax(16rem,1fr))] gap-5">
+			{
+				data.map((post) => (
 					<a
 						href={`/blog/${post.slug}`}
 						class={cn(
@@ -45,6 +65,8 @@ const posts = await getCollection("blog");
 						</figure>
 					</a>
 				))
-		}
+			}
+		</div>
+		<Pagination {currentPage} {lastPage} url={{ next, prev, format: "/blog/:page" }} />
 	</div>
 </PortfolioLayout>
