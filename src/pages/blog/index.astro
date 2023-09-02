@@ -16,7 +16,7 @@ const posts = await getCollection("blog");
 					<a
 						href={`/blog/${post.slug}`}
 						class={cn(
-							"card min-w-[15rem] rounded-lg bg-base-200 transition-all motion-safe:hover:scale-105",
+							"card min-w-[15rem] rounded-lg bg-base-200/60 transition-all hover:bg-base-200 motion-safe:hover:scale-105",
 							"shadow-md shadow-black/15 hover:shadow-lg hover:shadow-black/25"
 						)}
 					>
