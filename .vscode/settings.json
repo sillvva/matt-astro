@@ -1,6 +1,7 @@
 {
 	"editor.formatOnSave": true,
 	"[mdx]": {
-		"editor.formatOnSave": false
+		"editor.formatOnSave": false,
+		"editor.wordWrap": "on"
 	}
 }

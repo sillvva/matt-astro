@@ -8,6 +8,6 @@ interface Props {
 const className = Astro.props.class || "";
 ---
 
-<article class={cn("mb-4 overflow-hidden rounded-lg bg-base-300 shadow-xl ring-1 ring-gray-900/5", className)}>
+<article class={cn("mb-4 overflow-hidden rounded-lg bg-base-300/75 shadow-xl ring-1 ring-gray-900/5", className)}>
 	<slot />
 </article>
