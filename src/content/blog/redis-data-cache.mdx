@@ -136,7 +136,7 @@ export async function getModelCache(id: string) {
 // result for each key.
 export async function getModelCaches(ids: string[]) {
   const keys: Array<CacheKey> = ids.map((id) => ["model", id]);
-	return await cache(() => getModel(id), keys);
+	return await cache((key) => getModel(key[1]), keys);
 	//           ^? Array<Model | null>
 }
 ```
