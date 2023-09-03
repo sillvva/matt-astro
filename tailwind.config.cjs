@@ -1,3 +1,5 @@
+const plugin = require("tailwindcss/plugin");
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
 	content: ["./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}"],
@@ -6,25 +8,7 @@ module.exports = {
 			textColor: {
 				theme: {
 					faded: "var(--color-text-faded)",
-					inverted: "var(--color-text-inverted)",
 					heading: "var(--color-text-theme-heading)"
-				}
-			},
-			backgroundColor: {
-				theme: {
-					body: ({ opacityValue }) => {
-						if (opacityValue === undefined) opacityValue = 1;
-						return `rgba(var(--color-bg-body), ${opacityValue})`;
-					},
-					article: ({ opacityValue }) => {
-						if (opacityValue === undefined) opacityValue = 1;
-						return `rgba(var(--color-bg-article), ${opacityValue})`;
-					},
-					hover: ({ opacityValue }) => {
-						if (opacityValue === undefined) opacityValue = 1;
-						return `rgba(var(--color-bg-hover), ${opacityValue})`;
-					},
-					file: "var(--color-bg-file)"
 				}
 			},
 			backgroundImage: {
@@ -34,14 +18,6 @@ module.exports = {
 			opacity: {
 				15: "0.15",
 				33: "0.33"
-			},
-			boxShadowColor: {
-				theme: {
-					body: ({ opacityValue }) => {
-						if (opacityValue === undefined) opacityValue = 1;
-						return `rgba(var(--color-bg-body), ${opacityValue})`;
-					}
-				}
 			},
 			fontFamily: {
 				montserrat: ["Montserrat", "sans-serif"],
@@ -78,7 +54,16 @@ module.exports = {
 			"2xl": "1536px"
 		}
 	},
-	plugins: [require("daisyui")],
+	plugins: [
+		require("daisyui"),
+		plugin(function ({ addUtilities }) {
+			addUtilities({
+				".wrap-balance": {
+					"text-wrap": "balance"
+				}
+			});
+		})
+	],
 	daisyui: {
 		themes: [
 			{
