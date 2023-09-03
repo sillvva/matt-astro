@@ -89,15 +89,6 @@
 }
 
 @layer utilities {
-	.max-w-portfolio {
-		max-width: calc(100vw - 2rem);
-		@media (min-width: 768px) {
-			max-width: calc(100vw - 4rem);
-		}
-		@media (min-width: 1024px) {
-			max-width: calc(100vw - 24rem);
-		}
-	}
 }
 
 @layer components {
@@ -109,5 +100,14 @@
 	}
 	.section-divider {
 		@apply border-b-[1px] border-solid border-b-black/25;
+	}
+	.max-w-portfolio {
+		max-width: calc(100vw - 2rem);
+		@media (min-width: 768px) {
+			max-width: calc(100vw - 4rem);
+		}
+		@media (min-width: 1024px) {
+			max-width: calc(100vw - 24rem);
+		}
 	}
 }

@@ -1,3 +1,5 @@
+const plugin = require("tailwindcss/plugin");
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
 	content: ["./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}"],
@@ -52,7 +54,16 @@ module.exports = {
 			"2xl": "1536px"
 		}
 	},
-	plugins: [require("daisyui")],
+	plugins: [
+		require("daisyui"),
+		plugin(function ({ addUtilities }) {
+			addUtilities({
+				".wrap-balance": {
+					"text-wrap": "balance"
+				}
+			});
+		})
+	],
 	daisyui: {
 		themes: [
 			{
