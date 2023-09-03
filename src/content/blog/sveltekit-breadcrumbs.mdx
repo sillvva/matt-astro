@@ -6,6 +6,7 @@ image: $assets/images/breadcrumbs.webp
 tags:
   - TypeScript
   - SvelteKit
+  - UI
 ---
 
 Making breadcrumbs base on routes is straightforward. In SvelteKit, `+page.server.ts`, `+page.ts`, `+layout.server.ts`, and `+layout.ts` load functions have an event parameter with an async `parent()` method that returns data from parent `+layout.server.ts` and `+layout.ts` load functions.
