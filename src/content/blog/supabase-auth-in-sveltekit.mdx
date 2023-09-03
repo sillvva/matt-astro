@@ -9,6 +9,7 @@ tags:
   - SvelteKit
   - Supabase
 ---
+import CombinedBlock from "$components/markdown/combined-block.astro";
 import MDImage from "$components/markdown/mdimage.astro";
 import auth from "$assets/images/auth-settings.webp";
 import providers from "$assets/images/auth-providers.webp";
@@ -102,38 +103,41 @@ auth.subscribe((session) => {
 
 This step is only necessary if authenticating with a third-party OAuth provider. When the OAuth provider returns to the app, I've noticed it causes weird layout shifts if you redirect directly to a protected route. To resolve this issue, I've created a redirect handler route that redirects once the auth session has been detected and stored.
 
-```html
-<!-- src/routes/redirect.svelte -->
-<script lang="ts">
-import { page } from "$app/stores";
-import { goto } from "$app/navigation";
-import { auth } from "$lib/supabase/connection";
-import PageMessage from "$lib/components/page/message.svelte";
+<CombinedBlock>
+  ```html
+  <!-- src/routes/redirect.svelte -->
+  <script lang="ts">
+  import { page } from "$app/stores";
+  import { goto } from "$app/navigation";
+  import { auth } from "$lib/supabase/connection";
+  import PageMessage from "$lib/components/page/message.svelte";
 
-let redirect = $page.url.searchParams.get("to") || "/";
-let isAuthRedirect = $page.url.searchParams.get("auth");
+  let redirect = $page.url.searchParams.get("to") || "/";
+  let isAuthRedirect = $page.url.searchParams.get("auth");
 
-$: {
-  // If this is an auth redirect, wait until the $auth state is detected.
-  if (isAuthRedirect) {
-    if ($auth) goto(redirect, {
-      replaceState: true
-    });
+  $: {
+    // If this is an auth redirect, wait until the $auth state is detected.
+    if (isAuthRedirect) {
+      if ($auth) goto(redirect, {
+        replaceState: true
+      });
+    }
+    // Otherwise, redirect immediately.
+    else {
+      goto(redirect, {
+        replaceState: true
+      })
+    }
   }
-  // Otherwise, redirect immediately.
-  else {
-    goto(redirect, {
-      replaceState: true
-    })
-  }
-}
-</script>
-
-<PageMessage>
-  <p>You are being redirected to:</p>
-  <pre>{redirect}</pre>
-</PageMessage>
-```
+  </script>
+  ```
+  ```tsx
+  <PageMessage>
+    <p>You are being redirected to:</p>
+    <pre>{redirect}</pre>
+  </PageMessage>
+  ```
+</CombinedBlock>
 
 ## Sign In Handler
 
@@ -141,38 +145,41 @@ I have used this implemented an automatic sign-in handler that will attempt to a
 
 In my protected route layout, I use the following code to handle authentication.
 
-```html
-<!-- src/routes/protected/__layout.svelte= -->
-<script lang="ts">
-import { onMount } from "svelte";
-import type { User } from "@supabase/supabase-js";
-import { supabase, auth } from "$lib/supabase/connection";
-import { page } from "$app/stores";
+<CombinedBlock>
+  ```html
+  <!-- src/routes/protected/__layout.svelte= -->
+  <script lang="ts">
+  import { onMount } from "svelte";
+  import type { User } from "@supabase/supabase-js";
+  import { supabase, auth } from "$lib/supabase/connection";
+  import { page } from "$app/stores";
 
-let user: User | null = null;
+  let user: User | null = null;
 
-onMount(async () => {
-  if ($auth) user = $auth.user;
+  onMount(async () => {
+    if ($auth) user = $auth.user;
 
-  if (!user) {
-    return await supabase.auth.signIn(
-      {
-        provider: "google"
-      },
-      {
-        redirectTo: `${$page.url.origin}/redirect?to=${encodeURIComponent($page.url.pathname)}&auth=1`
-      }
-    );
-  }
-});
-</script>
-
-{#if user}
-  <slot />
-{:else}
-  <PageMessage>Authenticating</PageMessage>
-{/if}
-```
+    if (!user) {
+      return await supabase.auth.signIn(
+        {
+          provider: "google"
+        },
+        {
+          redirectTo: `${$page.url.origin}/redirect?to=${encodeURIComponent($page.url.pathname)}&auth=1`
+        }
+      );
+    }
+  });
+  </script>
+  ```
+  ```tsx
+  {#if user}
+    <slot />
+  {:else}
+    <PageMessage>Authenticating</PageMessage>
+  {/if}
+  ```
+</CombinedBlock>
 
 ## Sign Out Handler
 

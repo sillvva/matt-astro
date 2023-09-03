@@ -9,6 +9,7 @@ tags:
   - UI
   - SvelteKit
 ---
+import CombinedBlock from "$components/markdown/combined-block.astro";
 
 There are three different methods to render different user interfaces on mobile and desktop - CSS, `window.matchMedia()`, and User Agent String. These techniques can be combined.
 
@@ -73,15 +74,18 @@ export const get: RequestHandler = async ({ event }) => {
 };
 ```
 
-```html
-<!-- src/routes/page.svelte -->
-<script lang="ts">
-export let isMobile: boolean;
-</script>
-
-{#if isMobile}
-  <!-- MobileComponent -->
-{:else}
-  <!-- DesktopComponent -->
-{/else}
-```
+<CombinedBlock>
+  ```html
+  <!-- src/routes/page.svelte -->
+  <script lang="ts">
+  export let isMobile: boolean;
+  </script>
+  ```
+  ```tsx
+  {#if isMobile}
+    <!-- MobileComponent -->
+  {:else}
+    <!-- DesktopComponent -->
+  {/else}
+  ```
+</CombinedBlock>

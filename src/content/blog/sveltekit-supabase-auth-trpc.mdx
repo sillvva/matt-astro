@@ -8,6 +8,7 @@ tags:
   - SvelteKit
   - Supabase
 ---
+import CombinedBlock from "$components/markdown/combined-block.astro";
 
 In my [previous post](/blog/supabase-auth-in-sveltekit) I walked through how to authenticate with Supabase Auth in SvelteKit, and about 3-4 days later Supabase announced its auth helpers for Sveltekit. I like that it uses the Sveltekit session store and locals. This makes it integrate with tRPC nicely. This tutorial walks through adding both Supabase Auth and tRPC to your Sveltekit app.
 
@@ -54,18 +55,21 @@ export { supabaseClient };
 
 Edit your `__layout.svelte` file and add import the `SupaAuthHelper` component, the `supabaseClient` we just instantiated and the `session` store. In addition, add the `QueryClientProvider` provided by the `@sveltestack/svelte-query` library.
 
-```html
-<!-- $src/routes/__layout.svelte -->
-<script>
-import { session } from '$app/stores';
-import { supabaseClient } from '$lib/supabase/db';
-import { SupaAuthHelper } from '@supabase/auth-helpers-svelte';
-</script>
-
-<SupaAuthHelper {supabaseClient} {session}>
-  <slot />
-</SupaAuthHelper>
-````
+<CombinedBlock>
+  ```html
+  <!-- $src/routes/__layout.svelte -->
+  <script>
+  import { session } from '$app/stores';
+  import { supabaseClient } from '$lib/supabase/db';
+  import { SupaAuthHelper } from '@supabase/auth-helpers-svelte';
+  </script>
+  ```
+  ```tsx
+  <SupaAuthHelper supabaseClient={supabaseClient} session={session}>
+    <slot />
+  </SupaAuthHelper>
+  ```
+</CombinedBlock>
 
 ### Typings
 
@@ -268,18 +272,21 @@ The logout handler endpoint is `/api/auth/logout`, this will take a `GET` reques
 
 You can now determine if a user is authenticated on the client-side by checking that the `user` object returned by the `$session` store is defined.
 
-```html
-<script>
-import { session } from '$app/stores';
-</script>
-
-{#if !$session.user}
-  <h1>I am not logged in</h1>
-{:else}
-  <h1>Welcome {$session.user.email}</h1>
-  <p>I am logged in!</p>
-{/if}
-```
+<CombinedBlock>
+  ```html
+  <script>
+  import { session } from '$app/stores';
+  </script>
+  ```
+  ```tsx
+  {#if !$session.user}
+    <h1>I am not logged in</h1>
+  {:else}
+    <h1>Welcome {$session.user.email}</h1>
+    <p>I am logged in!</p>
+  {/if}
+  ```
+</CombinedBlock>
 
 ## Data Fetching
 
@@ -287,40 +294,43 @@ import { session } from '$app/stores';
 
 For [RLS](https://supabase.com/docs/learn/auth-deep-dive/auth-row-level-security) to work properly when fetching data client-side, you need to make sure to import the `{ supabaseClient }` from `@supabase/auth-helpers-sveltekit` and only run your query once the user is defined client-side in the `$session`:
 
-```html
-<script>
-import Auth from 'supabase-ui-svelte';
-import { error, isLoading } from '@supabase/auth-helpers-svelte';
-import { supabaseClient } from '$lib/supabase/db';
-import { session } from '$app/stores';
+<CombinedBlock>
+  ```html
+  <script>
+  import Auth from 'supabase-ui-svelte';
+  import { error, isLoading } from '@supabase/auth-helpers-svelte';
+  import { supabaseClient } from '$lib/supabase/db';
+  import { session } from '$app/stores';
 
-let loadedData = [];
-async function loadData() {
-  const { data } = await supabaseClient.from('test').select('*');
-  loadedData = data
-}
-
-$: {
-  if ($session.user && $session.user.id) {
-    loadData();
+  let loadedData = [];
+  async function loadData() {
+    const { data } = await supabaseClient.from('test').select('*');
+    loadedData = data
   }
-}
-</script>
 
-{#if !$session.user}
-  {#if $error}
-    <p>{$error.message}</p>
+  $: {
+    if ($session.user && $session.user.id) {
+      loadData();
+    }
+  }
+  </script>
+  ```
+  ```tsx
+  {#if !$session.user}
+    {#if $error}
+      <p>{$error.message}</p>
+    {/if}
+    <h1>{$isLoading ? `Loading...` : `Loaded!`}</h1>
+    <Auth {supabaseClient} providers={["github"]} />
+  {:else}
+    <a href=="/api/auth/logout">Sign out</a>
+    <p>user:</p>
+    <pre>{JSON.stringify($session.user, null, 2)}</pre>
+    <p>client-side data fetching with RLS</p>
+    <pre>{JSON.stringify(loadedData, null, 2)}</pre>
   {/if}
-  <h1>{$isLoading ? `Loading...` : `Loaded!`}</h1>
-  <Auth {supabaseClient} providers={["github"]} />
-{:else}
-  <a href=="/api/auth/logout">Sign out</a>
-  <p>user:</p>
-  <pre>{JSON.stringify($session.user, null, 2)}</pre>
-  <p>client-side data fetching with RLS</p>
-  <pre>{JSON.stringify(loadedData, null, 2)}</pre>
-{/if}
-```
+  ```
+</CombinedBlock>
 
 ### Server-side data fetching with RLS and tRPC
 
@@ -362,42 +372,45 @@ export const exampleRouter = createRouter()
   });
 ```
 
-```html
-<script lang="ts">
-import { session } from "$app/stores";
-import { browser } from "$app/env";
-import { error, isLoading } from "@supabase/auth-helpers-svelte";
-import trpc, { InferQueryOutput } from "$lib/trpc/client";
+<CombinedBlock>
+  ```html
+  <script lang="ts">
+  import { session } from "$app/stores";
+  import { browser } from "$app/env";
+  import { error, isLoading } from "@supabase/auth-helpers-svelte";
+  import trpc, { InferQueryOutput } from "$lib/trpc/client";
 
-let errorMessage: string = "";
+  let errorMessage: string = "";
 
-// greeter is automatically type-safe
-$: greeter = trpc.query("example:greeting", { text: $session.user?.name });
+  // greeter is automatically type-safe
+  $: greeter = trpc.query("example:greeting", { text: $session.user?.name });
 
-// exampleData infers the type of the data returned from the specified endpoint
-let exampleData: InferQueryOutput<"example:protected"> = [];
-async function loadData() {
-  data = await trpc.query("example:protected");
-}
+  // exampleData infers the type of the data returned from the specified endpoint
+  let exampleData: InferQueryOutput<"example:protected"> = [];
+  async function loadData() {
+    data = await trpc.query("example:protected");
+  }
 
-$: { if ($session.user) loadData(); }
-$: { if ($error) errorMessage = $error.message; }
-</script>
-
-{#await greeter then greeting}
-  <p>{greeting}</p>
-{/await}
-{#if errorMessage}
-  <p>{errorMessage}</p>
-{/if}
-{#if !$session.user}
-  <h1>{$isLoading ? `Loading...` : `Loaded!`}</h1>
-  <Auth {supabaseClient} providers={["github"]} />
-{:else}
-  <a href="/api/auth/logout">Sign out</a>
-  <p>user:</p>
-  <pre>{JSON.stringify($session.user, null, 2)}</pre>
-  <p>client-side data fetching with RLS</p>
-  <pre>{JSON.stringify(exampleData, null, 2)}</pre>
-{/if}
-```
+  $: { if ($session.user) loadData(); }
+  $: { if ($error) errorMessage = $error.message; }
+  </script>
+  ```
+  ```tsx
+  {#await greeter then greeting}
+    <p>{greeting}</p>
+  {/await}
+  {#if errorMessage}
+    <p>{errorMessage}</p>
+  {/if}
+  {#if !$session.user}
+    <h1>{$isLoading ? `Loading...` : `Loaded!`}</h1>
+    <Auth {supabaseClient} providers={["github"]} />
+  {:else}
+    <a href="/api/auth/logout">Sign out</a>
+    <p>user:</p>
+    <pre>{JSON.stringify($session.user, null, 2)}</pre>
+    <p>client-side data fetching with RLS</p>
+    <pre>{JSON.stringify(exampleData, null, 2)}</pre>
+  {/if}
+  ```
+</CombinedBlock>
