@@ -14,11 +14,11 @@ interface Props extends HeadProps {
 const { title, description, image, articleMeta, stylesheets, backTo } = Astro.props;
 ---
 
-<html lang="en">
+<html id="app" lang="en">
 	<head>
 		<Head {title} {description} {image} {articleMeta} {stylesheets} />
 	</head>
-	<body id="app" data-theme="black" class="bg-img min-h-screen bg-cover bg-left-bottom bg-no-repeat">
+	<body data-theme="black" class="bg-img min-h-screen bg-cover bg-left-bottom bg-no-repeat">
 		<Drawer>
 			<header class="flex h-20 w-full items-center justify-center gap-4">
 				<div class="w-16">
