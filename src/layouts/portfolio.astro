@@ -4,9 +4,14 @@ import type { Props as HeadProps } from "$components/head.astro";
 import Head from "$components/head.astro";
 import { cn } from "$src/util";
 
-interface Props extends HeadProps {}
+interface Props extends HeadProps {
+	backTo?: {
+		href: string;
+		text: string;
+	};
+}
 
-const { title, description, image, articleMeta, stylesheets } = Astro.props;
+const { title, description, image, articleMeta, stylesheets, backTo } = Astro.props;
 ---
 
 <html lang="en">
@@ -33,7 +38,15 @@ const { title, description, image, articleMeta, stylesheets } = Astro.props;
 				>
 					{title}
 				</h1>
-				<div class="w-16"></div>
+				<div class="w-16">
+					{
+						backTo && (
+							<a href={backTo.href} class="btn btn-ghost btn-sm font-bold uppercase lg:hidden">
+								{backTo.text}
+							</a>
+						)
+					}
+				</div>
 			</header>
 			<main class="w-full px-4 pb-8 md:px-8">
 				<slot />

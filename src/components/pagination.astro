@@ -1,5 +1,6 @@
 ---
-import { cn, sorter } from "$src/util";
+import { cn, slugify, sorter } from "$src/util";
+
 interface Props {
 	position: "top" | "bottom";
 	currentPage: number;
@@ -90,7 +91,7 @@ const pages = Array.from(range(first, last, 1));
 						.sort((a, b) => sorter(a, b))
 						.map((tag) => (
 							<li>
-								<a href={tagPathFormat.replace(":tag", tag.toLowerCase())}>{tag}</a>
+								<a href={tagPathFormat.replace(":tag", slugify(tag))}>{tag}</a>
 							</li>
 						))}
 				</ul>

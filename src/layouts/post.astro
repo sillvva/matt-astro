@@ -1,6 +1,7 @@
 ---
 import type { Props as HeadProps } from "$components/head.astro";
 import ResponsiveImage from "$src/components/responsive-image.astro";
+import { slugify, sorter } from "$src/util";
 import PortfolioLayout from "./portfolio.astro";
 
 interface Props extends HeadProps {
@@ -21,7 +22,7 @@ interface Props extends HeadProps {
 	};
 }
 
-const { title, description, image, full, date, updated } = Astro.props.data;
+const { title, description, image, full, date, updated, tags } = Astro.props.data;
 const slug = Astro.props.slug;
 
 const formattedDate = new Date(date).toLocaleDateString("en-US", {
@@ -45,9 +46,13 @@ const formattedUpdate = new Date(updated || "").toLocaleDateString("en-US", {
 		published_date: date.toISOString(),
 		...(updated && { modified_date: updated.toISOString() })
 	}}
+	backTo={{
+		href: "/blog",
+		text: "Blog"
+	}}
 >
-	<article class="mx-auto max-w-4xl">
-		<p class="mb-2 text-center text-sm text-theme-faded md:text-left" aria-label="Date published">
+	<article class="mx-auto flex max-w-4xl flex-col gap-4">
+		<p class="text-center text-sm text-theme-faded md:text-left" aria-label="Date published">
 			Published: <span class="underline decoration-dotted underline-offset-2">{formattedDate}</span>
 			{
 				updated && (
@@ -64,9 +69,27 @@ const formattedUpdate = new Date(updated || "").toLocaleDateString("en-US", {
 						src={image}
 						alt={title}
 						sizes={[300, 600, 900]}
-						class="mb-4 h-full w-full object-cover object-center shadow shadow-black/50"
+						class="h-full w-full object-cover object-center shadow shadow-black/50"
 					/>
 				</div>
+			)
+		}
+		{
+			tags.length && (
+				<section class="flex gap-4 pb-6">
+					<h2 class="hidden text-xl sm:block">Tags</h2>
+					<ul class="flex flex-1 flex-wrap justify-center gap-2 sm:justify-end">
+						{tags
+							.sort((a, b) => sorter(a, b))
+							.map((tag) => (
+								<li>
+									<a href={`/blog/${slugify(tag)}`} class="btn btn-sm uppercase">
+										{tag}
+									</a>
+								</li>
+							))}
+					</ul>
+				</section>
 			)
 		}
 		<section>

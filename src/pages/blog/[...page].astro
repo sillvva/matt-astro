@@ -1,13 +1,25 @@
 ---
 import Pagination from "$components/pagination.astro";
 import PortfolioLayout from "$layouts/portfolio.astro";
-import { cn, sorter } from "$src/util";
-import type { GetStaticPaths, InferGetStaticPropsType } from "astro";
+import { cn, slugify, sorter } from "$src/util";
+import type { GetStaticPaths, InferGetStaticPropsType, Page } from "astro";
 import { Image } from "astro:assets";
 import { getCollection } from "astro:content";
 
 export const getStaticPaths = (async ({ paginate }) => {
 	const posts = await getCollection("blog");
+
+	type PaginatedTagPosts = {
+		params: {
+			tag?: string;
+			page?: string;
+		};
+		props: {
+			tag?: string;
+			tags: string[];
+			page: Page<(typeof posts)[number]>;
+		};
+	};
 
 	const tags = posts.reduce<string[]>((acc, post) => {
 		post.data.tags.forEach((tag) => {
@@ -18,20 +30,52 @@ export const getStaticPaths = (async ({ paginate }) => {
 		return acc;
 	}, []);
 
-	return paginate(
-		posts.sort((a, b) => sorter(b.data.date, a.data.date)),
-		{
-			pageSize: 12,
-			props: {
-				tags
+	const allPosts: PaginatedTagPosts[] = [
+		...tags.reduce<PaginatedTagPosts[]>((acc, tag) => {
+			return acc.concat(
+				paginate(
+					posts.filter((p) => p.data.tags.includes(tag)).sort((a, b) => sorter(b.data.date, a.data.date)),
+					{
+						pageSize: 12,
+						params: {
+							tag: tag.toLowerCase()
+						},
+						props: {
+							tag,
+							tags
+						}
+					}
+				)
+			);
+		}, []),
+		...paginate(
+			posts.sort((a, b) => sorter(b.data.date, a.data.date)),
+			{
+				pageSize: 12,
+				props: {
+					tags
+				}
 			}
-		}
-	);
+		)
+	];
+
+	const paths = allPosts.map((path) => {
+		return {
+			...path,
+			params: {
+				page:
+					(path.params.tag || path.params.page) && [slugify(path.params.tag || ""), path.params.page].filter(Boolean).join("/")
+			}
+		};
+	});
+
+	return paths;
 }) satisfies GetStaticPaths;
 
 type Props = InferGetStaticPropsType<typeof getStaticPaths>;
 
 const {
+	tag,
 	tags,
 	page: {
 		data,
@@ -50,7 +94,7 @@ const {
 			{tags}
 			tagPathFormat="/blog/:tag"
 			position="top"
-			url={{ next, prev, format: `/blog/:page` }}
+			url={{ next, prev, format: tag ? `/blog/${slugify(tag)}/:page` : `/blog/:page` }}
 		/>
 		<div class="grid w-full grid-cols-[repeat(auto-fill,minmax(16rem,1fr))] gap-5">
 			{
@@ -64,7 +108,7 @@ const {
 					>
 						<div class="card-body p-4">
 							<div class="flex flex-col">
-								<h2 class="wrap-balance card-title text-lg text-theme-heading">{post.data.title}</h2>
+								<h2 class="card-title text-lg text-theme-heading wrap-balance">{post.data.title}</h2>
 								{post.data.date && (
 									<span class="mb-2 text-sm text-theme-faded underline decoration-dotted underline-offset-2">
 										{new Date(post.data.date).toLocaleDateString("en-US", {
@@ -97,7 +141,7 @@ const {
 			{tags}
 			tagPathFormat="/blog/:tag"
 			position="bottom"
-			url={{ next, prev, format: `/blog/:page` }}
+			url={{ next, prev, format: tag ? `/blog/${slugify(tag)}/:page` : `/blog/:page` }}
 		/>
 	</div>
 </PortfolioLayout>
