@@ -92,6 +92,7 @@ const {
 			{currentPage}
 			{lastPage}
 			{tags}
+			{tag}
 			tagPathFormat="/blog/:tag"
 			position="top"
 			url={{ next, prev, format: tag ? `/blog/${slugify(tag)}/:page` : `/blog/:page` }}
@@ -139,6 +140,7 @@ const {
 			{currentPage}
 			{lastPage}
 			{tags}
+			{tag}
 			tagPathFormat="/blog/:tag"
 			position="bottom"
 			url={{ next, prev, format: tag ? `/blog/${slugify(tag)}/:page` : `/blog/:page` }}
