@@ -6,6 +6,7 @@ interface Props {
 	currentPage: number;
 	lastPage: number;
 	tags?: string[];
+	tag?: string;
 	tagPathFormat?: string;
 	url: {
 		format: string;
@@ -21,7 +22,7 @@ function* range(start: number, end: number, step: number) {
 	}
 }
 
-const { tags, tagPathFormat, position, currentPage, lastPage, url } = Astro.props;
+const { tags, tag, tagPathFormat, position, currentPage, lastPage, url } = Astro.props;
 const first = Math.max(1, currentPage - 2);
 const last = Math.min(lastPage, currentPage + 2);
 const pages = Array.from(range(first, last, 1));
@@ -30,12 +31,18 @@ const pages = Array.from(range(first, last, 1));
 <div class="flex w-full">
 	<div class={cn("join flex-1", !tags && "flex justify-center")}>
 		{
-			url.prev && (
-				<a href={url.prev} class="btn join-item  btn-sm sm:btn-md">
+			url.prev ? (
+				<a href={url.prev} class="btn join-item btn-sm px-1 sm:btn-md sm:px-2">
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
 						<path fill="currentColor" d="M15.41 16.58L10.83 12l4.58-4.59L14 6l-6 6l6 6l1.41-1.42Z" />
 					</svg>
 				</a>
+			) : (
+				<span class="btn btn-disabled join-item btn-sm px-1 sm:btn-md sm:px-2">
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+						<path fill="currentColor" d="M15.41 16.58L10.83 12l4.58-4.59L14 6l-6 6l6 6l1.41-1.42Z" />
+					</svg>
+				</span>
 			)
 		}
 		{
@@ -45,32 +52,42 @@ const pages = Array.from(range(first, last, 1));
 				</a>
 			)
 		}
-		{currentPage > 4 && <span class="btn btn-disabled join-item btn-sm hidden  sm:btn-md sm:inline-flex">...</span>}
+		{currentPage > 4 && <span class="btn btn-disabled join-item btn-sm hidden sm:btn-md sm:inline-flex">...</span>}
 		{
 			pages.map((p) => (
 				<a
 					href={url.format.replace(":page", p == 1 ? "" : p.toString())}
-					class={cn("btn join-item btn-sm sm:btn-md", p === currentPage && "btn-primary")}
+					class={cn(
+						"btn join-item btn-sm sm:btn-md",
+						p === currentPage && "btn-primary",
+						Math.abs(p - currentPage) > 1 && currentPage !== 1 && currentPage !== lastPage && "hidden sm:inline-flex"
+					)}
 				>
 					{p}
 				</a>
 			))
 		}
-		{lastPage - currentPage > 3 && <span class="btn btn-disabled join-item btn-sm  hidden sm:btn-md">...</span>}
+		{lastPage - currentPage > 3 && <span class="btn btn-disabled join-item btn-sm hidden sm:btn-md sm:inline-flex">...</span>}
 		{
 			lastPage - currentPage > 2 && (
-				<a href={url.format.replace(":page", lastPage.toString())} class="btn join-item btn-sm  sm:btn-md sm:inline-flex">
+				<a href={url.format.replace(":page", lastPage.toString())} class="btn join-item btn-sm hidden sm:btn-md sm:inline-flex">
 					{lastPage}
 				</a>
 			)
 		}
 		{
-			url.next && (
-				<a href={url.next} class="btn join-item  btn-sm sm:btn-md">
+			url.next ? (
+				<a href={url.next} class="btn join-item btn-sm px-1 sm:btn-md sm:px-2">
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
 						<path fill="currentColor" d="M8.59 16.58L13.17 12L8.59 7.41L10 6l6 6l-6 6l-1.41-1.42Z" />
 					</svg>
 				</a>
+			) : (
+				<span class="btn btn-disabled join-item btn-sm px-1 sm:btn-md sm:px-2">
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+						<path fill="currentColor" d="M8.59 16.58L13.17 12L8.59 7.41L10 6l6 6l-6 6l-1.41-1.42Z" />
+					</svg>
+				</span>
 			)
 		}
 	</div>
@@ -85,13 +102,20 @@ const pages = Array.from(range(first, last, 1));
 					class="menu dropdown-content rounded-box z-[1] max-h-80 flex-nowrap overflow-y-auto bg-base-100 p-2 shadow"
 				>
 					<li>
-						<a href={tagPathFormat.replace(":tag", "")}>View All</a>
+						<a href={tagPathFormat.replace(":tag", "")} class="hover:bg-accent focus:!bg-accent">
+							View All
+						</a>
 					</li>
 					{tags
 						.sort((a, b) => sorter(a, b))
-						.map((tag) => (
+						.map((t) => (
 							<li>
-								<a href={tagPathFormat.replace(":tag", slugify(tag))}>{tag}</a>
+								<a
+									href={tagPathFormat.replace(":tag", slugify(t))}
+									class={cn("hover:bg-accent focus:!bg-accent", t == tag && "bg-primary")}
+								>
+									{t}
+								</a>
 							</li>
 						))}
 				</ul>

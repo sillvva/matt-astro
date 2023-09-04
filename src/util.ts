@@ -20,3 +20,11 @@ export const slugify = (text: string) => {
 		.replace(/-+/g, "-")
 		.replace(/^-|-$/g, "");
 };
+
+export const formatDate = (date: Date) => {
+	return new Date(date).toLocaleDateString("en-US", {
+		month: "long",
+		day: "numeric",
+		year: "numeric"
+	});
+};
