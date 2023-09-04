@@ -21,7 +21,7 @@ interface Props extends HeadProps {
 	};
 }
 
-const { title, description, image, full, date, updated } = Astro.props.data;
+const { title, description, image, full, date, updated, tags } = Astro.props.data;
 const slug = Astro.props.slug;
 
 const formattedDate = new Date(date).toLocaleDateString("en-US", {
@@ -46,8 +46,8 @@ const formattedUpdate = new Date(updated || "").toLocaleDateString("en-US", {
 		...(updated && { modified_date: updated.toISOString() })
 	}}
 >
-	<article class="mx-auto max-w-4xl">
-		<p class="mb-2 text-center text-sm text-theme-faded md:text-left" aria-label="Date published">
+	<article class="mx-auto flex max-w-4xl flex-col gap-4">
+		<p class="text-center text-sm text-theme-faded md:text-left" aria-label="Date published">
 			Published: <span class="underline decoration-dotted underline-offset-2">{formattedDate}</span>
 			{
 				updated && (
@@ -64,13 +64,27 @@ const formattedUpdate = new Date(updated || "").toLocaleDateString("en-US", {
 						src={image}
 						alt={title}
 						sizes={[300, 600, 900]}
-						class="mb-4 h-full w-full object-cover object-center shadow shadow-black/50"
+						class="h-full w-full object-cover object-center shadow shadow-black/50"
 					/>
 				</div>
 			)
 		}
 		<section>
 			<slot />
+		</section>
+		<section class="flex flex-col items-center gap-4">
+			<h2 class="text-xl">Tags</h2>
+			<ul class="flex flex-wrap justify-center gap-2">
+				{
+					tags.map((tag) => (
+						<li>
+							<a href={`/blog/${tag.toLowerCase()}`} class="btn btn-sm uppercase">
+								{tag}
+							</a>
+						</li>
+					))
+				}
+			</ul>
 		</section>
 	</article>
 </PortfolioLayout>
