@@ -31,23 +31,21 @@ export const getStaticPaths = (async ({ paginate }) => {
 	}, []);
 
 	const allPosts: PaginatedTagPosts[] = [
-		...tags.reduce<PaginatedTagPosts[]>((acc, tag) => {
-			return acc.concat(
-				paginate(
-					posts.filter((p) => p.data.tags.includes(tag)).sort((a, b) => sorter(b.data.date, a.data.date)),
-					{
-						pageSize: 12,
-						params: {
-							tag: tag.toLowerCase()
-						},
-						props: {
-							tag,
-							tags
-						}
+		...tags.flatMap((tag) =>
+			paginate(
+				posts.filter((p) => p.data.tags.includes(tag)).sort((a, b) => sorter(b.data.date, a.data.date)),
+				{
+					pageSize: 12,
+					params: {
+						tag: tag.toLowerCase()
+					},
+					props: {
+						tag,
+						tags
 					}
-				)
-			);
-		}, []),
+				}
+			)
+		),
 		...paginate(
 			posts.sort((a, b) => sorter(b.data.date, a.data.date)),
 			{
