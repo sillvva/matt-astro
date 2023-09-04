@@ -1,7 +1,7 @@
 ---
 import Pagination from "$components/pagination.astro";
 import PortfolioLayout from "$layouts/portfolio.astro";
-import { cn, slugify, sorter } from "$src/util";
+import { cn, formatDate, slugify, sorter } from "$src/util";
 import type { GetStaticPaths, InferGetStaticPropsType, Page } from "astro";
 import { Image } from "astro:assets";
 import { getCollection } from "astro:content";
@@ -112,11 +112,7 @@ const {
 								<h2 class="card-title text-lg text-theme-heading wrap-balance">{post.data.title}</h2>
 								{post.data.date && (
 									<span class="mb-2 text-sm text-theme-faded underline decoration-dotted underline-offset-2">
-										{new Date(post.data.date).toLocaleDateString("en-US", {
-											month: "long",
-											day: "numeric",
-											year: "numeric"
-										})}
+										{formatDate(post.data.date)}
 									</span>
 								)}
 							</div>

@@ -1,7 +1,7 @@
 ---
 import type { Props as HeadProps } from "$components/head.astro";
 import ResponsiveImage from "$src/components/responsive-image.astro";
-import { slugify, sorter } from "$src/util";
+import { formatDate, slugify, sorter } from "$src/util";
 import PortfolioLayout from "./portfolio.astro";
 
 interface Props extends HeadProps {
@@ -24,17 +24,6 @@ interface Props extends HeadProps {
 
 const { title, description, image, full, date, updated, tags } = Astro.props.data;
 const slug = Astro.props.slug;
-
-const formattedDate = new Date(date).toLocaleDateString("en-US", {
-	month: "long",
-	day: "numeric",
-	year: "numeric"
-});
-const formattedUpdate = new Date(updated || "").toLocaleDateString("en-US", {
-	month: "long",
-	day: "numeric",
-	year: "numeric"
-});
 ---
 
 <PortfolioLayout
@@ -54,11 +43,11 @@ const formattedUpdate = new Date(updated || "").toLocaleDateString("en-US", {
 	<article class="mx-auto flex max-w-4xl flex-col">
 		<section class="flex flex-col gap-4" transition:name={slugify(`image ${slug}`)}>
 			<p class="text-center text-sm text-theme-faded md:text-left" aria-label="Date published">
-				Published: <span class="underline decoration-dotted underline-offset-2">{formattedDate}</span>
+				Published: <span class="underline decoration-dotted underline-offset-2">{formatDate(date)}</span>
 				{
 					updated && (
 						<span class="block 2xs:inline 2xs:pl-4">
-							Updated: <span class="underline decoration-dotted underline-offset-2">{formattedUpdate}</span>
+							Updated: <span class="underline decoration-dotted underline-offset-2">{formatDate(updated)}</span>
 						</span>
 					)
 				}
