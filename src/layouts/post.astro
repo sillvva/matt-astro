@@ -1,6 +1,7 @@
 ---
 import type { Props as HeadProps } from "$components/head.astro";
 import ResponsiveImage from "$src/components/responsive-image.astro";
+import { slugify, sorter } from "$src/util";
 import PortfolioLayout from "./portfolio.astro";
 
 interface Props extends HeadProps {
@@ -45,6 +46,10 @@ const formattedUpdate = new Date(updated || "").toLocaleDateString("en-US", {
 		published_date: date.toISOString(),
 		...(updated && { modified_date: updated.toISOString() })
 	}}
+	backTo={{
+		href: "/blog",
+		text: "Blog"
+	}}
 >
 	<article class="mx-auto flex max-w-4xl flex-col gap-4">
 		<p class="text-center text-sm text-theme-faded md:text-left" aria-label="Date published">
@@ -69,22 +74,26 @@ const formattedUpdate = new Date(updated || "").toLocaleDateString("en-US", {
 				</div>
 			)
 		}
+		{
+			tags.length && (
+				<section class="flex gap-4 pb-6">
+					<h2 class="hidden text-xl sm:block">Tags</h2>
+					<ul class="flex flex-1 flex-wrap justify-center gap-2 sm:justify-end">
+						{tags
+							.sort((a, b) => sorter(a, b))
+							.map((tag) => (
+								<li>
+									<a href={`/blog/${slugify(tag)}`} class="btn btn-sm uppercase">
+										{tag}
+									</a>
+								</li>
+							))}
+					</ul>
+				</section>
+			)
+		}
 		<section>
 			<slot />
-		</section>
-		<section class="flex flex-col items-center gap-4">
-			<h2 class="text-xl">Tags</h2>
-			<ul class="flex flex-wrap justify-center gap-2">
-				{
-					tags.map((tag) => (
-						<li>
-							<a href={`/blog/${tag.toLowerCase()}`} class="btn btn-sm uppercase">
-								{tag}
-							</a>
-						</li>
-					))
-				}
-			</ul>
 		</section>
 	</article>
 </PortfolioLayout>
