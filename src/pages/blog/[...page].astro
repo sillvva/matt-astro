@@ -126,7 +126,7 @@ const {
 							<Image
 								src={post.data.image}
 								alt={post.data.title}
-								transition:name={`image_${post.slug}`}
+								transition:name={slugify(`image ${post.slug}`)}
 								width={400}
 								height={400}
 								class="h-full w-full object-cover object-center"
