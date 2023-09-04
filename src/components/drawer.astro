@@ -48,7 +48,7 @@ const items = [
 								<a
 									href={item.link}
 									class={cn("text-lg", Astro.url.pathname.startsWith(item.link) && "active-page font-bold")}
-									transition:name={slugify(`Menu Item ${item.label}`)}
+									transition:name={!home ? slugify(`Menu Item ${item.label}`) : undefined}
 								>
 									{item.label}
 								</a>

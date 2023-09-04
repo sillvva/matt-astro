@@ -14,7 +14,7 @@ interface Props extends HeadProps {
 const { title, description, image, articleMeta, stylesheets, backTo } = Astro.props;
 ---
 
-<html lang="en">
+<html id="app" lang="en">
 	<head>
 		<Head {title} {description} {image} {articleMeta} {stylesheets} />
 	</head>
