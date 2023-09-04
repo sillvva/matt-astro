@@ -64,6 +64,7 @@ module.exports = {
 			});
 		})
 	],
+	important: "#app",
 	daisyui: {
 		themes: [
 			{
