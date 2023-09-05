@@ -11,7 +11,7 @@ const projects = collection.map((col) => col.data).sort((a, b) => sorter(b.date,
 <PortfolioLayout title="Projects">
 	<div class="grid grid-cols-[repeat(auto-fill,minmax(19rem,1fr))] gap-4 md:gap-6">
 		{
-			projects.map((project, i) => (
+			projects.map((project) => (
 				<GalleryItem
 					image={project.image}
 					title={project.title}
