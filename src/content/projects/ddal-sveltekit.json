@@ -6,7 +6,7 @@
 	"date": "2023-07-01T20:00:00.000Z",
 	"tags": [
 		{ "name": "SvelteKit" },
-		{ "name": "Typescript" },
+		{ "name": "TypeScript" },
 		{ "name": "Auth.js" },
 		{ "name": "Google OAuth" },
 		{ "name": "Prisma" },

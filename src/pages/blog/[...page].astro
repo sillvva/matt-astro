@@ -40,7 +40,7 @@ export const getStaticPaths = (async ({ paginate }) => {
 				{
 					pageSize: perPage,
 					params: {
-						tag: tag.toLowerCase()
+						tag: slugify(tag)
 					},
 					props: {
 						tag,

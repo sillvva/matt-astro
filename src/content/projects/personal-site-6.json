@@ -13,7 +13,7 @@
 		{ "name": "tRPC" },
 		{ "name": "Vercel" },
 		{ "name": "Cloudflare" },
-		{ "name": "Tailwind CSS" },
-		{ "name": "Daisy UI" }
+		{ "name": "TailwindCSS" },
+		{ "name": "DaisyUI" }
 	]
 }
