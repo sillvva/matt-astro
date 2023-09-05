@@ -1,7 +1,7 @@
 {
 	"title": "D&D Adventurers League Log Sheet",
 	"subtitle": "Version 2 (Sveltekit)",
-	"image": "$assets/images/ddal-log.jpg",
+	"image": "$/assets/images/ddal-log.jpg",
 	"link": "https://github.com/sillvva/ddal-svelte",
 	"date": "2023-07-01T20:00:00.000Z",
 	"tags": [

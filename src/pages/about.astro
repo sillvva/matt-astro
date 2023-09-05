@@ -1,9 +1,9 @@
 ---
-import MeDetails from "$components/me.astro";
-import PageArticle from "$components/page/article.astro";
-import PageBody from "$components/page/body.astro";
-import PageSection from "$components/page/section.astro";
-import PortfolioLayout from "$layouts/portfolio.astro";
+import MeDetails from "$/components/me.astro";
+import PageArticle from "$/components/page/article.astro";
+import PageBody from "$/components/page/body.astro";
+import PageSection from "$/components/page/section.astro";
+import PortfolioLayout from "$/layouts/portfolio.astro";
 
 const age = (birthday: Date) => {
 	const ageDifMs = Date.now() - birthday.getTime();

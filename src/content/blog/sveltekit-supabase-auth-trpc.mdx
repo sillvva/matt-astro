@@ -2,14 +2,14 @@
 title: SvelteKit + Supabase Auth + tRPC
 description: A follow-up to my previous tutorial based on the official Auth Helpers documentation.
 date: 2022-07-16T21:22:27Z
-image: $assets/images/svelte-supabase-trpc.webp
+image: $/assets/images/svelte-supabase-trpc.webp
 tags:
   - Authentication
   - SvelteKit
   - Supabase
   - TypeScript
 ---
-import CombinedBlock from "$components/markdown/combined-block.astro";
+import CombinedBlock from "$/components/markdown/combined-block.astro";
 
 In my [previous post](/blog/supabase-auth-in-sveltekit) I walked through how to authenticate with Supabase Auth in SvelteKit, and about 3-4 days later Supabase announced its auth helpers for Sveltekit. I like that it uses the Sveltekit session store and locals. This makes it integrate with tRPC nicely. This tutorial walks through adding both Supabase Auth and tRPC to your Sveltekit app.
 
@@ -58,7 +58,7 @@ Edit your `__layout.svelte` file and add import the `SupaAuthHelper` component, 
 
 <CombinedBlock>
   ```html
-  <!-- $src/routes/__layout.svelte -->
+  <!-- @/routes/__layout.svelte -->
   <script>
   import { session } from '$app/stores';
   import { supabaseClient } from '$lib/supabase/db';
@@ -77,7 +77,7 @@ Edit your `__layout.svelte` file and add import the `SupaAuthHelper` component, 
 In order to get the most out of TypeScript and its intellisense, you should import our types into the `app.d.ts` type definition file that comes with your SvelteKit project.
 
 ```ts
-// $src/app.d.ts
+// @/app.d.ts
 
 /// <reference types="@sveltejs/kit" />
 // See https://kit.svelte.dev/docs/types#app
@@ -188,7 +188,7 @@ After the hooks are imported, you can set up a custom hook for implementing the 
 The `supabaseServerClient` is assigned to the app locals, which are only accessed on the server. You will see an example of this in use in the example router later in the tutorial. For [RLS](https://supabase.com/docs/learn/auth-deep-dive/auth-row-level-security) to work in a server environment, you need to inject the user's access token into the server client.
 
 ```ts
-// $src/hooks.ts
+// @/hooks.ts
 import type { Handle, GetSession } from "@sveltejs/kit";
 import { sequence } from "@sveltejs/kit/hooks";
 import { handleAuth, supabaseServerClient } from "@supabase/auth-helpers-sveltekit";
