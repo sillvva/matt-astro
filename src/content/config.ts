@@ -23,7 +23,14 @@ const projectCollection = defineCollection({
 		z.object({
 			title: z.string(),
 			subtitle: z.string(),
-			description: z.string(),
+			tags: z
+				.array(
+					z.object({
+						name: z.string(),
+						description: z.string().default("")
+					})
+				)
+				.default([]),
 			image: image(),
 			link: z.string(),
 			date: z

@@ -1,8 +1,17 @@
 {
 	"title": "Personal Website",
 	"subtitle": "Version 2 (Nuxt 2)",
-	"description": "Firebase, Heroku, Node.js, Nuxt 2, Vue 2, JavaScript, HTML, SCSS, Vuetify, Github Actions",
 	"image": "$assets/images/preview-me2.jpg",
 	"link": "https://github.com/sillvva/mattdekok.dev",
-	"date": "2022-07-01T20:05:20.000Z"
+	"date": "2022-07-01T20:05:20.000Z",
+	"tags": [
+		{ "name": "Nuxt 2" },
+		{ "name": "JavaScript" },
+		{ "name": "HTML" },
+		{ "name": "SCSS" },
+		{ "name": "Vuetify" },
+		{ "name": "Firebase" },
+		{ "name": "Heroku" },
+		{ "name": "Github Actions" }
+	]
 }

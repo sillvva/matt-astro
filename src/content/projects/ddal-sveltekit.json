@@ -1,8 +1,17 @@
 {
 	"title": "D&D Adventurers League Log Sheet",
 	"subtitle": "Version 2 (Sveltekit)",
-	"description": "Sveltekit, TypeScript, Auth.js, Prisma, Planetscale, Google OAuth, TailwindCSS, DaisyUI",
 	"image": "$assets/images/ddal-log.jpg",
 	"link": "https://github.com/sillvva/ddal-svelte",
-	"date": "2023-07-01T20:00:00.000Z"
+	"date": "2023-07-01T20:00:00.000Z",
+	"tags": [
+		{ "name": "SvelteKit" },
+		{ "name": "Typescript" },
+		{ "name": "Auth.js" },
+		{ "name": "Google OAuth" },
+		{ "name": "Prisma" },
+		{ "name": "Planetscale" },
+		{ "name": "TailwindCSS" },
+		{ "name": "DaisyUI" }
+	]
 }

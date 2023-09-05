@@ -4,5 +4,13 @@
 	"subtitle": "Version 3 (Nuxt 3, Unfinished)",
 	"description": "Node.js, Nuxt 3, Vue 3, JavaScript, HTML, SCSS, TailwindCSS",
 	"image": "$assets/images/preview-me2.jpg",
-	"link": "https://github.com/sillvva/mattdekok.nuxt3"
+	"link": "https://github.com/sillvva/mattdekok.nuxt3",
+	"tags": [
+		{ "name": "Nuxt 3" },
+		{ "name": "Node.js" },
+		{ "name": "JavaScript" },
+		{ "name": "HTML" },
+		{ "name": "SCSS" },
+		{ "name": "TailwindCSS" }
+	]
 }

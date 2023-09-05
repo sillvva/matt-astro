@@ -1,8 +1,8 @@
 {
 	"title": "Valley 365",
 	"subtitle": "Valmont Industries, Inc. - Web App",
-	"description": "Angular, TypeScript, jQuery, HTML, SCSS",
 	"image": "$assets/images/preview-valley-365.jpg",
 	"link": "https://www.valley365.com/",
-	"date": "2022-07-01T20:02:07.000Z"
+	"date": "2022-07-01T20:02:07.000Z",
+	"tags": [{ "name": "Angular" }, { "name": "TypeScript" }, { "name": "jQuery" }, { "name": "HTML" }, { "name": "SCSS" }]
 }

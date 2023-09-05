@@ -1,8 +1,17 @@
 {
 	"title": "RPG Schedule",
 	"subtitle": "Discord Bot",
-	"description": "Google Cloud, Node.js, Nuxt 2, Vue 2, TypeScript, discord.js, MongoDB, HTML, CSS, Web Sockets",
 	"image": "$assets/images/preview-rpgschedule.webp",
 	"link": "https://github.com/sillvva/rpg-schedule",
-	"date": "2022-07-01T19:59:49.000Z"
+	"date": "2022-07-01T19:59:49.000Z",
+	"tags": [
+		{ "name": "Nuxt 2" },
+		{ "name": "TypeScript" },
+		{ "name": "Node.js" },
+		{ "name": "discord.js" },
+		{ "name": "MongoDB" },
+		{ "name": "HTML" },
+		{ "name": "CSS" },
+		{ "name": "Web Sockets" }
+	]
 }
