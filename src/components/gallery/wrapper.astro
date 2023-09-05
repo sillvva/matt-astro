@@ -1,5 +1,8 @@
 ---
+import { slugify } from "$src/util";
 interface Props {
+	title: string;
+	subtitle: string;
 	link: string;
 }
 ---
@@ -11,11 +14,15 @@ interface Props {
 			target="_blank"
 			rel="noopener noreferrer"
 			class="relative block aspect-video h-full w-full overflow-hidden rounded-md bg-base-300 p-2 shadow-lg transition-all duration-500 ease-in-out hover:shadow-xl motion-safe:hover:scale-105"
+			transition:name={slugify(`${Astro.props.title} ${Astro.props.subtitle}}`)}
 		>
 			<slot />
 		</a>
 	) : (
-		<div class="relative block aspect-video h-full w-full overflow-hidden rounded-md bg-base-300 shadow-lg transition-all duration-500 ease-in-out">
+		<div
+			class="relative block aspect-video h-full w-full overflow-hidden rounded-md bg-base-300 shadow-lg transition-all duration-500 ease-in-out"
+			transition:name={slugify(`${Astro.props.title} ${Astro.props.subtitle}}`)}
+		>
 			<slot />
 		</div>
 	)

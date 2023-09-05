@@ -3,34 +3,34 @@ import { Image } from "astro:assets";
 import Wrapper from "./wrapper.astro";
 
 interface Props {
-	link: string | null | undefined;
-	image: string | ImageMetadata | null;
 	title: string;
 	subtitle: string;
 	description: string | null;
+	link: string | null | undefined;
+	image: string | ImageMetadata | null;
 }
 
-const props = Astro.props;
+const { title, subtitle, description, link, image } = Astro.props;
 ---
 
-<Wrapper link={props.link || ""}>
+<Wrapper {title} {subtitle} link={link || ""}>
 	{
-		props.image &&
-			(typeof props.image === "string" ? (
+		image &&
+			(typeof image === "string" ? (
 				<Image
-					src={props.image.startsWith("http") ? props.image : `/images/${props.image}`}
-					alt={props.title}
+					src={image.startsWith("http") ? image : `/images/${image}`}
+					alt={title}
 					class="h-full w-full object-cover object-center"
 					width={500}
 					height={500}
 				/>
 			) : (
-				<Image src={props.image} alt={props.title} class="h-full w-full object-cover object-center" width={500} height={500} />
+				<Image src={image} alt={title} class="h-full w-full object-cover object-center" width={500} height={500} />
 			))
 	}
 	<div class="absolute inset-0 m-2 flex flex-col justify-end bg-gradient-to-b from-transparent to-black p-2 text-white">
-		<h3 class="my-0 text-xl font-semibold drop-shadow-sm">{props.title}</h3>
-		{props.subtitle && <h4 class="m-0 text-sm font-light drop-shadow-sm">{props.subtitle}</h4>}
-		{props.description && <div class="mt-1 text-xs font-light text-white/75 drop-shadow-sm">{props.description}</div>}
+		<h3 class="my-0 text-xl font-semibold drop-shadow-sm">{title}</h3>
+		{subtitle && <h4 class="m-0 text-sm font-light drop-shadow-sm">{subtitle}</h4>}
+		{description && <div class="mt-1 text-xs font-light text-white/75 drop-shadow-sm">{description}</div>}
 	</div>
 </Wrapper>
