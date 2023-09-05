@@ -5,6 +5,9 @@ export interface Item {
 	link: string;
 	label: string;
 	active?: boolean;
+	itemColor?: string;
+	hoverColor?: string;
+	labelColor?: string;
 }
 
 interface Props {
@@ -14,8 +17,12 @@ interface Props {
 	rotated: boolean;
 	classes: string[];
 	itemClasses?: string[];
+	itemColor?: string;
+	hoverColor?: string;
 	hexagonClasses?: string[];
 	labelClasses?: string[];
+	labelColor?: string;
+	bgColor?: string;
 }
 
 const {
@@ -25,9 +32,13 @@ const {
 	rotated = false,
 	classes = [],
 	itemClasses = [],
+	itemColor = "rgb(0, 0, 0)",
+	hoverColor = "rgb(80, 80, 80)",
 	hexagonClasses = [],
-	labelClasses = []
-} = Astro.props as Props;
+	labelClasses = [],
+	labelColor = "rgb(255, 255, 255)",
+	bgColor = "rgb(0, 0, 0)"
+} = Astro.props;
 
 let menuRows: Item[][] = [[]];
 items.forEach((item, i) => {
@@ -43,18 +54,31 @@ items.forEach((item, i) => {
 		menuRows.push([]);
 	}
 });
+
+if (!classes.find((c) => c.startsWith("[--scale:"))) {
+	classes.push("[--scale:1]");
+}
 ---
 
-<nav class={cn("HexWrapper", !classes.find((c) => c.startsWith("[--scale:")) && "[--scale:1]", rotated && "rotated", ...classes)}>
+<nav class={cn("hex-menu-wrapper", rotated && "rotated", ...classes)} style={{ "--bg-color": bgColor }}>
 	{
 		menuRows.map((row, r) => (
-			<div class={cn("HexRow", r % 2 === 1 && !rotated && "shift")}>
+			<div class={cn("hex-menu-row", r % 2 === 1 && !rotated && "shift")}>
 				{row.map((item, i) =>
 					item.link ? (
-						<a href={item.link} class={cn("HexMenuItemContainer", rotated && "rotated", ...itemClasses)} aria-label={item.label}>
+						<a
+							href={item.link}
+							class={cn("hex-menu-item-container", rotated && "rotated", ...itemClasses)}
+							style={{
+								"--item-color": item.itemColor || itemColor,
+								"--hover-color": item.hoverColor || hoverColor,
+								"--label-color": item.labelColor || labelColor
+							}}
+							aria-label={item.label}
+						>
 							<svg
 								viewBox="0 0 800 800"
-								class={cn("HexItem", rotated && "rotated", !item.label && "empty", item.active && "active")}
+								class={cn("hex-menu-item", rotated && "rotated", !item.label && "empty", item.active && "active")}
 								aria-hidden={!item.label}
 							>
 								{rotated ? (
@@ -76,10 +100,17 @@ items.forEach((item, i) => {
 							<span class={cn("label", ...labelClasses)}>{item.label}</span>
 						</a>
 					) : (
-						<div class={cn("HexMenuItemContainer", rotated && "rotated", ...itemClasses)}>
+						<div
+							class={cn("hex-menu-item-container", rotated && "rotated", ...itemClasses)}
+							style={{
+								"--item-color": item.itemColor || itemColor,
+								"--hover-color": item.hoverColor || hoverColor,
+								"--label-color": item.labelColor || labelColor
+							}}
+						>
 							<svg
 								viewBox="0 0 800 800"
-								class={cn("HexItem", rotated && "rotated", !item.label && "empty", item.active && "active")}
+								class={cn("hex-menu-item", rotated && "rotated", !item.label && "empty", item.active && "active")}
 								aria-hidden={!item.label}
 							>
 								{rotated ? (
@@ -108,9 +139,9 @@ items.forEach((item, i) => {
 </nav>
 
 <style lang="scss">
-	.HexWrapper {
+	.hex-menu-wrapper {
 		display: inline-block;
-		.HexRow {
+		.hex-menu-row {
 			height: calc(108px * var(--scale));
 			position: relative;
 			&.shift {
@@ -118,18 +149,18 @@ items.forEach((item, i) => {
 			}
 		}
 		&.rotated {
-			.HexRow {
+			.hex-menu-row {
 				height: calc(125px * var(--scale));
 			}
 		}
 	}
 
-	.HexMenuItemContainer {
+	.hex-menu-item-container {
 		--baseMargin: -38px;
 		display: inline-block;
 		position: relative;
 		top: 50%;
-		transform: translateY(-50%);
+		translate: 0 -50%;
 		width: calc(200px * var(--scale));
 		height: calc(200px * var(--scale));
 		margin-left: calc(var(--baseMargin) * var(--scale));
@@ -150,7 +181,7 @@ items.forEach((item, i) => {
 				top: calc(50% + 125px / 2 * var(--scale));
 			}
 		}
-		.HexItem {
+		.hex-menu-item {
 			width: 100%;
 			height: 100%;
 			pointer-events: none;
@@ -166,11 +197,11 @@ items.forEach((item, i) => {
 			}
 			&.active {
 				.hex {
-					@apply fill-accent;
+					fill: var(--hover-color);
 				}
 			}
 			.hex {
-				@apply fill-primary;
+				fill: var(--item-color);
 				z-index: -1;
 				backface-visibility: hidden;
 				transition:
@@ -178,12 +209,12 @@ items.forEach((item, i) => {
 					-webkit-transform 1s ease-in-out;
 				pointer-events: auto;
 				&:hover {
-					@apply fill-accent;
+					fill: var(--hover-color);
 				}
 			}
 		}
 		.label {
-			@apply text-base-content;
+			color: var(--label-color);
 			text-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
 			font-family: sans-serif;
 			white-space: nowrap;
@@ -193,13 +224,13 @@ items.forEach((item, i) => {
 			position: absolute;
 			top: 50%;
 			left: 50%;
-			transform: translate(-50%, -50%);
+			translate: -50% -50%;
 		}
 	}
 
 	.bounce:hover:not(.active):not(.empty) {
 		animation: bounce 500ms ease-in-out forwards;
-		stroke: rgb(var(--color-bg-body));
+		stroke: var(--bg-color);
 		stroke-width: 0;
 		.backface {
 			box-shadow: none;
@@ -207,18 +238,18 @@ items.forEach((item, i) => {
 	}
 	@keyframes bounce {
 		40% {
-			transform: scale(1.1);
+			scale: 1.2;
 			stroke-width: 2;
 		}
 		60% {
-			transform: scale(1);
+			scale: 1;
 		}
 		80% {
-			transform: scale(1.05);
+			scale: 1.05;
 			stroke-width: 2;
 		}
 		100% {
-			transform: scale(1);
+			scale: 1;
 		}
 	}
 </style>

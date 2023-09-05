@@ -15,7 +15,7 @@ const items: (Item | null)[] = [
 ];
 ---
 
-<HomeLayout>
+<HomeLayout title="">
 	<main class="fixed inset-0 grid grid-cols-12 grid-rows-6">
 		<span class="fixed inset-0 -left-28 bg-none transition-all duration-500 2xs:-left-16 sm:-left-4 md:-left-0 lg:left-0">
 			<Image src={me} id="me" alt="" width={1104} height={828} class="h-full w-full object-cover object-left md:object-center" />
@@ -41,7 +41,9 @@ const items: (Item | null)[] = [
 					pathname={Astro.url.pathname}
 					maxLength={3}
 					classes={["lg:[--scale:1.2]"]}
-					itemClasses={["Bounce"]}
+					itemClasses={["bounce"]}
+					itemColor="rgb(0, 136, 121)"
+					hoverColor="rgb(0, 85, 76)"
 					rotated={true}
 				/>
 			</div>
