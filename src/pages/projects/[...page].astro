@@ -1,0 +1,135 @@
+---
+import GalleryItem from "$components/gallery/item.astro";
+import PortfolioLayout from "$layouts/portfolio.astro";
+import Pagination from "$src/components/pagination.astro";
+import { slugify, sorter } from "$src/util";
+import type { GetStaticPaths, InferGetStaticPropsType, Page } from "astro";
+import { getCollection } from "astro:content";
+
+export const getStaticPaths = (async ({ paginate }) => {
+	const projects = await getCollection("projects");
+	const totalProjects = projects.length;
+	const perPage = 12;
+
+	type PaginatedTagProjects = {
+		params: {
+			tag?: string;
+			page?: string;
+		};
+		props: {
+			tag?: string;
+			tags: string[];
+			totalProjects: number;
+			page: Page<(typeof projects)[number]>;
+		};
+	};
+
+	const tags = projects.reduce<string[]>((acc, post) => {
+		post.data.tags.forEach((tag) => {
+			if (!acc.includes(tag.name)) {
+				acc.push(tag.name);
+			}
+		});
+		return acc;
+	}, []);
+
+	const allProjects: PaginatedTagProjects[] = [
+		...tags.flatMap((tag) =>
+			paginate(
+				projects.filter((p) => p.data.tags.find((t) => t.name === tag)).sort((a, b) => sorter(b.data.date, a.data.date)),
+				{
+					pageSize: perPage,
+					params: {
+						tag: slugify(tag)
+					},
+					props: {
+						tag,
+						tags,
+						totalProjects
+					}
+				}
+			)
+		),
+		...paginate(
+			projects.sort((a, b) => sorter(b.data.date, a.data.date)),
+			{
+				pageSize: perPage,
+				props: {
+					tags,
+					totalProjects
+				}
+			}
+		)
+	];
+
+	const paths = allProjects.map((path) => {
+		return {
+			...path,
+			params: {
+				page:
+					(path.params.tag || path.params.page) && [slugify(path.params.tag || ""), path.params.page].filter(Boolean).join("/")
+			}
+		};
+	});
+
+	return paths;
+}) satisfies GetStaticPaths;
+
+type Props = InferGetStaticPropsType<typeof getStaticPaths>;
+
+const {
+	tag,
+	tags,
+	totalProjects,
+	page: {
+		data,
+		currentPage,
+		lastPage,
+		size,
+		url: { next, prev }
+	}
+} = Astro.props;
+---
+
+<PortfolioLayout title="Projects">
+	<div class="flex flex-col items-center gap-4 lg:gap-6">
+		<Pagination
+			{currentPage}
+			{lastPage}
+			{tags}
+			{tag}
+			hasPages={totalProjects > size}
+			tagPathFormat="/projects/:tag"
+			position="top"
+			url={{ next, prev, format: tag ? `/projects/${slugify(tag)}/:page` : `/projects/:page` }}
+		/>
+		<div class="grid w-full grid-cols-[repeat(auto-fill,minmax(19rem,1fr))] gap-4 md:gap-6">
+			{
+				data.map((project) => (
+					<GalleryItem
+						image={project.data.image}
+						title={project.data.title}
+						subtitle={project.data.subtitle}
+						description={project.data.tags
+							.map((tag) => {
+								if (tag.description) return `${tag.name} (${tag.description})`;
+								return tag.name;
+							})
+							.join(", ")}
+						link={project.data.link}
+					/>
+				))
+			}
+		</div>
+		<Pagination
+			{currentPage}
+			{lastPage}
+			{tags}
+			{tag}
+			hasPages={totalProjects > size}
+			tagPathFormat="/projects/:tag"
+			position="bottom"
+			url={{ next, prev, format: tag ? `/projects/${slugify(tag)}/:page` : `/projects/:page` }}
+		/>
+	</div>
+</PortfolioLayout>

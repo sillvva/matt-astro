@@ -1,0 +1,17 @@
+{
+	"title": "RPG Schedule",
+	"subtitle": "Discord Bot",
+	"image": "$assets/images/preview-rpgschedule.webp",
+	"link": "https://github.com/sillvva/rpg-schedule",
+	"date": "2022-07-01T19:59:49.000Z",
+	"tags": [
+		{ "name": "Nuxt 2" },
+		{ "name": "TypeScript" },
+		{ "name": "Node.js" },
+		{ "name": "Discord.js" },
+		{ "name": "MongoDB" },
+		{ "name": "HTML" },
+		{ "name": "CSS" },
+		{ "name": "Web Sockets" }
+	]
+}

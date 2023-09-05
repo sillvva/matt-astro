@@ -1,0 +1,23 @@
+{
+	"title": "D&D Adventurers League Log Sheet",
+	"subtitle": "Version 1 (T3 Stack)",
+	"image": "$assets/images/ddal-log.jpg",
+	"link": "https://github.com/sillvva/adventurers-league-log",
+	"date": "2022-08-15T23:57:37.000Z",
+	"tags": [
+		{
+			"name": "T3 Stack",
+			"description": "create.t3.gg"
+		},
+		{ "name": "Next.js" },
+		{ "name": "NextAuth" },
+		{ "name": "TypeScript" },
+		{ "name": "Prisma" },
+		{ "name": "Planetscale" },
+		{ "name": "tRPC" },
+		{ "name": "Vercel" },
+		{ "name": "Google OAuth" },
+		{ "name": "TailwindCSS" },
+		{ "name": "DaisyUI" }
+	]
+}

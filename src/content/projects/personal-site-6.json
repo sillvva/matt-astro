@@ -1,0 +1,19 @@
+{
+	"title": "Personal Website",
+	"subtitle": "Version 6 (T3 Stack)",
+	"image": "$assets/images/preview-me3.jpeg",
+	"link": "https://github.com/sillvva/t3.dekok.app",
+	"date": "2022-07-24T15:00:03.000Z",
+	"tags": [
+		{ "name": "T3 Stack", "description": "create.t3.gg" },
+		{ "name": "Next.js" },
+		{ "name": "TypeScript" },
+		{ "name": "Prisma" },
+		{ "name": "Supabase" },
+		{ "name": "tRPC" },
+		{ "name": "Vercel" },
+		{ "name": "Cloudflare" },
+		{ "name": "TailwindCSS" },
+		{ "name": "DaisyUI" }
+	]
+}

@@ -8,6 +8,7 @@ interface Props {
 	tags?: string[];
 	tag?: string;
 	tagPathFormat?: string;
+	hasPages?: boolean;
 	url: {
 		format: string;
 		next?: string;
@@ -22,75 +23,71 @@ function* range(start: number, end: number, step: number) {
 	}
 }
 
-const { tags, tag, tagPathFormat, position, currentPage, lastPage, url } = Astro.props;
+const { tags, tag, tagPathFormat, position, currentPage, lastPage, url, hasPages } = Astro.props;
 const first = Math.max(1, currentPage - 2);
 const last = Math.min(lastPage, currentPage + 2);
 const pages = Array.from(range(first, last, 1));
 ---
 
 <div class="flex w-full">
-	<div class={cn("join flex-1", !tags && "flex justify-center")}>
-		{
-			url.prev ? (
-				<a href={url.prev} class="btn join-item btn-sm px-1 sm:btn-md sm:px-2">
-					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-						<path fill="currentColor" d="M15.41 16.58L10.83 12l4.58-4.59L14 6l-6 6l6 6l1.41-1.42Z" />
-					</svg>
-				</a>
-			) : (
-				<span class="btn btn-disabled join-item btn-sm px-1 sm:btn-md sm:px-2">
-					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-						<path fill="currentColor" d="M15.41 16.58L10.83 12l4.58-4.59L14 6l-6 6l6 6l1.41-1.42Z" />
-					</svg>
-				</span>
-			)
-		}
-		{
-			currentPage > 3 && (
-				<a href={url.format.replace(":page", "")} class="btn join-item btn-sm hidden sm:btn-md sm:inline-flex">
-					1
-				</a>
-			)
-		}
-		{currentPage > 4 && <span class="btn btn-disabled join-item btn-sm hidden sm:btn-md sm:inline-flex">...</span>}
-		{
-			pages.map((p) => (
-				<a
-					href={url.format.replace(":page", p == 1 ? "" : p.toString())}
-					class={cn(
-						"btn join-item btn-sm sm:btn-md",
-						p === currentPage && "btn-primary",
-						Math.abs(p - currentPage) > 1 && currentPage !== 1 && currentPage !== lastPage && "hidden sm:inline-flex"
-					)}
-				>
-					{p}
-				</a>
-			))
-		}
-		{lastPage - currentPage > 3 && <span class="btn btn-disabled join-item btn-sm hidden sm:btn-md sm:inline-flex">...</span>}
-		{
-			lastPage - currentPage > 2 && (
-				<a href={url.format.replace(":page", lastPage.toString())} class="btn join-item btn-sm hidden sm:btn-md sm:inline-flex">
-					{lastPage}
-				</a>
-			)
-		}
-		{
-			url.next ? (
-				<a href={url.next} class="btn join-item btn-sm px-1 sm:btn-md sm:px-2">
-					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-						<path fill="currentColor" d="M8.59 16.58L13.17 12L8.59 7.41L10 6l6 6l-6 6l-1.41-1.42Z" />
-					</svg>
-				</a>
-			) : (
-				<span class="btn btn-disabled join-item btn-sm px-1 sm:btn-md sm:px-2">
-					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-						<path fill="currentColor" d="M8.59 16.58L13.17 12L8.59 7.41L10 6l6 6l-6 6l-1.41-1.42Z" />
-					</svg>
-				</span>
-			)
-		}
-	</div>
+	{
+		hasPages ? (
+			<div class={cn("join flex-1", !tags && "flex justify-center")}>
+				{url.prev ? (
+					<a href={url.prev} class="btn join-item btn-sm px-1 sm:btn-md sm:px-2">
+						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+							<path fill="currentColor" d="M15.41 16.58L10.83 12l4.58-4.59L14 6l-6 6l6 6l1.41-1.42Z" />
+						</svg>
+					</a>
+				) : (
+					<span class="btn btn-disabled join-item btn-sm px-1 sm:btn-md sm:px-2">
+						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+							<path fill="currentColor" d="M15.41 16.58L10.83 12l4.58-4.59L14 6l-6 6l6 6l1.41-1.42Z" />
+						</svg>
+					</span>
+				)}
+				{currentPage > 3 && (
+					<a href={url.format.replace(":page", "")} class="btn join-item btn-sm hidden sm:btn-md sm:inline-flex">
+						1
+					</a>
+				)}
+				{currentPage > 4 && <span class="btn btn-disabled join-item btn-sm hidden sm:btn-md sm:inline-flex">...</span>}
+				{pages.map((p) => (
+					<a
+						href={url.format.replace(":page", p == 1 ? "" : p.toString())}
+						class={cn(
+							"btn join-item btn-sm sm:btn-md",
+							p === currentPage && "btn-primary",
+							Math.abs(p - currentPage) > 1 && currentPage !== 1 && currentPage !== lastPage && "hidden sm:inline-flex"
+						)}
+					>
+						{p}
+					</a>
+				))}
+				{lastPage - currentPage > 3 && <span class="btn btn-disabled join-item btn-sm hidden sm:btn-md sm:inline-flex">...</span>}
+				{lastPage - currentPage > 2 && (
+					<a href={url.format.replace(":page", lastPage.toString())} class="btn join-item btn-sm hidden sm:btn-md sm:inline-flex">
+						{lastPage}
+					</a>
+				)}
+				{url.next ? (
+					<a href={url.next} class="btn join-item btn-sm px-1 sm:btn-md sm:px-2">
+						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+							<path fill="currentColor" d="M8.59 16.58L13.17 12L8.59 7.41L10 6l6 6l-6 6l-1.41-1.42Z" />
+						</svg>
+					</a>
+				) : (
+					<span class="btn btn-disabled join-item btn-sm px-1 sm:btn-md sm:px-2">
+						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+							<path fill="currentColor" d="M8.59 16.58L13.17 12L8.59 7.41L10 6l6 6l-6 6l-1.41-1.42Z" />
+						</svg>
+					</span>
+				)}
+			</div>
+		) : (
+			<div class="flex-1" />
+		)
+	}
 	{
 		tags && tagPathFormat && (
 			<div class={cn("dropdown dropdown-end", position == "bottom" && "dropdown-top")}>
