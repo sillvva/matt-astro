@@ -1,7 +1,7 @@
 {
 	"title": "Personal Website",
 	"subtitle": "Version 2 (Nuxt 2)",
-	"image": "$assets/images/preview-me2.jpg",
+	"image": "$/assets/images/preview-me2.jpg",
 	"link": "https://github.com/sillvva/mattdekok.dev",
 	"date": "2022-07-01T20:05:20.000Z",
 	"tags": [

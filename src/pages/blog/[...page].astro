@@ -1,9 +1,9 @@
 ---
-import Pagination from "$components/pagination.astro";
-import PortfolioLayout from "$layouts/portfolio.astro";
-import { cn, formatDate, slugify, sorter } from "$src/util";
+import Pagination from "$/components/pagination.astro";
+import ResponsiveImage from "$/components/responsive-image.astro";
+import PortfolioLayout from "$/layouts/portfolio.astro";
+import { cn, formatDate, slugify, sorter } from "$/util";
 import type { GetStaticPaths, InferGetStaticPropsType, Page } from "astro";
-import { Image } from "astro:assets";
 import { getCollection } from "astro:content";
 
 export const getStaticPaths = (async ({ paginate }) => {
@@ -124,13 +124,11 @@ const {
 							</div>
 							<p class="text-sm">{post.data.description}</p>
 						</div>
-						<figure class="h-40">
-							<Image
+						<figure class="h-40" transition:name={slugify(`image ${post.slug}`)}>
+							<ResponsiveImage
 								src={post.data.image}
 								alt={post.data.title}
-								transition:name={slugify(`image ${post.slug}`)}
-								width={400}
-								height={400}
+								sizes={[424, 640]}
 								class="h-full w-full object-cover object-center"
 							/>
 						</figure>

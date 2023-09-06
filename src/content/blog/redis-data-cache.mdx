@@ -2,7 +2,7 @@
 title: Redis Data Cache
 description: Functions that make working with a Redis data cache simple
 date: 2023-08-24T15:32:12Z
-image: $assets/images/R.webp
+image: $/assets/images/R.webp
 tags:
   - TypeScript
   - Database
@@ -113,8 +113,8 @@ export function revalidateKeys(keys: Array<CacheKey | "" | false | null | undefi
 To show how simple these functions are to use, here is an example:
 
 ```typescript
-import { cache, mcache, type CacheKey } from "$src/server/cache";
-import { prisma } from "$src/server/db";
+import { cache, mcache, type CacheKey } from "$/server/cache";
+import { prisma } from "$/server/db";
 
 // A function which fetches data from a DB or API
 export async function getModel(id: string): Model | null {

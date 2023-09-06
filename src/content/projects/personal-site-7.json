@@ -1,7 +1,7 @@
 {
 	"title": "Personal Website",
 	"subtitle": "Version 7 (Astro)",
-	"image": "$assets/images/preview-me3.jpeg",
+	"image": "$/assets/images/preview-me3.jpg",
 	"link": "https://github.com/sillvva/matt-astro",
 	"date": "2023-09-01T14:17:31.724Z",
 	"tags": [{ "name": "Astro" }, { "name": "TypeScript" }, { "name": "Vercel" }, { "name": "TailwindCSS" }, { "name": "DaisyUI" }]

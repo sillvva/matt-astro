@@ -1,9 +1,9 @@
 ---
-import { cn } from "$src/util";
+import { cn } from "$/util";
 ---
 
 <script>
-	import { copy } from "$assets/js/svgs";
+	import { copy } from "$/assets/js/svgs";
 
 	function copyBlock(el: Element) {
 		navigator.clipboard.writeText(el.parentNode?.querySelector("pre")?.innerText || "");

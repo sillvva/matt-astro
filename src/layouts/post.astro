@@ -1,7 +1,7 @@
 ---
-import type { Props as HeadProps } from "$components/head.astro";
-import ResponsiveImage from "$src/components/responsive-image.astro";
-import { formatDate, slugify, sorter } from "$src/util";
+import type { Props as HeadProps } from "$/components/head.astro";
+import ResponsiveImage from "$/components/responsive-image.astro";
+import { formatDate, slugify, sorter } from "$/util";
 import PortfolioLayout from "./portfolio.astro";
 
 interface Props extends HeadProps {
@@ -58,7 +58,7 @@ const slug = Astro.props.slug;
 						<ResponsiveImage
 							src={image}
 							alt={title}
-							sizes={[300, 600, 900]}
+							sizes={[500, 700, 900]}
 							class="h-full w-full object-cover object-center shadow shadow-black/50"
 						/>
 					</div>

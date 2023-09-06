@@ -1,5 +1,5 @@
 ---
-import { cn } from "$src/util";
+import { cn } from "$/util";
 import ResponsiveImage from "../responsive-image.astro";
 const alt = Astro.props.alt || "";
 ---
@@ -14,7 +14,7 @@ const alt = Astro.props.alt || "";
 		<ResponsiveImage
 			src={Astro.props.src}
 			alt={alt}
-			sizes={[300, 600, 900]}
+			sizes={[424, 640, 900]}
 			class={cn(
 				"shadow-md shadow-black/15 motion-safe:hover:shadow-lg motion-safe:hover:shadow-black/25",
 				!alt.includes("no-aspect") && "object-cover md:object-contain"
