@@ -124,11 +124,10 @@ const {
 							</div>
 							<p class="text-sm">{post.data.description}</p>
 						</div>
-						<figure class="h-40">
+						<figure class="h-40" transition:name={slugify(`image ${post.slug}`)}>
 							<ResponsiveImage
 								src={post.data.image}
 								alt={post.data.title}
-								transition:name={slugify(`image ${post.slug}`)}
 								sizes={[424, 640]}
 								class="h-full w-full object-cover object-center"
 							/>
