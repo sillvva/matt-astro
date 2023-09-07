@@ -2,7 +2,7 @@
 title: SchemaForm Component for SvelteKit
 description: A custom form component that validates most validation library schemas.
 date: 2023-08-24T12:01:12.000Z
-updated: 2023-09-07T05:49:16.566Z
+updated: 2023-09-07T12:50:55.859Z
 image: $/assets/images/migrating-to-svelte-kit-preview.webp
 tags:
   - TypeScript
@@ -214,7 +214,7 @@ The following is a self-contained SvelteKit component which extends SvelteKit fo
 	```
 </CombinedBlock>
 
-## Example
+### Example
 
 Using this component is very simple. In your `+page.svelte`, simply add it like you would another form and pass it an object schema and a data object. It also returns a `saving` boolean and `errors` object. Both `data` and `errors` are typesafe based on the the structure of your object schema.
 
@@ -266,6 +266,71 @@ export const actions = {
 	}
 };
 ```
+
+## Extending the Error Checking
+
+The component also returns a `validate` event that you can use to extend the error checking. It returns the following:
+
+```yaml
+data: The validated data object
+changes: The names of the fields that have changed as an array of strings
+errors: The errors object, which is a clone of the data object with empty strings as values
+setError: A function to set an error
+```
+
+The `setError` function is also type-safe. It takes two arguments: the `path` to the error as a string, and the error `message` as a string. The `path` parameter will have autocomplete based on a dot-separated string that corresponds to the data object path. See the [Field Names](#field-names) section for more information.
+
+You can use this event to add custom error checking to your form. For example, if you have a password field and a confirm password field, you can use the `validate` event to check that they match.
+
+<CombinedBlock>
+	```html
+	<!-- +page.svelte -->
+	<script lang="ts">
+		import SchemaForm from "$lib/components/SchemaForm.svelte";
+		import { subscribeSchema } from "$lib/types/schemas";
+
+		let data = { email: "", password: "", confirmPassword: "" };
+	</script>
+	```
+	```tsx
+	<SchemaForm 
+		action="?/subscribe"
+		schema={subscribeSchema}
+		data={data}
+		let:saving
+		let:errors
+		resetOnSave
+		on:validate={(event) => {
+			const { data, setError } = event.detail;
+			if (data.password !== data.confirmPassword) {
+				setError("confirmPassword", "Passwords do not match");
+			}
+		}}>
+		<div class="field">
+			<label>Email</label>
+			<input name="email" bind:value={data.email} required />
+			{#if errors.email}
+				<span class="error">{errors.email}</span>
+			{/if}
+		</div>
+		<div class="field">
+			<label>Password</label>
+			<input name="password" type="password" bind:value={data.password} required />
+			{#if errors.password}
+				<span class="error">{errors.password}</span>
+			{/if}
+		</div>
+		<div class="field">
+			<label>Confirm Password</label>
+			<input name="confirmPassword" type="password" bind:value={data.confirmPassword} required />
+			{#if errors.confirmPassword}
+				<span class="error">{errors.confirmPassword}</span>
+			{/if}
+		</div>
+		<button disabled={saving}>Subscribe</button>
+	</SchemaForm>
+	```
+</CombinedBlock>
 
 ## Some Things to Note
 
