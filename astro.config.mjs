@@ -8,7 +8,7 @@ export default defineConfig({
 	integrations: [tailwind(), mdx()],
 	markdown: {
 		syntaxHighlight: "prism",
-		remarkPlugins: [[remarkToc, { tight: true }]]
+		remarkPlugins: [[remarkToc, { tight: true, maxDepth: 3 }]]
 	},
 	image: {
 		domains: ["slxazldgfeytirfrculz.supabase.co"]

@@ -97,4 +97,8 @@ const slug = Astro.props.slug;
 	.post-body #table-of-contents + ul li {
 		@apply flex flex-col gap-2;
 	}
+
+	.post-body #table-of-contents ~ :not(#table-of-contents):not(ul):not(li) + ul {
+		@apply mb-6;
+	}
 </style>
