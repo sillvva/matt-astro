@@ -112,10 +112,16 @@
 	}
 	.button-row {
 		display: flex;
+		flex-wrap: wrap;
 		gap: 1rem;
 		padding-bottom: 1rem;
 		> p {
 			display: contents;
+		}
+		@media (max-width: 640px) {
+			a {
+				flex: 1;
+			}
 		}
 	}
 }
