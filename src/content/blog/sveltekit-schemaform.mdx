@@ -1,13 +1,16 @@
 ---
 title: SchemaForm Component for SvelteKit
 description: A custom form component that validates most validation library schemas.
-date: 2023-08-24T12:01:12Z
+date: 2023-08-24T12:01:12.000Z
+updated: 2023-09-07T12:50:55.859Z
 image: $/assets/images/migrating-to-svelte-kit-preview.webp
 tags:
   - TypeScript
   - SvelteKit
 ---
 import CombinedBlock from "$/components/markdown/combined-block.astro";
+
+## Table of Contents
 
 ## The Component
 
@@ -46,7 +49,7 @@ The following is a self-contained SvelteKit component which extends SvelteKit fo
 				data?: Infer<TSchema>;
 				changes: typeof changes;
 				errors: typeof errors;
-				addError: typeof addError;
+				setError: typeof setError;
 			};
 		}>();
 
@@ -63,23 +66,20 @@ The following is a self-contained SvelteKit component which extends SvelteKit fo
 		export let errors = { form: "", ...emptyClone(data) };
 
 		let initialErrors = structuredClone(errors);
-		function addError(keysArray: Array<string | number | symbol>, value: string) {
-			errors = setNestedError(errors, keysArray, value);
-		}
 
 		async function checkErrors(data: InferIn<TSchema>) {
 			errors = { form: "", ...emptyClone(data) };
 			const result = await validate(schema, data);
 			if ("data" in result) {
-				dispatch("validate", { data: (validatedData = result.data), changes, errors, addError });
+				dispatch("validate", { data: (validatedData = result.data), changes, errors, setError });
 			} else if ("issues" in result) {
 				result.issues.forEach((issue) => {
 					if (!issue.path) issue.path = ["form"];
 					if (saving || changes.includes(issue.path.join("."))) {
-						addError(issue.path, issue.message);
+						setError(issue.path.join(".") as Paths<typeof errors, 4>, issue.message);
 					}
 				});
-				dispatch("validate", { changes, errors, addError });
+				dispatch("validate", { changes, errors, setError });
 			}
 		}
 
@@ -143,28 +143,31 @@ The following is a self-contained SvelteKit component which extends SvelteKit fo
 			return result;
 		}
 
-		function setNestedError<TErrorObj extends object>(
-			err: TErrorObj,
-			keysArray: Array<string | number | symbol>,
-			value: string,
-			previousKeys: Array<string | number | symbol> = []
-		) {
-			if (!keysArray.length) throw new Error("Keys array must have at least one key");
-			const key = keysArray.shift() as keyof TErrorObj;
-			const path = [...previousKeys, key]
-				.map((c, i) => {
-					if (typeof c === "number") return `[${c}]`;
-					return `${i == 0 ? "" : "."}${c.toString()}`;
-				})
-				.join("");
-			if (!(key in err)) throw new Error(`Key ${path} not found`);
-			if (keysArray.length && ["Object", "Array"].includes((err[key] as object).constructor.name)) {
-				err[key] = setNestedError(err[key], keysArray, value, [...previousKeys, key]);
-			} else {
-				if (keysArray.length) throw new Error(`Cannot set nested error on non-object ${path}`);
-				if (!err[key]) err[key] = value.trim() as TErrorObj[keyof TErrorObj];
+		type Join<K, P> = K extends string | number
+			? P extends string | number
+				? `${K}${"" extends P ? "" : "."}${P}`
+				: never
+			: never;
+
+		type Prev = [never, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, ...0[]];
+
+		type Paths<T, D extends number = 10> = [D] extends [never]
+			? never
+			: T extends object
+			? { [K in keyof T]-?: K extends string | number ? `${K}` | Join<K, Paths<T[K], Prev[D]>> : never }[keyof T]
+			: "";
+
+		function setError(path: Paths<typeof errors, 4>, value: string) {
+			const keys = `${path}`.split(".");
+			const lastKey = keys.pop();
+			const pointer = keys.reduce((accumulator: { [x: string]: any }, currentValue: string | number) => {
+				if (accumulator[currentValue] === undefined) accumulator[currentValue] = {};
+				return accumulator[currentValue];
+			}, errors);
+			if (typeof lastKey !== "undefined") {
+				pointer[lastKey] = value;
+				errors = errors;
 			}
-			return err;
 		}
 	</script>
 	```
@@ -211,7 +214,7 @@ The following is a self-contained SvelteKit component which extends SvelteKit fo
 	```
 </CombinedBlock>
 
-## Example
+### Example
 
 Using this component is very simple. In your `+page.svelte`, simply add it like you would another form and pass it an object schema and a data object. It also returns a `saving` boolean and `errors` object. Both `data` and `errors` are typesafe based on the the structure of your object schema.
 
@@ -263,6 +266,71 @@ export const actions = {
 	}
 };
 ```
+
+## Extending the Error Checking
+
+The component also returns a `validate` event that you can use to extend the error checking. It returns the following:
+
+```yaml
+data: The validated data object
+changes: The names of the fields that have changed as an array of strings
+errors: The errors object, which is a clone of the data object with empty strings as values
+setError: A function to set an error
+```
+
+The `setError` function is also type-safe. It takes two arguments: the `path` to the error as a string, and the error `message` as a string. The `path` parameter will have autocomplete based on a dot-separated string that corresponds to the data object path. See the [Field Names](#field-names) section for more information.
+
+You can use this event to add custom error checking to your form. For example, if you have a password field and a confirm password field, you can use the `validate` event to check that they match.
+
+<CombinedBlock>
+	```html
+	<!-- +page.svelte -->
+	<script lang="ts">
+		import SchemaForm from "$lib/components/SchemaForm.svelte";
+		import { subscribeSchema } from "$lib/types/schemas";
+
+		let data = { email: "", password: "", confirmPassword: "" };
+	</script>
+	```
+	```tsx
+	<SchemaForm 
+		action="?/subscribe"
+		schema={subscribeSchema}
+		data={data}
+		let:saving
+		let:errors
+		resetOnSave
+		on:validate={(event) => {
+			const { data, setError } = event.detail;
+			if (data.password !== data.confirmPassword) {
+				setError("confirmPassword", "Passwords do not match");
+			}
+		}}>
+		<div class="field">
+			<label>Email</label>
+			<input name="email" bind:value={data.email} required />
+			{#if errors.email}
+				<span class="error">{errors.email}</span>
+			{/if}
+		</div>
+		<div class="field">
+			<label>Password</label>
+			<input name="password" type="password" bind:value={data.password} required />
+			{#if errors.password}
+				<span class="error">{errors.password}</span>
+			{/if}
+		</div>
+		<div class="field">
+			<label>Confirm Password</label>
+			<input name="confirmPassword" type="password" bind:value={data.confirmPassword} required />
+			{#if errors.confirmPassword}
+				<span class="error">{errors.confirmPassword}</span>
+			{/if}
+		</div>
+		<button disabled={saving}>Subscribe</button>
+	</SchemaForm>
+	```
+</CombinedBlock>
 
 ## Some Things to Note
 

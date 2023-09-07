@@ -9,7 +9,6 @@
 		{ "name": "Node.js" },
 		{ "name": "Heroku" },
 		{ "name": "TypeScript" },
-		{ "name": "HTML" },
 		{ "name": "SCSS" },
 		{ "name": "Bootstrap" },
 		{ "name": "Stripe" }
