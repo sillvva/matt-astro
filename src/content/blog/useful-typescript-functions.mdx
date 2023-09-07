@@ -11,7 +11,7 @@ tags:
 
 ## Set Nested Value
 
-Below is a `setValue` function which takes an object, a path, and a value. The path is a string of dot-separated keys. The function should set the value at the given path. The path parameter will have autocomplete and the value parameter will be required to be of the same type as the property at that path. See the playground for examples.
+Below is a `setValue` function which takes an object, a path, and a value. The path is a string of dot-separated keys. The function should set the value at the given path. The path parameter will have autocomplete and the value parameter will be required to be of the same type as the property at that path. See the playground for examples. This function works very similarly to [lodash.set](https://lodash.com/docs/4.17.15#set), but with stronger type safety.
 
 The [SchemaForm](/blog/sveltekit-schemaform) component for SvelteKit is also using a modified version of this function.
 
