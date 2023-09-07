@@ -110,4 +110,12 @@
 			max-width: calc(100vw - 24rem);
 		}
 	}
+	.button-row {
+		display: flex;
+		gap: 1rem;
+		padding-bottom: 1rem;
+		> p {
+			display: contents;
+		}
+	}
 }

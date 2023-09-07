@@ -3,25 +3,25 @@ import { cn } from "$/util";
 
 interface Props {
 	link?: string;
-	label: string;
+	label?: string;
 	active?: boolean;
 	activeClick?: boolean;
 	itemClasses: string[];
 }
 
-const { active = false, itemClasses = ["Button5"], activeClick = false, link = "", label } = Astro.props;
+const { active = false, itemClasses = ["button5"], activeClick = false, link = "", label } = Astro.props;
 
 const buttons = {
-	Button1: "Button1",
-	Button2: "Button2",
-	Button3: "Button3",
-	Button4: "Button4",
-	Button5: "Button5",
-	Button6: "Button6"
+	button1: "button1",
+	button2: "button2",
+	button3: "button3",
+	button4: "button4",
+	button5: "button5",
+	button6: "button6"
 } as Record<string, string>;
 
 const propClasses = itemClasses.map((c) => buttons[c] ?? c);
-const classes = ["Button", active ? "Active" : "", ...propClasses];
+const classes = ["animated-button", active ? "active" : "", ...propClasses];
 
 const style = {
 	...(active && !activeClick && { cursor: "default" })
@@ -35,15 +35,15 @@ const props = {
 ---
 
 <a href={link} {...props}>
-	{label}
+	{label || <slot />}
 </a>
 
 <style lang="scss">
-	a.Button {
+	a.animated-button {
 		@apply relative select-none px-6 py-4 uppercase no-underline duration-200 ease-linear;
 	}
 
-	.Button1 {
+	.button1 {
 		border-radius: 0.5rem;
 		box-shadow: 0 0 0 #0ca;
 		overflow: hidden;
@@ -57,7 +57,7 @@ const props = {
 			height: 3px;
 			transition: 0.25s linear;
 		}
-		&.Active {
+		&.active {
 			@apply bg-base-300;
 		}
 		&:hover {
@@ -65,7 +65,7 @@ const props = {
 			box-shadow: 0 0 10px currentcolor;
 		}
 		&:hover,
-		&.Active,
+		&.active,
 		&:focus {
 			&::after {
 				width: 100%;
@@ -73,7 +73,7 @@ const props = {
 		}
 	}
 
-	.Button2 {
+	.button2 {
 		border-radius: 0.5rem;
 		box-shadow: 0 0 0 currentcolor;
 		overflow: hidden;
@@ -87,7 +87,7 @@ const props = {
 			height: 3px;
 			transition: 0.25s linear;
 		}
-		&.Active {
+		&.active {
 			@apply bg-base-300;
 		}
 		&:hover {
@@ -95,7 +95,7 @@ const props = {
 			box-shadow: 0 0 10px currentcolor;
 		}
 		&:hover,
-		&.Active,
+		&.active,
 		&:focus {
 			&::after {
 				left: 0;
@@ -104,7 +104,7 @@ const props = {
 		}
 	}
 
-	.Button3 {
+	.button3 {
 		&::before,
 		&::after {
 			content: "";
@@ -127,7 +127,7 @@ const props = {
 			border-bottom: 0 solid currentcolor;
 			border-right: 0 solid currentcolor;
 		}
-		&.Active {
+		&.active {
 			@apply bg-base-300;
 		}
 		&:hover {
@@ -135,7 +135,7 @@ const props = {
 			box-shadow: 0 0 10px currentcolor;
 		}
 		&:hover,
-		&.Active,
+		&.active,
 		&:focus {
 			&::before,
 			&::after {
@@ -146,7 +146,7 @@ const props = {
 		}
 	}
 
-	.Button4 {
+	.button4 {
 		&::before,
 		&::after {
 			content: "";
@@ -169,7 +169,7 @@ const props = {
 			border-bottom: 3px solid currentcolor;
 			border-right: 3px solid currentcolor;
 		}
-		&.Active {
+		&.active {
 			@apply bg-base-300;
 		}
 		&:hover {
@@ -177,7 +177,7 @@ const props = {
 			box-shadow: 0 0 10px currentcolor;
 		}
 		&:hover,
-		&.Active,
+		&.active,
 		&:focus {
 			&::before,
 			&::after {
@@ -188,7 +188,7 @@ const props = {
 		}
 	}
 
-	.Button5 {
+	.button5 {
 		&::before,
 		&::after {
 			transition: 0.35s linear;
@@ -201,16 +201,16 @@ const props = {
 			height: calc(100% - 2px);
 			opacity: 0;
 		}
-		&.Active {
+		&.active {
 			// @apply bg-base-300;
 		}
-		&:hover:not(.Active) {
+		&:hover:not(.active) {
 			@apply bg-base-300/60;
 			// box-shadow: 0 0 10px currentcolor;
 		}
 		&:hover,
 		&:focus,
-		&.Active {
+		&.active {
 			&::before,
 			&::after {
 				opacity: 1;
@@ -224,7 +224,7 @@ const props = {
 		}
 	}
 
-	.Button6 {
+	.button6 {
 		&::before,
 		&::after {
 			transition: 0.35s linear;
@@ -237,15 +237,15 @@ const props = {
 			height: calc(100% - 2px);
 			opacity: 0;
 		}
-		&.Active {
+		&.active {
 			@apply bg-base-300;
 		}
-		&:hover:not(.Active) {
+		&:hover:not(.active) {
 			@apply bg-base-300/60;
 		}
 		&:hover,
 		&:focus,
-		&.Active {
+		&.active {
 			&::before,
 			&::after {
 				opacity: 1;
