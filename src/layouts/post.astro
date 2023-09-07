@@ -83,8 +83,18 @@ const slug = Astro.props.slug;
 				)
 			}
 		</section>
-		<section>
+		<section class="post-body">
 			<slot />
 		</section>
 	</article>
 </PortfolioLayout>
+
+<style is:global>
+	.post-body :is(h1, h2, h3, h4):first-child {
+		margin-top: 0 !important;
+	}
+
+	.post-body #table-of-contents + ul li {
+		@apply flex flex-col gap-2;
+	}
+</style>

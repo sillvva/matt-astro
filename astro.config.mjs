@@ -1,13 +1,14 @@
+import mdx from "@astrojs/mdx";
 import tailwind from "@astrojs/tailwind";
 import { defineConfig } from "astro/config";
-
-import mdx from "@astrojs/mdx";
+import remarkToc from "remark-toc";
 
 // https://astro.build/config
 export default defineConfig({
 	integrations: [tailwind(), mdx()],
 	markdown: {
-		syntaxHighlight: "prism"
+		syntaxHighlight: "prism",
+		remarkPlugins: [[remarkToc, { tight: true }]]
 	},
 	image: {
 		domains: ["slxazldgfeytirfrculz.supabase.co"]
