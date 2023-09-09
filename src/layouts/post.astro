@@ -58,6 +58,7 @@ const slug = Astro.props.slug;
 						<ResponsiveImage
 							src={image}
 							alt={title}
+							id="post-image"
 							sizes={[500, 700, 900]}
 							class="h-full w-full object-cover object-center shadow shadow-black/50"
 						/>
@@ -87,7 +88,39 @@ const slug = Astro.props.slug;
 			<slot />
 		</section>
 	</article>
+
+	<button id="to-top" class="btn btn-primary fixed bottom-4 right-4 z-20 hidden aspect-square h-14 w-14 rounded-full p-2">
+		<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
+			><path fill="currentColor" d="M14 20h-4v-9l-3.5 3.5l-2.42-2.42L12 4.16l7.92 7.92l-2.42 2.42L14 11v9Z"></path></svg
+		>
+	</button>
 </PortfolioLayout>
+
+<script>
+	const btnScrollToTop = document.querySelector("#to-top") as HTMLButtonElement;
+	const postImage = document.querySelector("#post-image") as HTMLImageElement;
+	const postImagePosition = postImage?.getBoundingClientRect().top || 0;
+	const postImageHeight = postImage?.getBoundingClientRect().height || 0;
+
+	btnScrollToTop?.addEventListener("click", () => {
+		window.scrollTo({
+			top: 0,
+			behavior: "smooth"
+		});
+	});
+
+	window.addEventListener("scroll", () => {
+		requestAnimationFrame(() => {
+			if (window.scrollY > postImagePosition + postImageHeight) {
+				btnScrollToTop.classList.add("flex");
+				btnScrollToTop.classList.remove("hidden");
+			} else {
+				btnScrollToTop.classList.add("hidden");
+				btnScrollToTop.classList.remove("flex");
+			}
+		});
+	});
+</script>
 
 <style is:global>
 	.post-body :is(h1, h2, h3, h4):first-child {
