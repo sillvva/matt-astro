@@ -30,7 +30,7 @@ const style = {
 const props = {
 	class: cn(...classes),
 	...(Object.keys(style).length && { style }),
-	...(link.startsWith("http") && { target: "_blank" })
+	...(link.startsWith("http") && { target: "_blank", rel: "noopener noreferrer" })
 };
 ---
 

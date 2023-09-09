@@ -2,18 +2,32 @@
 import AnimatedButton from "../animated-button.astro";
 
 const { href } = Astro.props;
-const parts = href.split("::");
-const url = parts[1];
-const isButton = parts[0] === "btn";
+const parts = (href as string).split("::");
+const url = parts.pop();
+const type = parts.shift();
+
+const youTubeId = url?.startsWith("https://www.youtube.com") ? url.match(/v=([^&]+)/)?.[1] : null;
 ---
 
 {
-	isButton ? (
-		<AnimatedButton link={url} itemClasses={["button3 border-[1px] border-dotted border-secondary text-secondary"]}>
+	type === "btn" ? (
+		<AnimatedButton link={url} itemClasses={["button3 border border-dotted border-secondary text-secondary"]}>
 			<slot />
 		</AnimatedButton>
+	) : type === "embed" && youTubeId ? (
+		<iframe src={`https://www.youtube.com/embed/${youTubeId}`} class="aspect-video w-full max-w-2xl border-0" allowfullscreen>
+			<slot />
+		</iframe>
+	) : type === "embed-center" && youTubeId ? (
+		<iframe
+			src={`https://www.youtube.com/embed/${youTubeId}`}
+			class="mx-auto aspect-video w-full max-w-2xl border-0"
+			allowfullscreen
+		>
+			<slot />
+		</iframe>
 	) : (
-		<a href={Astro.props.href} class="text-primary">
+		<a href={url} class="text-primary">
 			<slot />
 		</a>
 	)

@@ -4,6 +4,7 @@ import ResponsiveImage from "$/components/responsive-image.astro";
 import PortfolioLayout from "$/layouts/portfolio.astro";
 import { cn, formatDate, slugify, sorter } from "$/util";
 import type { GetStaticPaths, InferGetStaticPropsType, Page } from "astro";
+import { Image } from "astro:assets";
 import { getCollection } from "astro:content";
 
 export const getStaticPaths = (async ({ paginate }) => {
@@ -125,12 +126,32 @@ const {
 							<p class="text-sm">{post.data.description}</p>
 						</div>
 						<figure class="h-40" transition:name={slugify(`image ${post.slug}`)}>
-							<ResponsiveImage
-								src={post.data.image}
-								alt={post.data.title}
-								sizes={[424, 640]}
-								class="h-full w-full object-cover object-center"
-							/>
+							{typeof post.data.image === "string" ? (
+								post.data.image.match(/v=([^&]+)/)?.[1] ? (
+									<Image
+										src={`https://img.youtube.com/vi/${post.data.image.match(/v=([^&]+)/)?.[1]}/0.jpg`}
+										alt={post.data.title}
+										class="h-full w-full object-cover object-center"
+										width={640}
+										height={360}
+									/>
+								) : (
+									<Image
+										src={post.data.image}
+										alt={post.data.title}
+										class="h-full w-full object-cover object-center"
+										width={640}
+										height={360}
+									/>
+								)
+							) : (
+								<ResponsiveImage
+									src={post.data.image}
+									alt={post.data.title}
+									sizes={[424, 640]}
+									class="h-full w-full object-cover object-center"
+								/>
+							)}
 						</figure>
 					</a>
 				))
