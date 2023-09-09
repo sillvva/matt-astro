@@ -9,8 +9,7 @@ const blogCollection = defineCollection({
 		z.object({
 			title: z.string(),
 			description: z.string(),
-			image: image(),
-			video: z.string().url().startsWith("https://www.youtube.com").includes("v=").optional(),
+			image: z.union([image(), z.string().url().startsWith("https://www.youtube.com").includes("v=")]),
 			date: z.date(),
 			updated: z.date().optional(),
 			tags: z.array(z.string()).default([]),

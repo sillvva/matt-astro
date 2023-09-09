@@ -10,24 +10,23 @@ interface Props extends HeadProps {
 		updated?: Date | undefined;
 		title: string;
 		description: string;
-		image: ImageMetadata;
-		video?: string;
+		image: ImageMetadata | string;
 		full: boolean;
 		date: Date;
 		tags: string[];
 	};
 }
 
-const { title, description, image, video, full, date, updated, tags } = Astro.props.data;
+const { title, description, image, full, date, updated, tags } = Astro.props.data;
 const slug = Astro.props.slug;
 
-const youTubeId = video?.match(/v=([^&]+)/)?.[1];
+const youTubeId = typeof image === "string" && image.match(/v=([^&]+)/)?.[1];
 ---
 
 <PortfolioLayout
 	{title}
 	{description}
-	image={image.src}
+	image={typeof image === "string" ? image : image.src}
 	stylesheets={["/styles/prism-one-dark.css"]}
 	articleMeta={{
 		published_date: date.toISOString(),
@@ -54,6 +53,13 @@ const youTubeId = video?.match(/v=([^&]+)/)?.[1];
 				!full &&
 					(youTubeId ? (
 						<iframe src={`https://www.youtube.com/embed/${youTubeId}`} class="aspect-video w-full border-0" allowfullscreen />
+					) : typeof image === "string" ? (
+						<img
+							src={image}
+							alt={title}
+							id="post-image"
+							class="h-full w-full object-cover object-center shadow shadow-black/50"
+						/>
 					) : (
 						<div class="relative aspect-video">
 							<ResponsiveImage
