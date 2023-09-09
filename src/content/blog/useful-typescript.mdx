@@ -56,6 +56,10 @@ The [SchemaForm](/blog/sveltekit-schemaform) component for SvelteKit is also usi
   [Source](btn::https://stackoverflow.com/questions/67607069/typescript-set-value-type-of-a-deep-nested-object-path)
 </div>
 
+<div class="warning-box">
+  The sort of recursive conditional types with template literal type manipulation being done in `Paths<T>` and `PathValue<T, P>` are taxing on the compiler (you can easily get explicit recursion limit warnings, or worse, exponentially long compile times) and have various edge cases.
+</div>
+
 ```typescript
 type Idx<T, K> = K extends keyof T ? T[K] :
   number extends keyof T ? K extends `${number}` ? T[number] : never : never
