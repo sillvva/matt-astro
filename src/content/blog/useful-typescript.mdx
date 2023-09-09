@@ -38,6 +38,14 @@ declare global {
 }
 ```
 
+<details>
+  <summary>Using in SvelteKit</summary>
+
+  In SvelteKit, you can add the above type declaration to a file in the `src` directory, such as `src/types.d.ts`. Then you can add view transitions to your SvelteKit app by following the video below, ignoring the `@ts-ignore` comments.
+
+  [YouTube](embed::https://www.youtube.com/watch?v=q_2irZO4SS8)
+</details>
+
 ## Set Nested Value
 
 Below is a `setValue` function which takes an object, a path, and a value. The path is a string of dot-separated keys. The function should set the value at the given path. The path parameter will have autocomplete and the value parameter will be required to be of the same type as the property at that path. See the playground for examples. This function works very similarly to [lodash.set](https://lodash.com/docs/4.17.15#set), but with stronger type safety.

@@ -15,9 +15,13 @@ const youTubeId = url?.startsWith("https://www.youtube.com") ? url.match(/v=([^&
 			<slot />
 		</AnimatedButton>
 	) : type === "embed" && youTubeId ? (
+		<iframe src={`https://www.youtube.com/embed/${youTubeId}`} class="aspect-video w-full max-w-2xl border-0" allowfullscreen>
+			<slot />
+		</iframe>
+	) : type === "embed-center" && youTubeId ? (
 		<iframe
 			src={`https://www.youtube.com/embed/${youTubeId}`}
-			class="mx-auto aspect-video w-full max-w-xl border-0"
+			class="mx-auto aspect-video w-full max-w-2xl border-0"
 			allowfullscreen
 		>
 			<slot />
