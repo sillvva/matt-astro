@@ -2,12 +2,41 @@
 title: Useful TypeScript Code
 description: Useful functions and types for TypeScript
 date: 2023-09-07T03:18:13.471Z
+updated: 2023-09-09T01:50:56.088Z
 image: $/assets/images/typescript.png
 tags:
   - TypeScript
 ---
 
 ## Table of Contents
+
+## Type Declarations
+
+### View Transition
+
+The `startViewTransition` function is a method on the `document` object which enables view transitions. The following types are based on the documentation at MDN. Since the API is currently experimental, you may need to add the following type to your type declaration file to avoid errors. 
+
+<div class="button-row">
+  [Google Article](btn::https://developer.chrome.com/docs/web-platform/view-transitions/)
+  [MDN](btn::https://developer.mozilla.org/en-US/docs/Web/API/Document/startViewTransition)
+</div>
+
+```typescript
+declare global {
+  interface ViewTransition {
+		finished: Promise<void>;
+		ready: Promise<void>;
+		updateCallbackDone: Promise<void>;
+		skipTransition: () => void;
+	}
+
+	type ViewTransitionCallback = (() => Promise<void>) | (() => void);
+
+	interface Document {
+		startViewTransition: (callback: ViewTransitionCallback) => ViewTransition;
+	}
+}
+```
 
 ## Set Nested Value
 
