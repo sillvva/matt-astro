@@ -10,20 +10,18 @@ interface Props extends HeadProps {
 		updated?: Date | undefined;
 		title: string;
 		description: string;
-		image: {
-			height: number;
-			src: string;
-			width: number;
-			format: "png" | "webp" | "jpeg" | "jpg" | "svg" | "tiff" | "gif";
-		};
+		image: ImageMetadata;
+		video?: string;
 		full: boolean;
 		date: Date;
 		tags: string[];
 	};
 }
 
-const { title, description, image, full, date, updated, tags } = Astro.props.data;
+const { title, description, image, video, full, date, updated, tags } = Astro.props.data;
 const slug = Astro.props.slug;
+
+const youTubeId = video?.match(/v=([^&]+)/)?.[1];
 ---
 
 <PortfolioLayout
@@ -53,17 +51,20 @@ const slug = Astro.props.slug;
 				}
 			</p>
 			{
-				!full && (
-					<div class="relative aspect-video">
-						<ResponsiveImage
-							src={image}
-							alt={title}
-							id="post-image"
-							sizes={[500, 700, 900]}
-							class="h-full w-full object-cover object-center shadow shadow-black/50"
-						/>
-					</div>
-				)
+				!full &&
+					(youTubeId ? (
+						<iframe src={`https://www.youtube.com/embed/${youTubeId}`} class="aspect-video w-full border-0" allowfullscreen />
+					) : (
+						<div class="relative aspect-video">
+							<ResponsiveImage
+								src={image}
+								alt={title}
+								id="post-image"
+								sizes={[500, 700, 900]}
+								class="h-full w-full object-cover object-center shadow shadow-black/50"
+							/>
+						</div>
+					))
 			}
 			{
 				tags.length && (

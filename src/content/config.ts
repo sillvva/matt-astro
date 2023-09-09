@@ -10,6 +10,7 @@ const blogCollection = defineCollection({
 			title: z.string(),
 			description: z.string(),
 			image: image(),
+			video: z.string().url().startsWith("https://www.youtube.com").includes("v=").optional(),
 			date: z.date(),
 			updated: z.date().optional(),
 			tags: z.array(z.string()).default([]),
