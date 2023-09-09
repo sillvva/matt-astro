@@ -7,6 +7,7 @@ image: $/assets/images/typescript.png
 tags:
   - TypeScript
 ---
+import Collapsible from "$/components/markdown/collapsible.astro";
 
 ## Table of Contents
 
@@ -38,13 +39,11 @@ declare global {
 }
 ```
 
-<details>
-  <summary>Using in SvelteKit</summary>
-
+<Collapsible title="Using in SvelteKit">
   In SvelteKit, you can add the above type declaration to a file in the `src` directory, such as `src/types.d.ts`. Then you can add view transitions to your SvelteKit app by following the video below, ignoring the `@ts-ignore` comments.
 
   [YouTube](embed::https://www.youtube.com/watch?v=q_2irZO4SS8)
-</details>
+</Collapsible>
 
 ## Set Nested Value
 
