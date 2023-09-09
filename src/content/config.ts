@@ -10,6 +10,14 @@ const blogCollection = defineCollection({
 			title: z.string(),
 			description: z.string(),
 			image: z.union([image(), z.string().url().startsWith("https://www.youtube.com").includes("v=")]),
+			codepen: z
+				.object({
+					hash: z.string(),
+					title: z.string(),
+					user: z.string(),
+					height: z.number().default(600)
+				})
+				.optional(),
 			date: z.date(),
 			updated: z.date().optional(),
 			tags: z.array(z.string()).default([]),

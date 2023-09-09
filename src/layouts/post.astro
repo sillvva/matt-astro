@@ -3,6 +3,8 @@ import type { Props as HeadProps } from "$/components/head.astro";
 import ResponsiveImage from "$/components/responsive-image.astro";
 import { formatDate, slugify, sorter } from "$/util";
 import PortfolioLayout from "./portfolio.astro";
+import CodePen from "$/components/markdown/codepen.astro";
+import type { Code, Debug } from "astro:components";
 
 interface Props extends HeadProps {
 	slug: string;
@@ -11,13 +13,18 @@ interface Props extends HeadProps {
 		title: string;
 		description: string;
 		image: ImageMetadata | string;
-		full: boolean;
+		codepen?: {
+			hash: string;
+			title: string;
+			user: string;
+			height: number;
+		};
 		date: Date;
 		tags: string[];
 	};
 }
 
-const { title, description, image, full, date, updated, tags } = Astro.props.data;
+const { title, description, image, codepen, date, updated, tags } = Astro.props.data;
 const slug = Astro.props.slug;
 
 const youTubeId = typeof image === "string" && image.match(/v=([^&]+)/)?.[1];
@@ -50,27 +57,23 @@ const youTubeId = typeof image === "string" && image.match(/v=([^&]+)/)?.[1];
 				}
 			</p>
 			{
-				!full &&
-					(youTubeId ? (
-						<iframe src={`https://www.youtube.com/embed/${youTubeId}`} class="aspect-video w-full border-0" allowfullscreen />
-					) : typeof image === "string" ? (
-						<img
+				codepen ? (
+					<CodePen {...codepen} />
+				) : youTubeId ? (
+					<iframe src={`https://www.youtube.com/embed/${youTubeId}`} class="aspect-video w-full border-0" allowfullscreen />
+				) : typeof image === "string" ? (
+					<img src={image} alt={title} id="post-image" class="h-full w-full object-cover object-center shadow shadow-black/50" />
+				) : (
+					<div class="relative aspect-video">
+						<ResponsiveImage
 							src={image}
 							alt={title}
 							id="post-image"
+							sizes={[500, 700, 900]}
 							class="h-full w-full object-cover object-center shadow shadow-black/50"
 						/>
-					) : (
-						<div class="relative aspect-video">
-							<ResponsiveImage
-								src={image}
-								alt={title}
-								id="post-image"
-								sizes={[500, 700, 900]}
-								class="h-full w-full object-cover object-center shadow shadow-black/50"
-							/>
-						</div>
-					))
+					</div>
+				)
 			}
 			{
 				tags.length && (
