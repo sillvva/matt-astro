@@ -3,6 +3,6 @@
 	"singleQuote": false,
 	"trailingComma": "none",
 	"printWidth": 130,
-	"plugins": ["prettier-plugin-astro", "prettier-plugin-tailwindcss"],
+	"plugins": ["prettier-plugin-astro", "prettier-plugin-organize-imports", "prettier-plugin-tailwindcss"],
 	"pluginSearchDirs": false
 }
