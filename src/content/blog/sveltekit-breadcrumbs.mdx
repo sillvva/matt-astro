@@ -10,13 +10,17 @@ tags:
 ---
 import CombinedBlock from "$/components/markdown/combined.astro";
 
+## Table of Contents
+
+## Creating the Segments
+
 Making breadcrumbs base on routes is straightforward. In SvelteKit, `+page.server.ts`, `+page.ts`, `+layout.server.ts`, and `+layout.ts` load functions have an event parameter with an async `parent()` method that returns data from parent `+layout.server.ts` and `+layout.ts` load functions.
 
 By placing a `breadcrumbs` array in the root layout, you can use `event.parent()` and `Array.concat` to append breadcrumbs at each route segment which requires a breadcrumb. And you can use data from that route segment to make the breadcrumb value and href dynamic.
 
 Here is an example used on my [Adventurers League Log Sheet](https://ddal.dekok.dev/) app.
 
-Root layout:
+#### Root layout
 
 ```ts
 // src/routes/+layout.server.ts
@@ -27,7 +31,7 @@ export const load = async (event) => {
 };
 ```
 
-First breadcrumb segment:
+#### First breadcrumb segment
 
 ```ts
 // src/routes/characters/+layout.server.ts
@@ -45,7 +49,7 @@ export const load = async (event) => {
 };
 ```
 
-Next breadcrumb segment with param:
+#### Next breadcrumb segment with param
 
 ```ts
 // src/routes/characters/[characterId]/+layout.server.ts
@@ -78,6 +82,8 @@ Now the resulting array in `data.breadcrumbs` for `/characters/[characterId]` is
   { name: 'Rimurus', href: '/characters/cl7gfkggq002009mluw41peqd' }
 ]
 ```
+
+## The Breadcrumbs Component
 
 From there, you can create a breadcrumbs component like this:
 
