@@ -6,9 +6,14 @@ import PortfolioLayout from "./portfolio.astro";
 import CodePen from "$/components/markdown/codepen.astro";
 import type { CollectionEntry } from "astro:content";
 
-type Props = CollectionEntry<"blog">;
-const { title, description, image, codepen, date, updated, tags } = Astro.props.data;
-const slug = Astro.props.slug;
+interface Props extends HeadProps {
+	data: CollectionEntry<"blog">["data"];
+	slug: CollectionEntry<"blog">["slug"];
+}
+const {
+	slug,
+	data: { title, description, image, codepen, date, updated, tags }
+} = Astro.props;
 
 const youTubeId = typeof image === "string" && image.match(/v=([^&]+)/)?.[1];
 ---
