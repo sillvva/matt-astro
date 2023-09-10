@@ -4,25 +4,9 @@ import ResponsiveImage from "$/components/responsive-image.astro";
 import { formatDate, slugify, sorter } from "$/util";
 import PortfolioLayout from "./portfolio.astro";
 import CodePen from "$/components/markdown/codepen.astro";
+import type { CollectionEntry } from "astro:content";
 
-interface Props extends HeadProps {
-	slug: string;
-	data: {
-		updated?: Date | undefined;
-		title: string;
-		description: string;
-		image: ImageMetadata | string;
-		codepen?: {
-			hash: string;
-			title: string;
-			user: string;
-			height: number;
-		};
-		date: Date;
-		tags: string[];
-	};
-}
-
+type Props = CollectionEntry<"blog">;
 const { title, description, image, codepen, date, updated, tags } = Astro.props.data;
 const slug = Astro.props.slug;
 

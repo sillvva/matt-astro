@@ -4,7 +4,7 @@ import Pagination from "$/components/pagination.astro";
 import PortfolioLayout from "$/layouts/portfolio.astro";
 import { slugify, sorter } from "$/util";
 import type { GetStaticPaths, InferGetStaticPropsType, Page } from "astro";
-import { getCollection } from "astro:content";
+import { getCollection, type CollectionEntry } from "astro:content";
 
 export const getStaticPaths = (async ({ paginate }) => {
 	const projects = await getCollection("projects");
@@ -20,7 +20,7 @@ export const getStaticPaths = (async ({ paginate }) => {
 			tag?: string;
 			tags: string[];
 			totalProjects: number;
-			page: Page<(typeof projects)[number]>;
+			page: Page<CollectionEntry<"projects">>;
 		};
 	};
 
