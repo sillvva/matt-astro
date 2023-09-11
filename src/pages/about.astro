@@ -3,22 +3,11 @@ import MeDetails from "$/components/me.astro";
 import PageArticle from "$/components/page/article.astro";
 import PageBody from "$/components/page/body.astro";
 import PageSection from "$/components/page/section.astro";
-import links from "$/content/other/links.json" assert { type: "json" };
 import PortfolioLayout from "$/layouts/portfolio.astro";
+import { Image } from "astro:assets";
+import { getCollection } from "astro:content";
 
-const myLinks: Array<{ slug: string; title: string; url: string; image: ImageMetadata }> = [];
-for (const link of links) {
-	if (!link.image) continue;
-
-	const img = await import(link.image.replace("$", "../"));
-
-	myLinks.push({
-		slug: link.slug,
-		title: link.title,
-		url: link.url,
-		image: img.default
-	});
-}
+const links = await getCollection("links", ({ data: { image } }) => !!image);
 
 const age = (birthday: Date) => {
 	const ageDifMs = Date.now() - birthday.getTime();
@@ -54,11 +43,14 @@ const age = (birthday: Date) => {
 				<h1 class="font-montserrat text-2xl font-bold">Links</h1>
 				<div class="flex flex-wrap justify-center gap-8">
 					{
-						myLinks.map((link) => (
-							<a href={`/r/${link.slug}`} title={link.title} target="_blank" rel="noreferrer noopener">
-								<img src={link.image.src} alt={link.title} height={24} class="h-6" />
-							</a>
-						))
+						links.map(
+							(link) =>
+								link.data.image && (
+									<a href={`/r/${link.id}`} title={link.data.title} target="_blank" rel="noreferrer noopener">
+										<Image src={link.data.image} alt={link.data.title} height={24} class="h-6" />
+									</a>
+								)
+						)
 					}
 				</div>
 			</PageSection>

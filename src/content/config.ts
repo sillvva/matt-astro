@@ -48,7 +48,18 @@ const projectCollection = defineCollection({
 		})
 });
 
+const linkCollection = defineCollection({
+	type: "data",
+	schema: ({ image }) =>
+		z.object({
+			title: z.string(),
+			image: image().optional(),
+			url: z.string().url()
+		})
+});
+
 export const collections = {
 	blog: blogCollection,
-	projects: projectCollection
+	projects: projectCollection,
+	links: linkCollection
 };
