@@ -1,0 +1,18 @@
+[
+	{
+		"slug": "linkedin",
+		"title": "LinkedIn",
+		"url": "https://www.linkedin.com/in/matt-dekok/"
+	},
+	{
+		"slug": "github",
+		"title": "GitHub",
+		"url": "https://github.com/sillvva"
+	},
+	{
+		"hidden": true,
+		"slug": "paypal",
+		"title": "PayPal",
+		"url": "https://paypal.me/sillvva"
+	}
+]
