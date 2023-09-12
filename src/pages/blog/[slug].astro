@@ -31,7 +31,8 @@ if (!entry) {
 
 const { Content, headings } = await entry.render();
 
-const hasToc = headings.find((item) => item.slug === "table-of-contents");
+const items = headings.filter((item) => item.slug !== "table-of-contents").filter((item) => item.depth <= 3);
+const hasToc = items.length >= 2;
 const baseLevel = headings[0]?.depth ?? 1;
 ---
 
@@ -42,10 +43,9 @@ const baseLevel = headings[0]?.depth ?? 1;
 			<aside slot="toc" class="relative hidden min-w-fit border-l border-dotted border-base-content/50 pl-4 2xl:block">
 				<div class="sticky top-4 max-h-screen overflow-auto">
 					<h2 class="mb-2 text-xl font-bold">Table of Contents</h2>
-					<ul class="flex max-w-[250px] flex-col gap-2">
-						{headings
+					<ul class="flex max-w-[220px] flex-col gap-2">
+						{items
 							.filter(({ depth }) => depth - 2 < 2)
-							.filter(({ slug }) => slug !== "table-of-contents")
 							.map(({ slug, depth, text }) => (
 								<li
 									class={cn(depth > baseLevel && "text-sm", depth == baseLevel + 1 && "pl-4", depth == baseLevel + 2 && "pl-8")}
