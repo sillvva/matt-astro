@@ -8,7 +8,7 @@ import remarkToc from "remark-toc";
 export default defineConfig({
 	output: "hybrid",
 	adapter: nodejs({
-		mode: "standalone"
+		mode: "middleware"
 	}),
 	integrations: [tailwind(), mdx()],
 	markdown: {
