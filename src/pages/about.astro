@@ -43,13 +43,12 @@ const age = (birthday: Date) => {
 				<h1 class="font-montserrat text-2xl font-bold">Links</h1>
 				<div class="flex flex-wrap justify-center gap-8">
 					{
-						links.map(
-							(link) =>
-								link.data.image && (
-									<a href={`/r/${link.id}`} title={link.data.title} target="_blank" rel="noreferrer noopener">
-										<Image src={link.data.image} alt={link.data.title} height={24} class="h-6" />
-									</a>
-								)
+						links.map((link) =>
+							link.data.image ? (
+								<a href={`/r/${link.id}`} title={link.data.title} target="_blank" rel="noreferrer noopener">
+									<Image src={link.data.image} alt={link.data.title} height={24} class="h-6" />
+								</a>
+							) : null
 						)
 					}
 				</div>

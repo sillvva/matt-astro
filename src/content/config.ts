@@ -48,6 +48,27 @@ const projectCollection = defineCollection({
 		})
 });
 
+const experienceCollection = defineCollection({
+	type: "data",
+	schema: ({ image }) =>
+		z.object({
+			id: z.number(),
+			name: z.string(),
+			items: z.array(
+				z.object({
+					created_at: z.string().datetime(),
+					name: z.string(),
+					nameLink: z.string().nullable(),
+					image: image(),
+					h4: z.string(),
+					h4Link: z.string().nullable(),
+					h5: z.string(),
+					h5Link: z.string().nullable()
+				})
+			)
+		})
+});
+
 const linkCollection = defineCollection({
 	type: "data",
 	schema: ({ image }) =>
@@ -61,5 +82,6 @@ const linkCollection = defineCollection({
 export const collections = {
 	blog: blogCollection,
 	projects: projectCollection,
-	links: linkCollection
+	links: linkCollection,
+	experience: experienceCollection
 };
