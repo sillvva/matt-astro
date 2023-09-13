@@ -10,7 +10,15 @@ tags:
 ---
 import CombinedBlock from "$/components/markdown/combined.astro";
 
+## The Component
+
 The following is a custom component for Astro that generates a responsive image using the `srcset` and `sizes` attributes. It also uses the `getImage` function from the `astro:assets` module to generate the image URLs. The function uses the same compression as the built-in `<Image />` component from Astro.
+
+For more information on responsive images, see the MDN article.
+
+<div class="button-row">
+[MDN](btn::https://developer.mozilla.org/en-US/docs/Learn/HTML/Multimedia_and_embedding/Responsive_images)
+</div>
 
 <CombinedBlock>
 ```ts
@@ -18,11 +26,24 @@ The following is a custom component for Astro that generates a responsive image 
 import type { ImageOutputFormat } from "astro";
 import { getImage, type ImgAttributes } from "astro:assets";
 
+type Unit = "px" | "em" | "rem";
+type PxSize = `${number}px`;
+type Size = `${number}${Unit}`;
+type MinMediaQuery = `(min-width: ${Size})`;
+type MaxMediaQuery = `(max-width: ${Size})`;
+type OrientationMediaQuery = "(orientation: portrait)" | "(orientation: landscape)";
+type MediaQueries = MinMediaQuery | MaxMediaQuery | OrientationMediaQuery;
+
 type Props = Omit<ImgAttributes, "sizes"> & {
-    src: ImageMetadata;
-    format?: ImageOutputFormat;
-    sizes: number[];
-    media?: string[];
+	src: ImageMetadata;
+	format?: ImageOutputFormat;
+	sizes: number[];
+	media?: (
+		| `${MediaQueries} ${PxSize}`
+		| `(${MinMediaQuery} and ${MaxMediaQuery}) ${PxSize}`
+		| `(${MaxMediaQuery} or ${MinMediaQuery}) ${PxSize}`
+		| PxSize
+	)[];
 };
 
 async function generateResponsiveImage({ src, format, sizes }: Pick<Props, "src" | "format" | "sizes">) {
@@ -52,3 +73,26 @@ const { srcSet, imgSrc } = await generateResponsiveImage({ src, sizes, format })
 <img srcset={srcSet.join(", ")} sizes={media?.join(", ")} {id} {alt} src={imgSrc.src} class={className} loading="lazy" />
 ```
 </CombinedBlock>
+
+### Example
+
+```tsx
+// Post Cover Image
+<ResponsiveImage
+    src={image}
+    alt={title}
+    id="post-image"
+    sizes={[500, 700, 900]}
+    media={["(max-width: 500px) 500px", "(max-width: 700px) 700px", "900px"]}
+    class="h-full w-full object-cover object-center shadow shadow-black/50"
+/>
+
+// Post Card Image
+<ResponsiveImage
+    src={post.data.image}
+    alt={post.data.title}
+    sizes={[424, 640]}
+    media={["(min-width: 564px) 424px", "640px"]}
+    class="h-full w-full object-cover object-center"
+/>
+```

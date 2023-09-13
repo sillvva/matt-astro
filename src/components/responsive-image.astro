@@ -2,11 +2,24 @@
 import type { ImageOutputFormat } from "astro";
 import { getImage, type ImgAttributes } from "astro:assets";
 
+type Unit = "px" | "em" | "rem";
+type PxSize = `${number}px`;
+type Size = `${number}${Unit}`;
+type MinMediaQuery = `(min-width: ${Size})`;
+type MaxMediaQuery = `(max-width: ${Size})`;
+type OrientationMediaQuery = "(orientation: portrait)" | "(orientation: landscape)";
+type MediaQueries = MinMediaQuery | MaxMediaQuery | OrientationMediaQuery;
+
 type Props = Omit<ImgAttributes, "sizes"> & {
 	src: ImageMetadata;
 	format?: ImageOutputFormat;
 	sizes: number[];
-	media?: string[];
+	media?: (
+		| `${MediaQueries} ${PxSize}`
+		| `(${MinMediaQuery} and ${MaxMediaQuery}) ${PxSize}`
+		| `(${MaxMediaQuery} or ${MinMediaQuery}) ${PxSize}`
+		| PxSize
+	)[];
 };
 
 async function generateResponsiveImage({ src, format, sizes }: Pick<Props, "src" | "format" | "sizes">) {
