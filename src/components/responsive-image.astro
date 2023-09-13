@@ -42,6 +42,9 @@ async function generateResponsiveImage({ src, format, sizes }: Pick<Props, "src"
 const { src, sizes, format, alt, id, media } = Astro.props;
 const className = Astro.props.class;
 
+if (!sizes.length) throw new Error("No sizes provided");
+if (sizes.length !== media?.length) throw new Error("Sizes and media queries must be the same length");
+
 const { srcSet, imgSrc } = await generateResponsiveImage({ src, sizes, format });
 ---
 
