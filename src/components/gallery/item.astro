@@ -14,7 +14,13 @@ const { title, subtitle, description, link, image } = Astro.props;
 ---
 
 <Wrapper {title} {subtitle} link={link || ""}>
-	<ResponsiveImage src={image} alt={title} class="h-full w-full object-cover object-center" sizes={[424, 640]} />
+	<ResponsiveImage
+		src={image}
+		alt={title}
+		class="h-full w-full object-cover object-center"
+		sizes={[424, 640]}
+		media={["(min-width: 564px) 424px", "(max-width: 564px) 640px"]}
+	/>
 	<div class="absolute inset-0 m-2 flex flex-col justify-end bg-gradient-to-b from-transparent to-black p-2 text-white">
 		<h3 class="my-0 text-xl font-semibold drop-shadow-sm">{title}</h3>
 		{subtitle && <h4 class="m-0 text-sm font-light drop-shadow-sm">{subtitle}</h4>}
