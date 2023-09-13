@@ -23,8 +23,8 @@ import { cn } from "$/util";
 		class={cn(
 			Astro.props.class,
 			"max-w-portfolio mb-4 overflow-x-auto rounded-lg bg-base-300 text-sm text-base-content md:p-4",
-			"group-[.combined-block]:bg-transparent group-[.combined-block]:my-0 group-[.combined-block]:p-0",
-			"group-[.combined-block]:overflow-visible"
+			"group-[.combined-block]:bg-transparent group-[.combined-block]:my-0 group-[.combined-block]:p-0 group-[.combined-block]:overflow-visible",
+			"group-[.wrapped-block]:overflow-hidden group-[.wrapped-block]:[&>code]:whitespace-pre-wrap"
 		)}><slot /></pre>
 	<button
 		role="button"
