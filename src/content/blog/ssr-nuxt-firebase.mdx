@@ -13,6 +13,8 @@ tags:
   - Nuxt
 ---
 
+## Table of Contents
+
 ## Introduction
 
 This is an extension to my [previous post](/blog/firebase-storage-and-nuxt-content-integration) about how to integrate Firebase Hosting and Nuxt Content on a static Nuxt app. Previously this site was hosted as a static site on Firebase Hosting. However, this caused issues with using dynamic Open Graph meta tags based on the content of the page. Simply put, it didn't work, because the dynamic meta tags were loaded after the page was rendered. This means crawlers wouldn't see them. So to make it work, the site needs to be rendered on the server. This will allow the meta tags to be pre-rendered for social media crawlers.

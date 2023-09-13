@@ -22,6 +22,14 @@ const items: (Item | null)[] = [
 				src={me}
 				alt=""
 				sizes={[640, 768, 1024, 1280, 1500, 1800]}
+				media={[
+					"(max-width: 639px) 640px",
+					"(max-width: 767px) 768px",
+					"(max-width: 1023px) 1024px",
+					"(max-width: 1279px) 1280px",
+					"(max-width: 1499px) 1500px",
+					"1800px"
+				]}
 				class="h-full w-full object-cover object-left md:object-center"
 			/>
 		</span>

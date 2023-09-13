@@ -1,0 +1,56 @@
+{
+	"id": 3,
+	"name": "Licenses & Certifications",
+	"items": [
+		{
+			"created_at": "2022-07-01T20:39:08.000Z",
+			"name": "Next.js & React - The Complete Guide",
+			"nameLink": null,
+			"image": "$/assets/images/udemy.svg",
+			"h4": "Udemy - Academind by Maximilian Schwarzmülle",
+			"h4Link": null,
+			"h5": "Certificate",
+			"h5Link": "http://ude.my/UC-9057120f-61f0-480b-aaf0-8b3e77b095bb"
+		},
+		{
+			"created_at": "2022-07-01T20:37:28.000Z",
+			"name": "Nuxt.js - Vue.js on Steroids",
+			"nameLink": null,
+			"image": "$/assets/images/udemy.svg",
+			"h4": "Udemy - Academind by Maximilian Schwarzmülle",
+			"h4Link": null,
+			"h5": "Certificate",
+			"h5Link": "http://ude.my/UC-T5TFG77X"
+		},
+		{
+			"created_at": "2022-07-01T20:36:46.000Z",
+			"name": "Understanding TypeScript",
+			"nameLink": null,
+			"image": "$/assets/images/udemy.svg",
+			"h4": "Udemy - Academind by Maximilian Schwarzmülle",
+			"h4Link": null,
+			"h5": "Certificate",
+			"h5Link": "http://ude.my/UC-DIDRRWV8"
+		},
+		{
+			"created_at": "2022-07-01T20:34:31.000Z",
+			"name": "React - The Complete Guide",
+			"nameLink": null,
+			"image": "$/assets/images/udemy.svg",
+			"h4": "Udemy - Academind by Maximilian Schwarzmülle",
+			"h4Link": null,
+			"h5": "Certificate",
+			"h5Link": "http://ude.my/UC-WSZBKXEW"
+		},
+		{
+			"created_at": "2022-07-01T20:33:29.000Z",
+			"name": "Microsoft Office Specialist",
+			"nameLink": null,
+			"image": "$/assets/images/mos.png",
+			"h4": "Microsoft Excel - Mitchell Tech",
+			"h4Link": null,
+			"h5": "Credential ID 6154048",
+			"h5Link": "https://www.microsoft.com/en-us/learning/dashboard.aspx"
+		}
+	]
+}

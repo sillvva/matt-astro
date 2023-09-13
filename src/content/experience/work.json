@@ -1,0 +1,36 @@
+{
+	"id": 1,
+	"name": "Work Experience",
+	"items": [
+		{
+			"created_at": "2022-07-01T20:21:50.000Z",
+			"name": "Forum, Twitch, and Discord Moderator",
+			"nameLink": null,
+			"image": "$/assets/images/ddb.png",
+			"h4": "D&D Beyond",
+			"h4Link": "https://www.dndbeyond.com/",
+			"h5": "2019 - Present",
+			"h5Link": null
+		},
+		{
+			"created_at": "2022-07-01T20:20:51.000Z",
+			"name": "Front End Web Developer",
+			"nameLink": null,
+			"image": "$/assets/images/valmont.jpg",
+			"h4": "Valmont Industries, Inc.",
+			"h4Link": "https://www.valmont.com/",
+			"h5": "2019 - Present",
+			"h5Link": null
+		},
+		{
+			"created_at": "2022-07-01T20:19:01.000Z",
+			"name": "Web Developer",
+			"nameLink": null,
+			"image": "$/assets/images/agsense.png",
+			"h4": "AgSense, LLC.",
+			"h4Link": "https://www.agsense.com/",
+			"h5": "2012 - Present",
+			"h5Link": null
+		}
+	]
+}

@@ -32,60 +32,70 @@ const youTubeId = typeof image === "string" && image.match(/v=([^&]+)/)?.[1];
 		text: "Blog"
 	}}
 >
-	<article class="mx-auto flex max-w-4xl flex-col">
-		<section class="flex flex-col gap-4" transition:name={slugify(`image ${slug}`)}>
-			<p class="text-center text-sm text-theme-faded md:text-left" aria-label="Date published">
-				Published: <span class="underline decoration-dotted underline-offset-2">{formatDate(date)}</span>
+	<div class="post mx-auto flex max-w-7xl justify-center gap-6">
+		<article class="max-w-4xl flex-1 2xl:mx-0">
+			<section class="mb-8 flex flex-col gap-4" transition:name={slugify(`image ${slug}`)}>
+				<p class="text-center text-sm text-theme-faded md:text-left" aria-label="Date published">
+					Published: <span class="underline decoration-dotted underline-offset-2">{formatDate(date)}</span>
+					{
+						updated && (
+							<span class="block 2xs:inline 2xs:pl-4">
+								Updated: <span class="underline decoration-dotted underline-offset-2">{formatDate(updated)}</span>
+							</span>
+						)
+					}
+				</p>
 				{
-					updated && (
-						<span class="block 2xs:inline 2xs:pl-4">
-							Updated: <span class="underline decoration-dotted underline-offset-2">{formatDate(updated)}</span>
-						</span>
-					)
-				}
-			</p>
-			{
-				codepen ? (
-					<CodePen {...codepen} />
-				) : youTubeId ? (
-					<iframe src={`https://www.youtube.com/embed/${youTubeId}`} class="aspect-video w-full border-0" allowfullscreen />
-				) : typeof image === "string" ? (
-					<img src={image} alt={title} id="post-image" class="h-full w-full object-cover object-center shadow shadow-black/50" />
-				) : (
-					<div class="relative aspect-video">
-						<ResponsiveImage
+					codepen ? (
+						<CodePen {...codepen} />
+					) : youTubeId ? (
+						<iframe src={`https://www.youtube.com/embed/${youTubeId}`} class="aspect-video w-full border-0" allowfullscreen />
+					) : typeof image === "string" ? (
+						<img
 							src={image}
 							alt={title}
 							id="post-image"
-							sizes={[500, 700, 900]}
 							class="h-full w-full object-cover object-center shadow shadow-black/50"
 						/>
-					</div>
-				)
-			}
-			{
-				tags.length && (
-					<nav class="flex gap-4 pb-6">
-						<h2 class="hidden text-xl sm:block">Tags</h2>
-						<ul class="flex flex-1 flex-wrap justify-center gap-2 sm:justify-end">
-							{tags
-								.sort((a, b) => sorter(a, b))
-								.map((tag) => (
-									<li>
-										<a href={`/blog/${slugify(tag)}`} class="btn btn-sm uppercase">
-											{tag}
-										</a>
-									</li>
-								))}
-						</ul>
-					</nav>
-				)
-			}
-		</section>
-		<section class="post-body">
-			<slot />
-		</section>
-	</article>
+					) : (
+						<div class="relative aspect-video">
+							<ResponsiveImage
+								src={image}
+								alt={title}
+								id="post-image"
+								sizes={[500, 700, 900]}
+								media={["(max-width: 500px) 500px", "(max-width: 700px) 700px", "900px"]}
+								class="h-full w-full object-cover object-center shadow shadow-black/50"
+							/>
+						</div>
+					)
+				}
+				{
+					tags.length && (
+						<nav class="flex gap-4">
+							<h2 class="hidden text-xl sm:block">Tags</h2>
+							<ul class="flex flex-1 flex-wrap justify-center gap-2 sm:justify-end">
+								{tags
+									.sort((a, b) => sorter(a, b))
+									.map((tag) => (
+										<li>
+											<a href={`/blog/${slugify(tag)}`} class="btn btn-sm uppercase">
+												{tag}
+											</a>
+										</li>
+									))}
+							</ul>
+						</nav>
+					)
+				}
+			</section>
+			<section class="post-body">
+				<slot />
+			</section>
+		</article>
+
+		<slot name="toc" />
+	</div>
 
 	<button id="to-top" class="btn btn-primary fixed bottom-4 right-4 z-20 hidden aspect-square h-14 w-14 rounded-full p-2">
 		<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
@@ -120,16 +130,19 @@ const youTubeId = typeof image === "string" && image.match(/v=([^&]+)/)?.[1];
 	});
 </script>
 
-<style is:global>
-	.post-body :is(h1, h2, h3, h4):first-child {
-		margin-top: 0 !important;
+<style lang="scss" is:global>
+	#app .post-body #table-of-contents {
+		@apply 2xl:hidden;
+		+ ul {
+			@apply 2xl:hidden;
+		}
 	}
 
-	.post-body #table-of-contents + ul li {
+	#app .post-body #table-of-contents + ul li {
 		@apply flex flex-col gap-2;
 	}
 
-	.post-body #table-of-contents ~ :not(#table-of-contents):not(ul):not(li) + ul {
+	#app .post-body #table-of-contents ~ :not(#table-of-contents):not(ul):not(li) + ul {
 		@apply mb-6;
 	}
 </style>
