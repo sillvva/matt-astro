@@ -3,7 +3,7 @@ import { all } from "$/components/markdown/all.astro";
 import PostLayout from "$/layouts/post.astro";
 import { cn } from "$/util";
 import type { GetStaticPaths, InferGetStaticPropsType } from "astro";
-import { getCollection, getEntry } from "astro:content";
+import { getCollection } from "astro:content";
 
 export const getStaticPaths = (async () => {
 	const posts = await getCollection("blog");
@@ -13,6 +13,7 @@ export const getStaticPaths = (async () => {
 			slug: post.slug
 		},
 		props: {
+			slug: post.slug,
 			post
 		}
 	}));
@@ -20,16 +21,10 @@ export const getStaticPaths = (async () => {
 
 type Props = InferGetStaticPropsType<typeof getStaticPaths>;
 
-const { slug, data } = Astro.props.post;
-const entry = await getEntry("blog", slug);
+const { post, slug } = Astro.props;
+const data = post.data;
 
-if (!entry) {
-	return {
-		status: 404
-	};
-}
-
-const { Content, headings } = await entry.render();
+const { Content, headings } = await post.render();
 
 const items = headings.filter((item) => item.slug !== "table-of-contents").filter((item) => item.depth <= 3);
 const hasToc = items.length >= 2;
@@ -40,10 +35,10 @@ const baseLevel = headings[0]?.depth ?? 1;
 	<Content components={all} />
 	{
 		hasToc && (
-			<aside slot="toc" class="relative hidden min-w-fit border-l border-dotted border-base-content/50 pl-4 2xl:block">
+			<aside slot="toc" class="relative hidden max-w-xs border-l border-dotted border-base-content/50 pl-4 2xl:block">
 				<div class="sticky top-4 max-h-screen overflow-auto">
 					<h2 class="mb-2 text-xl font-bold">Table of Contents</h2>
-					<ul class="flex max-w-[220px] flex-col gap-2">
+					<ul class="flex flex-col gap-2">
 						{items
 							.filter(({ depth }) => depth - 2 < 2)
 							.map(({ slug, depth, text }) => (
