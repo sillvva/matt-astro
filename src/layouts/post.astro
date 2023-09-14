@@ -105,27 +105,32 @@ const youTubeId = typeof image === "string" && image.match(/v=([^&]+)/)?.[1];
 </PortfolioLayout>
 
 <script>
-	const btnScrollToTop = document.querySelector("#to-top") as HTMLButtonElement;
-	const postImage = document.querySelector("#post-image") as HTMLImageElement;
-	const postImagePosition = postImage?.getBoundingClientRect().top || 0;
-	const postImageHeight = postImage?.getBoundingClientRect().height || 0;
+	const btnScrollToTop = document.querySelector("#to-top");
+	const postImage = document.querySelector("#post-image");
+
+	const observer = new IntersectionObserver(
+		(entries) => {
+			entries.forEach((entry) => {
+				if (!entry.isIntersecting) {
+					btnScrollToTop?.classList.add("flex");
+					btnScrollToTop?.classList.remove("hidden");
+				} else {
+					btnScrollToTop?.classList.add("hidden");
+					btnScrollToTop?.classList.remove("flex");
+				}
+			});
+		},
+		{
+			threshold: 0
+		}
+	);
+
+	if (postImage) observer.observe(postImage);
 
 	btnScrollToTop?.addEventListener("click", () => {
 		window.scrollTo({
 			top: 0,
 			behavior: "smooth"
-		});
-	});
-
-	window.addEventListener("scroll", () => {
-		requestAnimationFrame(() => {
-			if (window.scrollY > postImagePosition + postImageHeight) {
-				btnScrollToTop.classList.add("flex");
-				btnScrollToTop.classList.remove("hidden");
-			} else {
-				btnScrollToTop.classList.add("hidden");
-				btnScrollToTop.classList.remove("flex");
-			}
 		});
 	});
 </script>
