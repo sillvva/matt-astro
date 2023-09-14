@@ -9,6 +9,7 @@ tags:
   - UI
 ---
 import CombinedBlock from "$/components/markdown/combined.astro";
+import WrappedBlock from "$/components/markdown/wrapped.astro";
 
 ## The Component
 
@@ -46,27 +47,21 @@ type Props = Omit<ImgAttributes, "sizes"> & {
 	)[];
 };
 
-async function generateResponsiveImage({ src, format, sizes }: Pick<Props, "src" | "format" | "sizes">) {
-    const imgSrcSet = await Promise.allSettled(
-        sizes.map(async (size) => {
-            const image = await getImage({ src, width: size, format });
-            return { src: `${image.src} ${size * 2}w`, size };
-        })
-    );
-
-    const srcSet = imgSrcSet.map((result) => (result.status === "fulfilled" ? result.value.src : "")).filter(Boolean);
-    const imgSrc = await getImage({ src, width: Math.min(...sizes), format });
-
-    return {
-        srcSet,
-        imgSrc
-    };
-}
-
 const { src, sizes, format, alt, id, media } = Astro.props;
 const className = Astro.props.class;
 
-const { srcSet, imgSrc } = await generateResponsiveImage({ src, sizes, format });
+if (!sizes.length) throw new Error("No sizes provided");
+if (sizes.length !== media?.length) throw new Error("Sizes and media queries must be the same length");
+
+const imgSrcSet = await Promise.allSettled(
+	sizes.map(async (size) => {
+		const image = await getImage({ src, width: size, format });
+		return { src: `${image.src} ${size * 2}w`, size };
+	})
+);
+
+const srcSet = imgSrcSet.map((result) => (result.status === "fulfilled" ? result.value.src : "")).filter(Boolean);
+const imgSrc = await getImage({ src, width: Math.min(...sizes), format });
 ---
 ```
 ```tsx
@@ -96,3 +91,15 @@ const { srcSet, imgSrc } = await generateResponsiveImage({ src, sizes, format })
     class="h-full w-full object-cover object-center"
 />
 ```
+
+#### The Result
+
+<WrappedBlock>
+```html
+<!-- Post Cover Image -->
+<img srcset="/_image?href=%3ForigWidth%3D1600%26origHeight%3D840%26origFormat%3Dwebp&amp;w=500&amp;f=webp 1000w, /_image?href=%3ForigWidth%3D1600%26origHeight%3D840%26origFormat%3Dwebp&amp;w=700&amp;f=webp 1400w, /_image?href=%3ForigWidth%3D1600%26origHeight%3D840%26origFormat%3Dwebp&amp;w=900&amp;f=webp 1800w" sizes="(max-width: 500px) 500px, (max-width: 700px) 700px, 900px" id="post-image" alt="Astro Responsive Image" src="/_image?href=%3ForigWidth%3D1600%26origHeight%3D840%26origFormat%3Dwebp&amp;w=500&amp;f=webp" class="h-full w-full object-cover object-center shadow shadow-black/50" loading="lazy">
+
+<!-- Post Card Image -->
+<img srcset="/_image?href=%3ForigWidth%3D1600%26origHeight%3D840%26origFormat%3Dwebp&amp;w=424&amp;f=webp 848w, /_image?href=%3ForigWidth%3D1600%26origHeight%3D840%26origFormat%3Dwebp&amp;w=640&amp;f=webp 1280w" sizes="(min-width: 564px) 424px, 640px" alt="Astro Responsive Image" src="/_image?href=%3ForigWidth%3D1600%26origHeight%3D840%26origFormat%3Dwebp&amp;w=424&amp;f=webp" class="h-full w-full object-cover object-center" loading="lazy">
+```
+</WrappedBlock>
