@@ -3,7 +3,6 @@ import type { ImageOutputFormat } from "astro";
 import { getImage, type ImgAttributes } from "astro:assets";
 
 type Unit = "px" | "em" | "rem";
-type PxSize = `${number}px`;
 type Size = `${number}${Unit}`;
 type MinMediaQuery = `(min-width: ${Size})`;
 type MaxMediaQuery = `(max-width: ${Size})`;
@@ -15,10 +14,10 @@ type Props = Omit<ImgAttributes, "sizes"> & {
 	format?: ImageOutputFormat;
 	sizes: number[];
 	media?: (
-		| `${MediaQueries} ${PxSize}`
-		| `(${MinMediaQuery} and ${MaxMediaQuery}) ${PxSize}`
-		| `(${MaxMediaQuery} or ${MinMediaQuery}) ${PxSize}`
-		| PxSize
+		| `${MediaQueries} ${Size}`
+		| `(${MinMediaQuery} and ${MaxMediaQuery}) ${Size}`
+		| `(${MaxMediaQuery} or ${MinMediaQuery}) ${Size}`
+		| Size
 	)[];
 };
 
@@ -31,7 +30,7 @@ if (sizes.length !== media?.length) throw new Error("Sizes and media queries mus
 const imgSrcSet = await Promise.allSettled(
 	sizes.map(async (size) => {
 		const image = await getImage({ src, width: size, format });
-		return { src: `${image.src} ${size * 2}w`, size };
+		return { src: `${image.src} ${size}w`, size };
 	})
 );
 
