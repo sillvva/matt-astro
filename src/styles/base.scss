@@ -43,6 +43,7 @@
 	html {
 		overflow-y: scroll;
 		overflow-x: hidden;
+		scroll-behavior: smooth;
 		color-scheme: dark;
 		@include universal-theme();
 		&,
