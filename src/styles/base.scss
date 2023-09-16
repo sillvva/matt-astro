@@ -119,6 +119,9 @@
 		> p {
 			display: contents;
 		}
+		:is(h3, h4) + & {
+			margin-top: 0.5rem;
+		}
 		@media (max-width: 640px) {
 			a {
 				flex: 1;
