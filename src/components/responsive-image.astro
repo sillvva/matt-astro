@@ -27,15 +27,13 @@ const className = Astro.props.class;
 if (!sizes.length) throw new Error("No sizes provided");
 if (sizes.length !== media?.length) throw new Error("Sizes and media queries must be the same length");
 
-const imgSrcSet = await Promise.allSettled(
+const imgSrc = await getImage({ src, width: Math.min(...sizes), format });
+const srcSet = await Promise.all(
 	sizes.map(async (size) => {
 		const image = await getImage({ src, width: size, format });
-		return { src: `${image.src} ${size}w`, size };
+		return `${image.src} ${size}w`;
 	})
 );
-
-const srcSet = imgSrcSet.map((result) => (result.status === "fulfilled" ? result.value.src : "")).filter(Boolean);
-const imgSrc = await getImage({ src, width: Math.min(...sizes), format });
 ---
 
 <img srcset={srcSet.join(", ")} sizes={media?.join(", ")} {id} {alt} src={imgSrc.src} class={className} loading="lazy" />

@@ -2,7 +2,7 @@
 title: Useful TypeScript Code
 description: Useful functions and types for TypeScript
 date: 2023-09-07T03:18:13.471Z
-updated: 2023-09-09T01:50:56.088Z
+updated: 2023-09-16T04:37:39.225Z
 image: $/assets/images/typescript.png
 tags:
   - TypeScript
@@ -122,4 +122,38 @@ function setValue<
   }
   return obj;
 }
+```
+
+### Update: Resolve Recusive Type Issue
+*Added 2023-09-15*
+
+To resolve the depth issue, you can use the following type to extend `PathValue` and make it safer and more performant.
+
+<div class="button-row">
+  [Playground](btn::https://www.typescriptlang.org/play?#code/C4TwDgpgBAkgJgDwDwBUA0UDSA+KBeLKCBYCAOzgGcoBrCEAewDMoUoB+VgbUwF0oAXACgoUMgFcAtgCMIAJyIlyVWvWasOhYqQrUABgBIA3hJnyAvns0oup2XP4CxEAG7zBzt3IDcQoaEgoACkGAEsyJEwMAAVcAkxFHRVKYDlwgHMoAB8xKXsOEShoxOVqFLSyTJy7d3ZCwyNMc2MAIhaS3SLNNo8WgDoW5qNoy0KnMld3ccmfPwDoaLlXfChbGYwABgwARgwAJgwAZgwAFgwAVgwANgwAdgwADgwATh2twu3dqG2D7+Pvs7fS7fG7fe7fJ7fV5QPZbKB9BEbLi8Xi+fzgBYAQ2AAAtKKgMAARDoqGoKAjbDZxVaE-jaUqrCZeficJlTDT0zoMaQAKwgAGNgAVREZVglwqpGCwULwALTsJwJTnJVIZbK5MwKOqiUQNJpWHIhcKRGLYvGoHi8GJLFxcWnYbCFUTTLyFcxcOhS1iOKBtNEAen9UEJEDAuKgYDkDFIgtCDDIAEJ0YEADKhSShYAhsM4pCFdD5lPkdLhgiXfPZ8PK6jiMg0MgMADuZGRK2RQmpKErOK4AHIADbF3G9ulKTooIuVXGFVkzMYcscqbl8wUzqBGJ06nhQCWe9QypxpjNZ0O4i18DAToc4jBcWv1ptkDAIvpd0843iOnVQczztjVqAAEE5DkTEQCQcImHcABVL9NGA0DwKPTNuyQaDL0nEsb1We8G2bZ8ETfHNPzgpwUDReYijNAA1TF+3ECACS6ADojNfF0G+KkMOvFZKWpYoAIaSD3EwehzD6YxhIUAAlCAUlGABIThZJSElqFY3F8XgZBkJPHMmKvKccWwDBRJAEzOMdBSlKo3FaPoxjtKQXTUI4wysIssyLJU4ArIUl15CEfzYEQZz0xQ98DMw3ELNiNEmFrWN4ygSgIGAeyGLzUR-0XahRQ9egnHKDJeCcTEyBAH80EKATcts80OPOR1sAACmXMiMDAM0nGiDAXDohiepogbGI42IAEp10KUIWBa+Z1C60s8AIFpisqFpJo3b9+XjVSwDTVSCEWnE+koMB+0zFr+g23xtt2oV+0xFIzJWfbQhSPowAYMAWvG26dR2sg9rCMhSHJCMDuAPoljgcR+QgFrN1EFrMX5fkpHER7gAYOQnHyhAitVSpSqgcrKvMDB0ZA8h0pGwmKiqDV7EmvBcC278dRmqAUbRjGsZxrgqaWUGMogfhloIWs4AgJhwggOBxqRjnUfRyRMexAWhZp0XxfXcx-o5qAlmAcQ5DIUnebV-m5EF03hdphzUSVimleXTc-s3Lm5oxdRHue+goATZbfSlmW5bgDapsNr7wjBrg-eAMzdf6hyDZ1Y3TfN5c09-URc6NtLM6gbOhF-IRAdUiYUnllZ2cxPHN2kJwuCV9nDf5BvDe-OAnA2JW8+dzdeDdUvy-uqAEBWVKHYYlqq9IOAMBaTE+mkPoNj6fk+gjzYPb8PwgA)
+  [Source](btn::https://twitter.com/tannerlinsley/status/1702760813981999411)
+</div>
+
+```ts
+type LimitDepth<
+  T,
+  TLength = 5,
+  TDepth extends unknown[] = []
+> = TDepth['length'] extends TLength
+  ? never
+  : T extends (...args: infer Args) => infer R 
+  ? (...args: LimitDepth<Args, TLength, [unknown, ...TDepth]>) => LimitDepth<R, TLength, [unknown, ...TDepth]>
+  : T extends object
+  ? {
+      [K in keyof T]: LimitDepth<T[K], TLength, [unknown, ...TDepth]>
+    }
+  : T extends Array<infer U>
+  ? Array<LimitDepth<U, TLength, [unknown, ...TDepth]>>
+  : T;
+
+type PathValue<T, P extends Paths<T, 10>, TLength = 10> = P extends `${infer Key}.${infer Rest}`
+	? Rest extends Paths<Idx<LimitDepth<T, TLength>, Key>, 10>
+		? PathValue<Idx<LimitDepth<T, TLength>, Key>, Rest>
+		: never
+	: Idx<LimitDepth<T, TLength>, P>;
 ```
