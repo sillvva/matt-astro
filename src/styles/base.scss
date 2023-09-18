@@ -46,16 +46,7 @@
 		scroll-behavior: smooth;
 		color-scheme: dark;
 		@include universal-theme();
-		&,
-		&[data-theme="dark"],
-		[data-theme="dark"] {
-			@include dark-theme();
-		}
-		@media (prefers-color-scheme: dark) {
-			& {
-				@include dark-theme();
-			}
-		}
+		@include dark-theme();
 	}
 
 	h1,
@@ -74,10 +65,7 @@
 		font-size: 0.95rem;
 	}
 
-	p,
-	div,
-	section,
-	li {
+	* {
 		font-family: "Montserrat", sans-serif;
 	}
 

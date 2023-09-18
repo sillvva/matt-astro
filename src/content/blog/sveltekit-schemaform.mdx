@@ -95,7 +95,7 @@ export class SvelteMap<TKey, TVal> extends Map<TKey, TVal> {
 
 ### The Component
 
-The following is a self-contained SvelteKit component which extends SvelteKit forms with schema validation. With the use of `@decs/typeschema` and `lodash.set` as the only dependencies, it accepts almost every schema validation library, including zod, valibot, etc.
+The following is a self-contained SvelteKit component which extends SvelteKit forms with schema validation. With the use of `@decs/typeschema` as the only dependency, it accepts almost every schema validation library, including zod, valibot, etc.
 
 <CombinedBlock>
 	```html
@@ -110,7 +110,7 @@ The following is a self-contained SvelteKit component which extends SvelteKit fo
 			const data = (formData.get(stringify) as string) || "{}";
 			const result = await validate(schema, JSON.parse(data));
 			if ("issues" in result && result.issues.length) {
-				throw new Error(result.issues.map((i) => i.message).join("\n"));
+				throw new Error(result.issues.map((i) => `❌ ${(i.path || ["form"]).join(".")}: ${i.message}`).join("\n"));
 			}
 			if (!("data" in result)) throw new Error("No data returned");
 			return result.data;
