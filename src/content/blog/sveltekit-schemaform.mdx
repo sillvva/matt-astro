@@ -294,7 +294,7 @@ export const subscribeSchema = object({ email: string([email("Must be a valid em
 	```
 </CombinedBlock>
 
-Then in your server action, you can use the method `parseFormData` from the component file to parse the form data on the server getting validated data object.
+Then in your server action, you can use the `parseFormData` method from the component to parse the form data on the server and get a validated data object.
 
 ```typescript
 // +page.server.ts
