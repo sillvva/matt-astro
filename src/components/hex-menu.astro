@@ -16,19 +16,19 @@ export interface Item {
 		| `#${string}`;
 	hoverColor?:
 		| `hover:fill-${string}`
-		| `hover:rgb(${number}, ${number}, ${number})`
-		| `hover:rgba(${number}, ${number}, ${number}, ${number})`
-		| `hover:#${string}`;
+		| `rgb(${number}, ${number}, ${number})`
+		| `rgba(${number}, ${number}, ${number}, ${number})`
+		| `#${string}`;
 	activeColor?:
 		| `[.active]:fill-${string}`
-		| `[.active]:rgb(${number}, ${number}, ${number})`
-		| `[.active]:rgba(${number}, ${number}, ${number}, ${number})`
-		| `[.active]:#${string}`;
+		| `rgb(${number}, ${number}, ${number})`
+		| `rgba(${number}, ${number}, ${number}, ${number})`
+		| `#${string}`;
 	labelColor?:
 		| `text-${string}`
-		| `text-rgb(${number}, ${number}, ${number})`
-		| `text-rgba(${number}, ${number}, ${number}, ${number})`
-		| `text-#${string}`;
+		| `rgb(${number}, ${number}, ${number})`
+		| `rgba(${number}, ${number}, ${number}, ${number})`
+		| `#${string}`;
 }
 
 interface Props {
@@ -48,19 +48,19 @@ interface Props {
 		| `#${string}`;
 	hoverColor?:
 		| `hover:fill-${string}`
-		| `hover:rgb(${number}, ${number}, ${number})`
-		| `hover:rgba(${number}, ${number}, ${number}, ${number})`
-		| `hover:#${string}`;
+		| `rgb(${number}, ${number}, ${number})`
+		| `rgba(${number}, ${number}, ${number}, ${number})`
+		| `#${string}`;
 	activeColor?:
 		| `[.active]:fill-${string}`
-		| `[.active]:rgb(${number}, ${number}, ${number})`
-		| `[.active]:rgba(${number}, ${number}, ${number}, ${number})`
-		| `[.active]:#${string}`;
+		| `rgb(${number}, ${number}, ${number})`
+		| `rgba(${number}, ${number}, ${number}, ${number})`
+		| `#${string}`;
 	labelColor?:
 		| `text-${string}`
-		| `text-rgb(${number}, ${number}, ${number})`
-		| `text-rgba(${number}, ${number}, ${number}, ${number})`
-		| `text-#${string}`;
+		| `rgb(${number}, ${number}, ${number})`
+		| `rgba(${number}, ${number}, ${number}, ${number})`
+		| `#${string}`;
 }
 
 const {
