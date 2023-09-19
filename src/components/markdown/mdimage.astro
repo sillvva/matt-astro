@@ -14,8 +14,16 @@ const alt = Astro.props.alt || "";
 		<ResponsiveImage
 			src={Astro.props.src}
 			alt={alt}
-			sizes={[424, 640, 900]}
-			media={["(max-width: 424px) 424px", "(max-width: 640px) 640px", "900px"]}
+			srcSet={[
+				{
+					media: "(max-width: 424px)",
+					size: 424
+				},
+				{
+					media: "(max-width: 640px)",
+					size: 640
+				}
+			]}
 			class={cn(
 				"shadow-md shadow-black/15 motion-safe:hover:shadow-lg motion-safe:hover:shadow-black/25",
 				!alt.includes("no-aspect") && "object-cover md:object-contain"

@@ -63,8 +63,11 @@ const youTubeId = typeof image === "string" && image.match(/v=([^&]+)/)?.[1];
 								src={image}
 								alt={title}
 								id="post-image"
-								sizes={[500, 700, 900]}
-								media={["(max-width: 500px) 500px", "(max-width: 700px) 700px", "900px"]}
+								srcSet={[
+									{ media: "(max-width: 500px)", size: 500 },
+									{ media: "(max-width: 700px)", size: 700 },
+									{ media: "(min-width: 701px)", size: 900 }
+								]}
 								class="h-full w-full object-cover object-center shadow shadow-black/50"
 							/>
 						</div>

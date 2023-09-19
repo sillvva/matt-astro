@@ -21,14 +21,15 @@ const items: (Item | null)[] = [
 			<ResponsiveImage
 				src={me}
 				alt=""
-				sizes={[600, 900, 1200, 1500, 1800]}
-				media={[
-					"(max-width: 600px) 600px",
-					"(max-width: 900px) 900px",
-					"(max-width: 1200px) 1200px",
-					"(max-width: 1500px) 1500px",
-					"1800px"
+				include2x
+				srcSet={[
+					{ media: "(max-width: 600px)", size: 600 },
+					{ media: "(max-width: 900px)", size: 900 },
+					{ media: "(max-width: 1200px)", size: 1200 },
+					{ media: "(max-width: 1500px)", size: 1500 },
+					{ media: "(max-width: 1800px)", size: 1800 }
 				]}
+				loading="eager"
 				class="h-full w-full object-cover object-left md:object-center"
 			/>
 		</span>

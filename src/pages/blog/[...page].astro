@@ -116,7 +116,7 @@ const {
 					>
 						<div class="card-body p-4">
 							<div class="flex flex-col">
-								<h2 class="card-title text-lg text-theme-heading wrap-balance">{post.data.title}</h2>
+								<h2 class="card-title text-base font-medium text-theme-heading wrap-balance">{post.data.title}</h2>
 								{post.data.date && (
 									<span class="mb-2 text-sm text-theme-faded underline decoration-dotted underline-offset-2">
 										{formatDate(post.data.date)}
@@ -148,8 +148,10 @@ const {
 								<ResponsiveImage
 									src={post.data.image}
 									alt={post.data.title}
-									sizes={[424, 640]}
-									media={["(min-width: 564px) 424px", "640px"]}
+									srcSet={[
+										{ media: "(min-width: 564px)", size: 424 },
+										{ media: "(max-width: 564px)", size: 640 }
+									]}
 									class="h-full w-full object-cover object-center"
 								/>
 							)}
