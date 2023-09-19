@@ -1,0 +1,10 @@
+---
+import { cn } from "$/util";
+
+const { align } = Astro.props;
+const alignClass = align == "left" ? "text-left" : align == "right" ? "text-right" : "text-center";
+---
+
+<th class={cn("p-2 border border-dotted font-bold align-bottom border-b-2 [border-bottom-style:solid!important] ", alignClass)}>
+	<slot />
+</th>

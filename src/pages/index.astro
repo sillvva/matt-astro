@@ -36,7 +36,7 @@ const items: (Item | null)[] = [
 			<div class="fixed bottom-12 left-0 right-0 z-10 mt-0 text-center font-montserrat md:relative md:bottom-0 md:text-right">
 				<h1
 					transition:name="name"
-					class="font-montserrat text-3xl font-semibold tracking-widest drop-shadow-[0_2px_1px_rgba(0,0,0,0.8)] sm:text-5xl lg:text-5xl"
+					class="font-montserrat text-3xl font-semibold tracking-widest text-white drop-shadow-[0_2px_1px_rgba(0,0,0,0.8)] sm:text-5xl lg:text-5xl"
 				>
 					Matt DeKok
 				</h1>
@@ -52,11 +52,12 @@ const items: (Item | null)[] = [
 					{items}
 					pathname={Astro.url.pathname}
 					maxLength={3}
-					classes={["lg:[--scale:1.2]"]}
-					itemClasses={["bounce"]}
-					itemColor="rgb(0, 136, 121)"
-					hoverColor="rgb(0, 85, 76)"
-					rotated={true}
+					menuClasses="lg:[--scale:1.2]"
+					itemClasses="bounce"
+					itemColor="fill-primary"
+					hoverColor="hover:fill-accent"
+					activeColor="[.active]:fill-accent"
+					rotated
 				/>
 			</div>
 		</div>

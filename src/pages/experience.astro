@@ -18,8 +18,7 @@ const experience = await getCollection("experience");
 				experience
 					.sort((a, b) => sorter(a.data.id, b.data.id))
 					.map(({ data }) => (
-						<PageSection>
-							<h2 class="section-heading">{data.name}</h2>
+						<PageSection name={data.name}>
 							<PageSectionItems>
 								{data.items
 									.sort((a, b) => sorter(a.created_at, b.created_at))

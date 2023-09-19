@@ -41,6 +41,9 @@ module.exports = {
 			},
 			maxWidth: {
 				"8xl": "100rem"
+			},
+			maxHeight: {
+				dscreen: "100dvh"
 			}
 		},
 		screens: {

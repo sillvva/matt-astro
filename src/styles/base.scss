@@ -16,7 +16,7 @@
 	--color-text-theme-heading: rgb(189, 250, 225);
 
 	--ratingOn: rgb(255, 200, 0);
-	--ratingOff: rgb(var(--color-bg-body));
+	--ratingOff: rgba(255, 255, 255, 0.5);
 	--shadowHoverOpacity: 0.6;
 }
 
@@ -54,10 +54,12 @@
 	h3,
 	h4,
 	h5,
-	h6 {
+	h6,
+	th {
 		&,
 		* {
 			font-family: "Roboto Flex", sans-serif;
+			font-weight: 500;
 		}
 	}
 
@@ -68,7 +70,8 @@
 	p,
 	div,
 	section,
-	li {
+	li,
+	td {
 		font-family: "Montserrat", sans-serif;
 	}
 
@@ -86,12 +89,6 @@
 @layer components {
 	.bg-img {
 		background-image: var(--bg-img);
-	}
-	.section-heading {
-		@apply mb-2 text-center font-montserrat text-xl font-semibold text-theme-heading xs:mb-4 xs:text-left;
-	}
-	.section-divider {
-		@apply border-b-[1px] border-solid border-b-black/25;
 	}
 	.max-w-portfolio {
 		max-width: calc(100vw - 2rem);

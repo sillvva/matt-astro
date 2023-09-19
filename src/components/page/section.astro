@@ -2,12 +2,14 @@
 import { cn } from "$/util";
 
 interface Props {
+	name?: string;
 	class?: string;
+	headingClass?: string;
 	bgImage?: string;
 }
 
 const className = Astro.props.class || "";
-const { bgImage } = Astro.props;
+const { name, bgImage, headingClass } = Astro.props;
 ---
 
 <section
@@ -19,5 +21,15 @@ const { bgImage } = Astro.props;
 		`bg-cover bg-center`
 	)}
 >
+	{name && <h2 class={cn("section-heading", headingClass)}>{name}</h2>}
 	<slot />
 </section>
+
+<style>
+	.section-heading {
+		@apply relative mb-3 border-b border-dotted border-base-content/50 pb-1 text-2xl leading-7 text-theme-heading;
+	}
+	.section-divider {
+		@apply border-b-[1px] border-solid border-b-black/25;
+	}
+</style>

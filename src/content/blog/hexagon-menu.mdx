@@ -1,4 +1,27 @@
 ---
+title: Astro Hexagon Menu
+description: A hexagon menu component for Astro
+date: 2023-09-19T12:18:30.826Z
+image: $/assets/images/preview-me3.jpg
+tags:
+  - Astro
+  - Component
+  - TailwindCSS
+  - CSS
+  - UI
+---
+import CombinedBlock from "$/components/markdown/combined.astro";
+import HexMenu from "$/components/hex-menu.astro";
+
+## Table of Contents
+
+## The Component
+
+This component creates a menu of hexagon-shaped buttons. It is compatible with TailwindCSS (not required), can be rotated, and can include empty slots.
+
+<CombinedBlock>
+```ts
+---
 import { cn } from "$/util";
 
 export interface Item {
@@ -41,11 +64,6 @@ interface Props {
 	svgClasses?: string | string[];
 	hexagonClasses?: string | string[];
 	labelClasses?: string | string[];
-	bgColor?:
-		| `fill-${string}`
-		| `rgb(${number}, ${number}, ${number})`
-		| `rgba(${number}, ${number}, ${number}, ${number})`
-		| `#${string}`;
 	itemColor?:
 		| `fill-${string}`
 		| `rgb(${number}, ${number}, ${number})`
@@ -147,7 +165,8 @@ items.forEach((item, i) => {
 	}
 });
 ---
-
+```
+```tsx
 <nav class={cn("hex-menu-wrapper", rotated && "rotated", ...baseClasses)} style={cssvars}>
 	{
 		menuRows.map((row, r) => (
@@ -196,7 +215,8 @@ items.forEach((item, i) => {
 		))
 	}
 </nav>
-
+```
+```html
 <style lang="scss">
 	.hex-menu-wrapper {
 		display: inline-block;
@@ -313,3 +333,112 @@ items.forEach((item, i) => {
 		}
 	}
 </style>
+```
+</CombinedBlock>
+
+### Usage
+
+```tsx
+<HexMenu
+  items={[
+    { link: "/about", label: "About Me" },
+    { link: "/experience", label: "Experience" },
+    { link: "/skills", label: "Skills" },
+    { link: "/projects", label: "Projects" },
+    { link: "/blog", label: "Blog" }
+  ]}
+  pathname={Astro.url.pathname}
+  maxLength={3}
+  menuClasses="[--scale:0.8]"
+  itemClasses="bounce hover:stroke-[#0004]"
+  itemColor="fill-primary"
+  hoverColor="hover:fill-accent"
+  activeColor="[.active]:fill-accent"
+/>
+
+<HexMenu
+  items={[
+    { link: "/about", label: "About Me" },
+    { link: "/experience", label: "Experience" },
+    { link: "/skills", label: "Skills" },
+    { link: "/projects", label: "Projects" },
+    null,
+    { link: "/blog", label: "Blog" }
+  ]}
+  pathname={Astro.url.pathname}
+  maxLength={3}
+  menuClasses="[--scale:0.8]"
+  itemClasses="bounce hover:stroke-[#0004]"
+  itemColor="fill-primary"
+  hoverColor="hover:fill-accent"
+  activeColor="[.active]:fill-accent"
+  rotated
+/>
+```
+
+<div class="grid my-8 gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
+  <div class="flex justify-center">
+    #### Not Rotated
+  </div>
+  <div class="flex justify-center md:order-3 lg:order-2 xl:order-3">
+    <HexMenu
+      items={[{ link: "/about", label: "About Me" },{ link: "/experience", label: "Experience" },{ link: "/skills", label: "Skills" },{ link: "/projects", label: "Projects" },{ link: "/blog", label: "Blog" }]}
+      maxLength={3}
+      menuClasses="[--scale:0.8]"
+      itemClasses="bounce hover:stroke-[#0004]"
+      itemColor="fill-primary"
+      hoverColor="hover:fill-accent"
+      activeColor="[.active]:fill-accent"
+    />
+  </div>
+
+  <div class="flex justify-center md:order-2 lg:order-3 xl:order-2">
+    #### Rotated
+  </div>
+  <div class="flex justify-center order-4">
+    <HexMenu
+      items={[{ link: "/about", label: "About Me" },{ link: "/experience", label: "Experience" },{ link: "/skills", label: "Skills" },{ link: "/projects", label: "Projects" },null,{ link: "/blog", label: "Blog" }]}
+      maxLength={3}
+      menuClasses="[--scale:0.8]"
+      itemClasses="bounce hover:stroke-[#0004]"
+      itemColor="fill-primary"
+      hoverColor="hover:fill-accent"
+      activeColor="[.active]:fill-accent"
+      rotated
+    />
+  </div>
+</div>
+
+## Props
+
+| Name | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `items` | `Item[]` | `[]` | An array of items to display in the menu. |
+| `pathname` | `string` | `""` | The current path of the page. |
+| `maxLength` | `number` | `0` | The maximum number of items to display in a row. |
+| `rotated` | `boolean` | `false` | Whether the hexagons should be rotated 90 degrees. |
+| `menuClasses` | `string` or `string[]` | `[]` | Classes to apply to the menu wrapper. |
+| `itemClasses` | `string` or `string[]` | `[]` | Classes to apply to all items. |
+| `svgClasses` | `string` or `string[]` | `[]` | Classes to apply to all SVGs. |
+| `hexagonClasses` | `string` or `string[]` | `[]` | Classes to apply to all hexagons. |
+| `labelClasses` | `string` or `string[]` | `[]` | Classes to apply to all labels. |
+| `itemColor` | `string` | `"rgb(0, 0, 0)"` | The color of the hexagons. |
+| `hoverColor` | `string` | `"rgb(80, 80, 80)"` | The color of the hexagons when hovered. |
+| `activeColor` | `string` | `"rgb(80, 80, 80)"` | The color of the hexagons when active. |
+| `labelColor` | `string` | `"rgb(255, 255, 255)"` | The color of the labels. |
+
+## Item Props
+
+| Name | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `link` | `string` | `""` | The link to navigate to when the item is clicked. |
+| `label` | `string` | `""` | The label to display on the item. |
+| `active` | `boolean` | `false` | Whether the item is active. |
+| `itemClasses` | `string` or `string[]` | `[]` | Classes to apply to the item. |
+| `svgClasses` | `string` or `string[]` | `[]` | Classes to apply to the SVG. |
+| `hexagonClasses` | `string` or `string[]` | `[]` | Classes to apply to the hexagon. |
+| `labelClasses` | `string` or `string[]` | `[]` | Classes to apply to the label. |
+| `itemColor` | `string` | `""` | The color of the hexagon. |
+| `hoverColor` | `string` | `""` | The color of the hexagon when hovered. |
+| `activeColor` | `string` | `""` | The color of the hexagon when active. |
+| `labelColor` | `string` | `""` | The color of the label. |
