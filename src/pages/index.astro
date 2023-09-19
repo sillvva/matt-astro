@@ -52,9 +52,11 @@ const items: (Item | null)[] = [
 					{items}
 					pathname={Astro.url.pathname}
 					maxLength={3}
-					menuClasses={["lg:[--scale:1.2]"]}
-					itemClasses={["bounce"]}
-					hexagonClasses={["fill-primary hover:fill-accent [&.active]:fill-accent"]}
+					menuClasses="lg:[--scale:1.2]"
+					itemClasses="bounce"
+					itemColor="fill-primary"
+					hoverColor="hover:fill-accent"
+					activeColor="[.active]:fill-accent"
 					rotated
 				/>
 			</div>
