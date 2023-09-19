@@ -1,0 +1,10 @@
+---
+import { cn } from "$/util";
+
+const { align } = Astro.props;
+const alignClass = align == "left" ? "text-left" : align == "right" ? "text-right" : "text-center";
+---
+
+<td class={cn("p-2 border border-dotted align-top", alignClass)}>
+	<slot />
+</td>

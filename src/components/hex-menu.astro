@@ -41,6 +41,11 @@ interface Props {
 	svgClasses?: string | string[];
 	hexagonClasses?: string | string[];
 	labelClasses?: string | string[];
+	bgColor?:
+		| `fill-${string}`
+		| `rgb(${number}, ${number}, ${number})`
+		| `rgba(${number}, ${number}, ${number}, ${number})`
+		| `#${string}`;
 	itemColor?:
 		| `fill-${string}`
 		| `rgb(${number}, ${number}, ${number})`
@@ -73,10 +78,10 @@ const {
 	svgClasses = [],
 	hexagonClasses = [],
 	labelClasses = [],
-	itemColor = "fill-black",
-	hoverColor = "hover:fill-gray-700",
-	activeColor = "[.active]:fill-gray-700",
-	labelColor = "text-white"
+	itemColor = "rgb(0, 0, 0)",
+	hoverColor = "rgb(80, 80, 80)",
+	activeColor = "rgb(80, 80, 80)",
+	labelColor = "rgb(255, 255, 255)"
 } = Astro.props;
 
 let menuRows: Item[][] = [[]];

@@ -17,7 +17,7 @@ import HexMenu from "$/components/hex-menu.astro";
 
 ## The Component
 
-
+This component creates a menu of hexagon-shaped buttons. It is compatible with TailwindCSS (not required), can be rotated, and can include empty slots.
 
 <CombinedBlock>
 ```ts
@@ -96,10 +96,10 @@ const {
 	svgClasses = [],
 	hexagonClasses = [],
 	labelClasses = [],
-	itemColor = "fill-black",
-	hoverColor = "hover:fill-gray-700",
-	activeColor = "[.active]:fill-gray-700",
-	labelColor = "text-white"
+	itemColor = "rgb(0, 0, 0)",
+	hoverColor = "rgb(80, 80, 80)",
+	activeColor = "rgb(80, 80, 80)",
+	labelColor = "rgb(255, 255, 255)"
 } = Astro.props;
 
 let menuRows: Item[][] = [[]];
@@ -340,11 +340,35 @@ items.forEach((item, i) => {
 
 ```tsx
 <HexMenu
-  {items}
+  items={[
+    { link: "/about", label: "About Me" },
+    { link: "/experience", label: "Experience" },
+    { link: "/skills", label: "Skills" },
+    { link: "/projects", label: "Projects" },
+    { link: "/blog", label: "Blog" }
+  ]}
   pathname={Astro.url.pathname}
   maxLength={3}
-  menuClasses="lg:[--scale:1.2]"
-  itemClasses="bounce"
+  menuClasses="[--scale:0.6] xs:[--scale:1] lg:[--scale:1.2]"
+  itemClasses="bounce hover:stroke-[#0004]"
+  itemColor="fill-primary"
+  hoverColor="hover:fill-accent"
+  activeColor="[.active]:fill-accent"
+/>
+
+<HexMenu
+  items={[
+    { link: "/about", label: "About Me" },
+    { link: "/experience", label: "Experience" },
+    { link: "/skills", label: "Skills" },
+    { link: "/projects", label: "Projects" },
+    null,
+    { link: "/blog", label: "Blog" }
+  ]}
+  pathname={Astro.url.pathname}
+  maxLength={3}
+  menuClasses="[--scale:0.6] xs:[--scale:1] lg:[--scale:1.2]"
+  itemClasses="bounce hover:stroke-[#0004]"
   itemColor="fill-primary"
   hoverColor="hover:fill-accent"
   activeColor="[.active]:fill-accent"
@@ -352,17 +376,67 @@ items.forEach((item, i) => {
 />
 ```
 
-### Demo
+<div class="flex justify-center my-8">
+  #### Not Rotated
+</div>
+<div class="flex justify-center my-8">
+  <HexMenu
+    items={[{ link: "/about", label: "About Me" },{ link: "/experience", label: "Experience" },{ link: "/skills", label: "Skills" },{ link: "/projects", label: "Projects" },{ link: "/blog", label: "Blog" }]}
+    maxLength={3}
+    menuClasses="[--scale:0.6] xs:[--scale:1] lg:[--scale:1.2]"
+    itemClasses="bounce hover:stroke-[#0004]"
+    itemColor="fill-primary"
+    hoverColor="hover:fill-accent"
+    activeColor="[.active]:fill-accent"
+  />
+</div>
 
-<div class="flex mb-40 mt-8">
+<div class="flex justify-center my-8">
+  #### Rotated
+</div>
+<div class="flex justify-center my-8">
   <HexMenu
     items={[{ link: "/about", label: "About Me" },{ link: "/experience", label: "Experience" },{ link: "/skills", label: "Skills" },{ link: "/projects", label: "Projects" },null,{ link: "/blog", label: "Blog" }]}
     maxLength={3}
-    menuClasses="lg:[--scale:1.2]"
-    itemClasses="bounce"
+    menuClasses="[--scale:0.6] xs:[--scale:1] lg:[--scale:1.2]"
+    itemClasses="bounce hover:stroke-[#0004]"
     itemColor="fill-primary"
     hoverColor="hover:fill-accent"
     activeColor="[.active]:fill-accent"
     rotated
   />
 </div>
+
+## Props
+
+| Name | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `items` | `Item[]` | `[]` | An array of items to display in the menu. |
+| `pathname` | `string` | `""` | The current path of the page. |
+| `maxLength` | `number` | `0` | The maximum number of items to display in a row. |
+| `rotated` | `boolean` | `false` | Whether the hexagons should be rotated 90 degrees. |
+| `menuClasses` | `string` or `string[]` | `[]` | Classes to apply to the menu wrapper. |
+| `itemClasses` | `string` or `string[]` | `[]` | Classes to apply to all items. |
+| `svgClasses` | `string` or `string[]` | `[]` | Classes to apply to all SVGs. |
+| `hexagonClasses` | `string` or `string[]` | `[]` | Classes to apply to all hexagons. |
+| `labelClasses` | `string` or `string[]` | `[]` | Classes to apply to all labels. |
+| `itemColor` | `string` | `"rgb(0, 0, 0)"` | The color of the hexagons. |
+| `hoverColor` | `string` | `"rgb(80, 80, 80)"` | The color of the hexagons when hovered. |
+| `activeColor` | `string` | `"rgb(80, 80, 80)"` | The color of the hexagons when active. |
+| `labelColor` | `string` | `"rgb(255, 255, 255)"` | The color of the labels. |
+
+## Item Props
+
+| Name | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `link` | `string` | `""` | The link to navigate to when the item is clicked. |
+| `label` | `string` | `""` | The label to display on the item. |
+| `active` | `boolean` | `false` | Whether the item is active. |
+| `itemClasses` | `string` or `string[]` | `[]` | Classes to apply to the item. |
+| `svgClasses` | `string` or `string[]` | `[]` | Classes to apply to the SVG. |
+| `hexagonClasses` | `string` or `string[]` | `[]` | Classes to apply to the hexagon. |
+| `labelClasses` | `string` or `string[]` | `[]` | Classes to apply to the label. |
+| `itemColor` | `string` | `""` | The color of the hexagon. |
+| `hoverColor` | `string` | `""` | The color of the hexagon when hovered. |
+| `activeColor` | `string` | `""` | The color of the hexagon when active. |
+| `labelColor` | `string` | `""` | The color of the label. |
