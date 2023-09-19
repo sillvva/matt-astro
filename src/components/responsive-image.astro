@@ -1,4 +1,5 @@
 ---
+import { cn } from "$/util";
 import type { ImageOutputFormat } from "astro";
 import { getImage, type ImgAttributes } from "astro:assets";
 
@@ -6,34 +7,68 @@ type Unit = "px" | "em" | "rem";
 type Size = `${number}${Unit}`;
 type MinMediaQuery = `(min-width: ${Size})`;
 type MaxMediaQuery = `(max-width: ${Size})`;
+type MinMaxMediaQuery =
+	| MinMediaQuery
+	| MaxMediaQuery
+	| `(${MinMediaQuery} and ${MaxMediaQuery})`
+	| `(${MaxMediaQuery} or ${MinMediaQuery})`;
 type OrientationMediaQuery = "(orientation: portrait)" | "(orientation: landscape)";
-type MediaQueries = MinMediaQuery | MaxMediaQuery | OrientationMediaQuery;
+type OMMMediaQuery = `${OrientationMediaQuery} and ${MinMaxMediaQuery}`;
+type ColorSchemeMediaQuery = "(prefers-color-scheme: dark)" | "(prefers-color-scheme: light)";
+type CMMMediaQuery = `${ColorSchemeMediaQuery} and ${MinMaxMediaQuery}`;
 
-type Props = Omit<ImgAttributes, "sizes"> & {
+type Props = ImgAttributes & {
 	src: ImageMetadata;
-	format?: ImageOutputFormat;
-	sizes: number[];
-	media?: (
-		| `${MediaQueries} ${Size}`
-		| `(${MinMediaQuery} and ${MaxMediaQuery}) ${Size}`
-		| `(${MaxMediaQuery} or ${MinMediaQuery}) ${Size}`
-		| Size
-	)[];
+	pictureClass?: string | string[];
+	include2x?: boolean;
+	include3x?: boolean;
+	srcSet: {
+		src?: ImageMetadata;
+		media: MinMaxMediaQuery | OrientationMediaQuery | ColorSchemeMediaQuery | OMMMediaQuery | CMMMediaQuery;
+		size: number;
+		format?: ImageOutputFormat;
+	}[];
 };
 
-const { src, sizes, format, alt, id, media } = Astro.props;
+const { src, pictureClass, include2x, include3x, ...rest } = Astro.props;
 const className = Astro.props.class;
+const loading = Astro.props.loading || "lazy";
 
-if (!sizes.length) throw new Error("No sizes provided");
-if (sizes.length !== media?.length) throw new Error("Sizes and media queries must be the same length");
+const srcSet = (
+	await Promise.all(
+		Astro.props.srcSet.map(async ({ media, size, format, ...img }) => {
+			const url = src || img.src;
+			const images: string[] = [];
 
-const imgSrc = await getImage({ src, width: Math.min(...sizes), format });
-const srcSet = await Promise.all(
-	sizes.map(async (size) => {
-		const image = await getImage({ src, width: size, format });
-		return `${image.src} ${size}w`;
-	})
-);
+			const image = await getImage({ src: url, width: size, format });
+			images.push(`${image.src}`);
+
+			if (include2x) {
+				const image2x = await getImage({ src: url, width: size * 2, format });
+				images.push(`${image2x.src} 2x`);
+			}
+
+			if (include3x) {
+				const image3x = await getImage({ src: url, width: size * 3, format });
+				images.push(`${image3x.src} 3x`);
+			}
+
+			return {
+				src: images.join(", "),
+				media,
+				type: format && `image/${format}`,
+				size
+			};
+		})
+	)
+).sort((a, b) => a.size - b.size);
+
+const maxSize = srcSet.reduce((acc, curr) => (curr.size > acc ? curr.size : acc), 0);
+const imgSrc = srcSet.find((ss) => ss.size === maxSize);
+if (!imgSrc) throw new Error("No image source found");
 ---
 
-<img srcset={srcSet.join(", ")} sizes={media?.join(", ")} {id} {alt} src={imgSrc.src} class={className} loading="lazy" />
+<picture class={cn("h-full w-full", pictureClass)}>
+	{srcSet.map((ss) => <source srcset={ss.src} media={ss.media} type={ss.type} />)}
+	<img src={imgSrc.src.split(", ")[0]} loading={loading} class={className} {...rest} />
+</picture>
