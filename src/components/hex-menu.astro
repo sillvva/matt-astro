@@ -5,24 +5,22 @@ export interface Item {
 	link: string;
 	label: string;
 	active?: boolean;
-	itemColor?: string;
-	hoverColor?: string;
-	labelColor?: string;
+	itemClasses?: string | string[];
+	svgClasses?: string | string[];
+	hexagonClasses?: string | string[];
+	labelClasses?: string | string[];
 }
 
 interface Props {
 	pathname: string;
 	items: (Item | null)[];
 	maxLength: number;
-	rotated: boolean;
-	classes: string[];
-	itemClasses?: string[];
-	itemColor?: string;
-	hoverColor?: string;
-	hexagonClasses?: string[];
-	labelClasses?: string[];
-	labelColor?: string;
-	bgColor?: string;
+	rotated?: boolean;
+	menuClasses: string | string[];
+	itemClasses?: string | string[];
+	svgClasses?: string | string[];
+	hexagonClasses?: string | string[];
+	labelClasses?: string | string[];
 }
 
 const {
@@ -30,14 +28,11 @@ const {
 	pathname,
 	maxLength = 0,
 	rotated = false,
-	classes = [],
+	menuClasses = [],
 	itemClasses = [],
-	itemColor = "rgb(0, 0, 0)",
-	hoverColor = "rgb(80, 80, 80)",
+	svgClasses = [],
 	hexagonClasses = [],
-	labelClasses = [],
-	labelColor = "rgb(255, 255, 255)",
-	bgColor = "rgb(0, 0, 0)"
+	labelClasses = []
 } = Astro.props;
 
 let menuRows: Item[][] = [[]];
@@ -55,84 +50,55 @@ items.forEach((item, i) => {
 	}
 });
 
-if (!classes.find((c) => c.startsWith("[--scale:"))) {
-	classes.push("[--scale:1]");
+const baseClasses = typeof menuClasses === "string" ? menuClasses.split(" ").filter(Boolean) : menuClasses;
+if (!baseClasses.find((c) => c.startsWith("[--scale:"))) {
+	baseClasses.push("[--scale:1]");
 }
 ---
 
-<nav class={cn("hex-menu-wrapper", rotated && "rotated", ...classes)} style={{ "--bg-color": bgColor }}>
+<nav class={cn("hex-menu-wrapper", rotated && "rotated", ...baseClasses)}>
 	{
 		menuRows.map((row, r) => (
 			<div class={cn("hex-menu-row", r % 2 === 1 && !rotated && "shift")}>
-				{row.map((item, i) =>
-					item.link ? (
-						<a
-							href={item.link}
-							class={cn("hex-menu-item-container", rotated && "rotated", ...itemClasses)}
-							style={{
-								"--item-color": item.itemColor || itemColor,
-								"--hover-color": item.hoverColor || hoverColor,
-								"--label-color": item.labelColor || labelColor
-							}}
-							aria-label={item.label}
+				{row.map((item, i) => {
+					const BtnEl = item.link ? "a" : "div";
+					return (
+						<BtnEl
+							href={item.link || undefined}
+							class={cn(
+								"hex-menu-item-container",
+								rotated && "rotated",
+								item.active && "active",
+								item.label && item.link && itemClasses,
+								item.itemClasses
+							)}
+							aria-label={item.label || undefined}
 						>
 							<svg
 								viewBox="0 0 800 800"
-								class={cn("hex-menu-item", rotated && "rotated", !item.label && "empty", item.active && "active")}
+								class={cn(
+									"hex-menu-item",
+									rotated && "rotated",
+									!item.label && "empty",
+									item.active && "active",
+									item.label && item.link && svgClasses,
+									item.svgClasses
+								)}
 								aria-hidden={!item.label}
 							>
-								{rotated ? (
-									<g transform="matrix(-6.92 0 0 -6.92 400.24 400.24)">
-										<polygon
-											class={cn("h-hex", "hex", ...hexagonClasses)}
-											points="-19.9,34.5 -39.8,0 -19.9,-34.5 19.9,-34.5 39.8,0 19.9,34.5 "
-										/>
-									</g>
-								) : (
-									<g transform="matrix(0 6.92 -6.92 0 400.17 400.33)">
-										<polygon
-											class={cn("h-hex", "hex", ...hexagonClasses)}
-											points="-19.9,34.5 -39.8,0 -19.9,-34.5 19.9,-34.5 39.8,0 19.9,34.5 "
-										/>
-									</g>
-								)}
+								<g transform={rotated ? "matrix(-6.92 0 0 -6.92 400.24 400.24)" : "matrix(0 6.92 -6.92 0 400.17 400.33)"}>
+									<polygon
+										class={cn("hex", item.active && "active", item.label && item.link && hexagonClasses, item.hexagonClasses)}
+										points="-19.9,34.5 -39.8,0 -19.9,-34.5 19.9,-34.5 39.8,0 19.9,34.5 "
+									/>
+								</g>
 							</svg>
-							<span class={cn("label", ...labelClasses)}>{item.label}</span>
-						</a>
-					) : (
-						<div
-							class={cn("hex-menu-item-container", rotated && "rotated", ...itemClasses)}
-							style={{
-								"--item-color": item.itemColor || itemColor,
-								"--hover-color": item.hoverColor || hoverColor,
-								"--label-color": item.labelColor || labelColor
-							}}
-						>
-							<svg
-								viewBox="0 0 800 800"
-								class={cn("hex-menu-item", rotated && "rotated", !item.label && "empty", item.active && "active")}
-								aria-hidden={!item.label}
-							>
-								{rotated ? (
-									<g transform="matrix(-6.92 0 0 -6.92 400.24 400.24)">
-										<polygon
-											class={cn("h-hex hex", ...hexagonClasses)}
-											points="-19.9,34.5 -39.8,0 -19.9,-34.5 19.9,-34.5 39.8,0 19.9,34.5 "
-										/>
-									</g>
-								) : (
-									<g transform="matrix(0 6.92 -6.92 0 400.17 400.33)">
-										<polygon
-											class={cn("h-hex hex", ...hexagonClasses)}
-											points="-19.9,34.5 -39.8,0 -19.9,-34.5 19.9,-34.5 39.8,0 19.9,34.5 "
-										/>
-									</g>
-								)}
-							</svg>
-							<span class={cn("label", ...labelClasses)}>{item.label}</span>
-						</div>
-					)
-				)}
+							<span class={cn("label", item.active && "active", item.label && item.link && labelClasses, item.labelClasses)}>
+								{item.label}
+							</span>
+						</BtnEl>
+					);
+				})}
 			</div>
 		))
 	}
@@ -171,7 +137,7 @@ if (!classes.find((c) => c.startsWith("[--scale:"))) {
 			z-index: 2;
 			.hex-menu-item:not(.empty) {
 				.hex {
-					fill: var(--hover-color);
+					fill: rgb(80, 80, 80);
 				}
 			}
 		}
@@ -197,11 +163,11 @@ if (!classes.find((c) => c.startsWith("[--scale:"))) {
 			}
 			&.active {
 				.hex {
-					fill: var(--hover-color);
+					fill: rgb(80, 80, 80);
 				}
 			}
 			.hex {
-				fill: var(--item-color);
+				fill: rgb(0, 0, 0);
 				z-index: -1;
 				backface-visibility: hidden;
 				transition:
@@ -209,12 +175,12 @@ if (!classes.find((c) => c.startsWith("[--scale:"))) {
 					-webkit-transform 1s ease-in-out;
 				pointer-events: auto;
 				&:hover {
-					fill: var(--hover-color);
+					fill: rgb(80, 80, 80);
 				}
 			}
 		}
 		.label {
-			color: var(--label-color);
+			color: rgb(255, 255, 255);
 			text-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
 			font-family: sans-serif;
 			white-space: nowrap;
@@ -230,7 +196,7 @@ if (!classes.find((c) => c.startsWith("[--scale:"))) {
 
 	.bounce:hover:not(.active):not(.empty) {
 		animation: bounce 500ms ease-in-out forwards;
-		stroke: var(--bg-color);
+		stroke: rgb(0, 0, 0);
 		stroke-width: 0;
 		.backface {
 			box-shadow: none;
