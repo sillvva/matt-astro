@@ -19,7 +19,7 @@ This is a simple utility function that can be used to create a history object, w
 </div>
 
 ```ts
-function history<T>(initial: T, maxLength = 50) {
+function createHistory<T>(initial: T, maxLength = 50) {
 	let history = $state<T[]>([initial]);
 	let index = $state(0);
 	let current = $derived(history[index]);
@@ -31,7 +31,7 @@ function history<T>(initial: T, maxLength = 50) {
       if (maxLength > 0) history = history.slice(Math.max(0, history.length - maxLength), history.length);
 			index = history.length - 1;
 		},
-		get history() { return history },
+		get entries() { return history },
     get index() { return index },
 		undo() { index = Math.max(0, index - 1) },
 		redo() { index = Math.min(history.length - 1, index + 1) }
