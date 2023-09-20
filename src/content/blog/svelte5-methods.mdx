@@ -15,7 +15,7 @@ tags:
 This is a simple utility function that can be used to create a history object, which tracks the current value and allows you to undo and redo changes to the value. Set the `maxLength` to `0` to disable the history limit.
 
 <div class="button-row">
-  [Preview](btn::https://svelte-5-preview.vercel.app/#H4sIAAAAAAAAE4VUwY6bMBD9FcvdA2izkFTqhQBVbz1sL616CnsgMAnWOgbZQ5oI-d9rYxzY7KrNxfHMvJk3b8YM9MA4KJrsBirKE9CEfus6uqJ47exFnYEjmLtqe1lZS6oqyTrMC1HgoRcVslaQhils5TVggiEr-YqcyssziCM2JCNf1iEZbDgH9JHG_KCwRAh2E-Yl3PoYJmq4zBHr2VP1UoJA66tBsjPUwZRwN4JcEhMsAXspXNkCjzM0CL3xFjR5ts6sV-5UC4yAP78slQV2KhupjrMKAkf5kWxWvsOIu_6fXDsrcktiCpHxN2txyzYm-1FiExkFg_UH2W7KhvfOcOvJeQHfgTd3TR7niXwgzORZYCzro5-QQ7hWJsRon_rzNXpRt8vkntyyS2cz_MI7ghL-BWYieN-iz_a4yGYPbS7abYdfxFkiS-LzuGhpPC-4SJtN_mxmpjAhgw2NppXQaWxcJoCJrkdiX0tWUIQLFpTsDYHkXPIesrcgElvIvkc0b6YVSWXG_ZoNpsEsH5lETiyd_zZnGrvI_2GcRjr_CW8wjv1311_i-bZ8fLnDJyirxuH9GpaKMIST0U872VLOiMIrh6RqeSuzgZHMKRY5ib-SgprqpuXE_NvzsnotqM79sAabzueKOXOVY1tZW6ENF_NlObU1OzCoaYKyB_2i_wLpYLuHlAQAAA==)
+  [Preview](btn::https://svelte-5-preview.vercel.app/#H4sIAAAAAAAAE4VUTY-bMBT8K5bbA2hTSCr1QoGqtx62l1Y9hT0QeAnWOgbZjzQR4r_XHzhmP6Qmh8S8mXnzxjYTPTIOimb7iYr6DDSj34eBbijeBrNQF-AIeq36UTbmSa4ayQYsK1HhcRQNsl6Qjins5S1igiGr-Yac6-sjiBN2pCBftjGZDLxCDuixuvBRYY0Q7RfWU_w1oJho4Row23WtGaUEgabagmQXaKNFdG9pXsgSJOAohTdQ4SkIRNoXWepec954oFoBBfz9bXzEQafCpWeiBs4aiJzjB7Lb-BET7iL45KbZkLuM9Ufshx1JFNIqiQ4rJHRvYTv8rLFLNDbavtPirhG_LvrozNfH-oa-u4NCAqewW-uovD0HNDOc_IatYa5VUBtF29u697Aexz3TNuIVQ8K7DCait_a9xIOVcAqzncksRDh6YXjT97M9WHkaDrXIu135qDdJYUYmA02WUzDnqS5pABPDiMTckKKiCFesKDno9tml5iMUL0kkNZTDiKjvSS-yRm_lczHpuYrSOklcMHP5R__mqUP-j-Oimctf8ILj3P9w82Xeb8_tbZ0-QN10ju_3sFaEIZx1ektmOWdE4Y1D1vS8l8XESOESS1zA30hFdXc9cqb_HXjdPFd0Lv2eTUbOa6Wcuc6p6TyboLUX_TY59y07MmhphnKE-Wn-BxJ1Rc2IBAAA)
 </div>
 
 ```ts
@@ -28,7 +28,7 @@ function history<T>(initial: T, maxLength = 50) {
 		get current() { return current },
 		set current(newState: T) {
 			history.splice(index + 1, history.length - index, newState);
-      if (maxLength) history = history.slice(Math.max(0, history.length - maxLength), history.length);
+      if (maxLength > 0) history = history.slice(Math.max(0, history.length - maxLength), history.length);
 			index = history.length - 1;
 		},
 		get history() { return history },
