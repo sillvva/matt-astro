@@ -12,11 +12,15 @@ tags:
 
 ## History
 
-This is a simple utility function that can be used to create a history object, which tracks the current value and allows you to undo and redo changes to the value.
+This is a simple utility function that can be used to create a history object, which tracks the current value and allows you to undo and redo changes to the value. Set the `maxLength` to `0` to disable the history limit.
+
+<div class="button-row">
+  [Preview](btn::https://svelte-5-preview.vercel.app/#H4sIAAAAAAAAE4VTTW-cMBD9K5bbAygUdiP1wgJSbzkkl1Y9LTkQmF2seg2yh-1GyP89NsYL2UQtF-OZ92befHikB8ZB0XQ_UlGdgKb0R9_TiOJrby_qDBzB3FU3yNpaMlVL1mNRihIPg6iRdYK0TGEnXwMmGLKKR-RUXR5BHLElOfm-Cclo4RzQI435q8IKIdjPnOdw5zFMNHBZEJvFUw9SgkDra0CyMzTBHHA_kVwQA5aAgxQubYnHhRqE3ngFzZ6dM-vInWrFEfD3l5Wy4s5pY9VzVkPgJN-RbeQrjLmr_5srJyLXICYRmb6lF9doU7CnCtvYdDDYfBLt2tnw1hnuvDjfwA_k7U2Rx2UinzRm9txwBtF0a7BPtlbtbCZfeEOW8C8yE8FHyT7a3SqaPbS5aDdtv1hLyVbE_bQ4WbIsrMjabfFoZqAwJaOFxvOIdZYYlwEw0Q9I7PbnJUW4YEnJixGQnis-QP6eRBJLeRkQzRvoRFqb8f3JR1NgXkxKYtcsXfw2Z5Y45P84rke6-AnvOE79g6sv9Xo7Pr3E8QtUdev4fq0qRRjCSbueZZwV43TPEvM7kRJL0rZHJox55KeuYQcGDU1RDqCf9RuHKtpRHwQAAA==)
+</div>
 
 ```ts
-function history<T>(initial: T) {
-	let history = $state([initial]);
+function history<T>(initial: T, maxLength = 50) {
+	let history = $state<T[]>([initial]);
 	let index = $state(0);
 	let current = $derived(history[index]);
 
@@ -26,7 +30,11 @@ function history<T>(initial: T) {
 		},
 		set current(newState: T) {
 			history.splice(index + 1, history.length - index, newState);
-			index++;
+      if (maxLength) history = history.slice(Math.max(0, history.length - maxLength), history.length);
+			index = history.length - 1;
+		},
+		get history() {
+			return history;
 		},
 		undo() {
 			index = Math.max(0, index - 1);
