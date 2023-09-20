@@ -15,7 +15,7 @@ tags:
 This is a simple utility function that can be used to create a history object, which tracks the current value and allows you to undo and redo changes to the value. Set the `maxLength` to `0` to disable the history limit.
 
 <div class="button-row">
-  [Preview](btn::https://svelte-5-preview.vercel.app/#H4sIAAAAAAAAE4VTTW-cMBD9K5bbAygUdiP1wgJSbzkkl1Y9LTkQmF2seg2yh-1GyP89NsYL2UQtF-OZ92befHikB8ZB0XQ_UlGdgKb0R9_TiOJrby_qDBzB3FU3yNpaMlVL1mNRihIPg6iRdYK0TGEnXwMmGLKKR-RUXR5BHLElOfm-Cclo4RzQI435q8IKIdjPnOdw5zFMNHBZEJvFUw9SgkDra0CyMzTBHHA_kVwQA5aAgxQubYnHhRqE3ngFzZ6dM-vInWrFEfD3l5Wy4s5pY9VzVkPgJN-RbeQrjLmr_5srJyLXICYRmb6lF9doU7CnCtvYdDDYfBLt2tnw1hnuvDjfwA_k7U2Rx2UinzRm9txwBtF0a7BPtlbtbCZfeEOW8C8yE8FHyT7a3SqaPbS5aDdtv1hLyVbE_bQ4WbIsrMjabfFoZqAwJaOFxvOIdZYYlwEw0Q9I7PbnJUW4YEnJixGQnis-QP6eRBJLeRkQzRvoRFqb8f3JR1NgXkxKYtcsXfw2Z5Y45P84rke6-AnvOE79g6sv9Xo7Pr3E8QtUdev4fq0qRRjCSbueZZwV43TPEvM7kRJL0rZHJox55KeuYQcGDU1RDqCf9RuHKtpRHwQAAA==)
+  [Preview](btn::https://svelte-5-preview.vercel.app/#H4sIAAAAAAAAE4VUwY6bMBD9FcvdA2izkFTqhQBVbz1sL616CnsgMAnWOgbZQ5oI-d9rYxzY7KrNxfHMvJk3b8YM9MA4KJrsBirKE9CEfus6uqJ47exFnYEjmLtqe1lZS6oqyTrMC1HgoRcVslaQhils5TVggiEr-YqcyssziCM2JCNf1iEZbDgH9JHG_KCwRAh2E-Yl3PoYJmq4zBHr2VP1UoJA66tBsjPUwZRwN4JcEhMsAXspXNkCjzM0CL3xFjR5ts6sV-5UC4yAP78slQV2KhupjrMKAkf5kWxWvsOIu_6fXDsrcktiCpHxN2txyzYm-1FiExkFg_UH2W7KhvfOcOvJeQHfgTd3TR7niXwgzORZYCzro5-QQ7hWJsRon_rzNXpRt8vkntyyS2cz_MI7ghL-BWYieN-iz_a4yGYPbS7abYdfxFkiS-LzuGhpPC-4SJtN_mxmpjAhgw2NppXQaWxcJoCJrkdiX0tWUIQLFpTsDYHkXPIesrcgElvIvkc0b6YVSWXG_ZoNpsEsH5lETiyd_zZnGrvI_2GcRjr_CW8wjv1311_i-bZ8fLnDJyirxuH9GpaKMIST0U872VLOiMIrh6RqeSuzgZHMKRY5ib-SgprqpuXE_NvzsnotqM79sAabzueKOXOVY1tZW6ENF_NlObU1OzCoaYKyB_2i_wLpYLuHlAQAAA==)
 </div>
 
 ```ts
@@ -25,23 +25,16 @@ function history<T>(initial: T, maxLength = 50) {
 	let current = $derived(history[index]);
 
 	return {
-		get current() {
-			return current;
-		},
+		get current() { return current },
 		set current(newState: T) {
 			history.splice(index + 1, history.length - index, newState);
       if (maxLength) history = history.slice(Math.max(0, history.length - maxLength), history.length);
 			index = history.length - 1;
 		},
-		get history() {
-			return history;
-		},
-		undo() {
-			index = Math.max(0, index - 1);
-		},
-		redo() {
-			index = Math.min(history.length - 1, index + 1);
-		}
+		get history() { return history },
+    get index() { return index },
+		undo() { index = Math.max(0, index - 1) },
+		redo() { index = Math.min(history.length - 1, index + 1) }
 	};
 }
 ```
@@ -76,18 +69,10 @@ export function createFetcher<T extends unknown>(url: string) {
 	});
 
 	return {
-		get result() {
-			return result;
-		},
-		get loading() {
-			return loading;
-		},
-		get error() {
-			return error;
-		},
-		abort(reason?: unknown) {
-			controller.abort(reason);
-		}
+		get result() { return result },
+		get loading() { return loading },
+		get error() { return error },
+		abort(reason?: unknown) { controller.abort(reason) }
 	};
 }
 
@@ -141,12 +126,8 @@ export default function createSocket<T>(
 	});
 
 	return {
-		get requests() {
-			return requests;
-		},
-		get latest() {
-			return latest;
-		},
+		get requests() { return requests },
+		get latest() { return latest },
 		close() {
 			if (websocket) websocket.close();
 		},
