@@ -123,6 +123,10 @@ export default function createSocket<T>(
 			requests = requests.concat(JSON.parse(event.data) as T);
 			if (options?.afterMessage) options.afterMessage(requests);
 		};
+
+    return () => {
+      if (websocket) websocket.close();
+    }
 	});
 
 	return {
