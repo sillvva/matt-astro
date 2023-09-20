@@ -100,7 +100,7 @@ export default function createSocket<T>(
 	}
 ) {
 	let requests = $state<T[]>([]);
-	let latest = $derived(requests.length ? requests[requests.length - 1] : null);
+	let latest = $derived(requests.at(requests.length - 1));
   let websocket: WebSocket | null = null;
 
 	$effect(() => {
