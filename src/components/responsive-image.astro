@@ -10,12 +10,14 @@ type MaxMediaQuery = `(max-width: ${Size})`;
 type MinMaxMediaQuery =
 	| MinMediaQuery
 	| MaxMediaQuery
-	| `(${MinMediaQuery} and ${MaxMediaQuery})`
+	| `${MinMediaQuery} and ${MaxMediaQuery}`
 	| `(${MaxMediaQuery} or ${MinMediaQuery})`;
-type OrientationMediaQuery = "(orientation: portrait)" | "(orientation: landscape)";
-type OMMMediaQuery = `${OrientationMediaQuery} and ${MinMaxMediaQuery}`;
-type ColorSchemeMediaQuery = "(prefers-color-scheme: dark)" | "(prefers-color-scheme: light)";
-type CMMMediaQuery = `${ColorSchemeMediaQuery} and ${MinMaxMediaQuery}`;
+type OtherMediaQuery =
+	| "(orientation: portrait)"
+	| "(orientation: landscape)"
+	| "(prefers-color-scheme: dark)"
+	| "(prefers-color-scheme: light)";
+type OMMMediaQuery = `${OtherMediaQuery} and ${MinMaxMediaQuery}`;
 
 type Props = ImgAttributes & {
 	src: ImageMetadata;
@@ -24,7 +26,7 @@ type Props = ImgAttributes & {
 	include3x?: boolean;
 	srcSet: {
 		src?: ImageMetadata;
-		media: MinMaxMediaQuery | OrientationMediaQuery | ColorSchemeMediaQuery | OMMMediaQuery | CMMMediaQuery;
+		media: MinMaxMediaQuery | OtherMediaQuery | OMMMediaQuery;
 		size: number;
 		format?: ImageOutputFormat;
 	}[];
