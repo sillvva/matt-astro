@@ -63,9 +63,7 @@ export function createFetcher<T extends unknown>(url: string) {
 
 		loading = false;
 
-		return () => {
-			controller.abort;
-		};
+		return controller.abort;
 	});
 
 	return {
