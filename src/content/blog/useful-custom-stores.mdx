@@ -29,7 +29,7 @@ export function history<T>(initial: T) {
   const refresh = () => current.set(history[index]);
 
   const set = (newState: T) => {
-    history.push(newState);
+    history.splice(index + 1, history.length - index, newState);
     index++;
     refresh();
   };
