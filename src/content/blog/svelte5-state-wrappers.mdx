@@ -187,11 +187,8 @@ export function runify(obj) {
 				obj[key] = runify(obj[key]);
 			}
 			Object.defineProperty(output, key, {
-				get() { return rune[key]; },
-				set(val) { 
-					console.log('setting', key, val);
-					rune[key] = val;
-				},
+				get() { return rune[key] },
+				set(val) { rune[key] = val },
 				enumerable: true,
 			});
 		}
