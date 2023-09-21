@@ -1,5 +1,5 @@
 ---
-title: Svelte 5 State Wrappers
+title: Svelte 5 (Preview) State Wrappers
 description: Useful state wrappers using the new runes feature for Svelte 5
 date: 2023-09-20T19:50:04.311Z
 update: 2023-09-21T16:47:48.140Z
@@ -22,7 +22,7 @@ tags:
 Svelte 4 had a simple `writeable` store which allowed you to create a global shared state easily. Svelte 5 does not *yet* have such a method, but it is super easy to create one using the new `$state` hook.
 
 <div class="button-row">
-	[Preview](btn::https://svelte-5-preview.vercel.app/#H4sIAAAAAAAAE61SsW6DMBD9lZPVIVEiqDISQKqqDpk6ZCwdiLk0TsFG9kFTIf69NiaQqlLVoYst37177_nuOnYUJRoWvXRM5hWyiD3UNVsz-qzdw7RYEtq3UY3mLhIbrkVNaSYzElWtNEEHXDWSUEMPR60qyFgQmlOusQjOJmM30Edlb4mSZuAU2gRezRXE4Swj49Mm3Q90sKecEJ4ueVWXGMWhzQyIQrSDo-eGjCjQGhpJI-hGc0Gblw32jntEy3i2E_rAoSFSEpSMeCn4e9ItlpCk8I1iteoHrZ3kGitb7Ch9YWo7ValCHAUWLCJt9dZTY31H5t6ezW1fj43kJKz2hxaE-aHEhZCCRF4uoXNyXElDMDiABO6M68QE2TqERmq09OiM3nBE2y90MOZ8eb_2EDNBWoe5crfQu7w93C3xMozO618nndz4vF9uf_v3POB_36vva3Jdgp384w78dP3afwFeglUmEgMAAA==)
+	[Playground](btn::https://svelte-5-preview.vercel.app/#H4sIAAAAAAAAE61SsW6DMBD9lZPVIVEiqDISQKqqDpk6ZCwdiLk0TsFG9kFTIf69NiaQqlLVoYst37177_nuOnYUJRoWvXRM5hWyiD3UNVsz-qzdw7RYEtq3UY3mLhIbrkVNaSYzElWtNEEHXDWSUEMPR60qyFgQmlOusQjOJmM30Edlb4mSZuAU2gRezRXE4Swj49Mm3Q90sKecEJ4ueVWXGMWhzQyIQrSDo-eGjCjQGhpJI-hGc0Gblw32jntEy3i2E_rAoSFSEpSMeCn4e9ItlpCk8I1iteoHrZ3kGitb7Ch9YWo7ValCHAUWLCJt9dZTY31H5t6ezW1fj43kJKz2hxaE-aHEhZCCRF4uoXNyXElDMDiABO6M68QE2TqERmq09OiM3nBE2y90MOZ8eb_2EDNBWoe5crfQu7w93C3xMozO618nndz4vF9uf_v3POB_36vva3Jdgp384w78dP3afwFeglUmEgMAAA==)
 </div>
 
 ```ts
@@ -40,7 +40,7 @@ function writeable<T>(initial: T) {
 This is a simple utility function that can be used to create a history object, which tracks the current value and allows you to undo and redo changes to the value. Set the `maxLength` to `0` to disable the history limit.
 
 <div class="button-row">
-	[Preview](btn::https://svelte-5-preview.vercel.app/#H4sIAAAAAAAAE41UwY6bMBD9FcvtAbQ0JJV6IUDVWw_bS6uelj0QmCTWOgbZQ5oI-d9rYwwkWVXNxfF43pt5z2N6umccFE1eeirKE9CEfmtbGlG8tnajzsARzF41naxsJFWVZC3mhShw34kKWSNIJaFE-M4UNvIaMMGQlTwip_LyDOKAR5KRL-uQ9BbEAcnRZZrwR4UGGbyMmNdw63OYqOEyZ6znk6qTEgTasxokO0MdjIQvA8iRmGQJ2EnhyhZ4mKFB6INT0niydWEduVUtMAL-_LKtLLBj2ZVqOasgcC0_kU3kFa640__JyYnIRGIKkeE3ezGxDWQ_SjyujIPB-h22ydnw_jDc-ua8gQ_gzZ1Ia4wRKBmod4wZ4QuM7frgb8ghnJQRMcRHfb5GJ-pmSe6bW6p0MdNfeNeghH-BmQgeJXq2pwWbXbTZaDcdt4N4O8IFLWhEPg9Dl8bzyIv0uMmfTaLChPS-7DghOo3Nqclhou2Q2CeUFRThggUlO9NPci55B9kDjsQWtesQzVtqRFKZAXjLeiM5y6frcw7q_LdZ09gl_wfMeafzn3ADc0pGuYlvvOHDu-4_QFkdJ4pxNkipCEM4GWu1czTljCi8ckiqhjcy6xnJ5nlzF_CVFNT0YBxIzL8dL6u3gurcX2VvGT1dzJmrH9v62lpvOjJfn1NTsz2DmiYoO9Cv-i-3ZGJquAQAAA==)
+	[Playground](btn::https://svelte-5-preview.vercel.app/#H4sIAAAAAAAAE41UwY6bMBD9FcvtAbQ0JJV6IUDVWw_bS6uelj0QmCTWOgbZQ5oI-d9rYwwkWVXNxfF43pt5z2N6umccFE1eeirKE9CEfmtbGlG8tnajzsARzF41naxsJFWVZC3mhShw34kKWSNIJaFE-M4UNvIaMMGQlTwip_LyDOKAR5KRL-uQ9BbEAcnRZZrwR4UGGbyMmNdw63OYqOEyZ6znk6qTEgTasxokO0MdjIQvA8iRmGQJ2EnhyhZ4mKFB6INT0niydWEduVUtMAL-_LKtLLBj2ZVqOasgcC0_kU3kFa640__JyYnIRGIKkeE3ezGxDWQ_SjyujIPB-h22ydnw_jDc-ua8gQ_gzZ1Ia4wRKBmod4wZ4QuM7frgb8ghnJQRMcRHfb5GJ-pmSe6bW6p0MdNfeNeghH-BmQgeJXq2pwWbXbTZaDcdt4N4O8IFLWhEPg9Dl8bzyIv0uMmfTaLChPS-7DghOo3Nqclhou2Q2CeUFRThggUlO9NPci55B9kDjsQWtesQzVtqRFKZAXjLeiM5y6frcw7q_LdZ09gl_wfMeafzn3ADc0pGuYlvvOHDu-4_QFkdJ4pxNkipCEM4GWu1czTljCi8ckiqhjcy6xnJ5nlzF_CVFNT0YBxIzL8dL6u3gurcX2VvGT1dzJmrH9v62lpvOjJfn1NTsz2DmiYoO9Cv-i-3ZGJquAQAAA==)
 </div>
 
 ```ts
@@ -64,12 +64,12 @@ function createHistory<T>(initial: T, maxLength = 50) {
 }
 ```
 
-## Fetcher
+## Fetch Wrapper
 
 This is a simple utility function that can be used to create a fetcher object. It is a simple wrapper around the `fetch` API that provides reactivity for Svelte 5.
 
 <div class="button-row">
-	[Preview](btn::https://svelte-5-preview.vercel.app/#H4sIAAAAAAAAE22UwY7TMBCGX8WYPaRSlUgc02ylCsEBIZDgSDh4nXFrcO3InrBUUd6dsZPGWbSXKra_Gf_zz7gjV9pA4PWPkVtxBV7zU9_zPcdbHxfhDxgEWgc3eBl3miC97vHY2hbVYCVqZ5n0IBA-AsoL-GLwZsfGCLRoAJmHMBhkj-whIGGFHYzZHfK5caLT9pwBJUyALQHeO_9qgoRIZwMy-kXvjIFIWnhmpyfn8f26W6SQFCDCzUq2yveDTdqLVTZdu4pCP8Dhvo3-lpn7zVRgT6B4FhqZSpnIgz0bWdBnK0y90VbOW2zaHXKa1aE5RcxX_grOFhmamBSUeHv53ZWWn7pu8egKIYgzMOoDvGn5a3dE93La7OK25tSBBdogD6AUSCxm_8iux2MWlF1cs3vAwdtt9SL25J5428MFXbOd18GJXWHL8VLEtN9ii-wtd6_kJZgs2mKzZxlK6goaZvI-Yv8LX49yiIfU8HodoqW2VNpqXVWxD3_FtTfAhtifuDfPjiK3Xz6fll8Q-1BXVRyB3ggJF2c60kCPUkvXQSndtULXudDy6GFT5Udpm6cBkYba2VoaLX8_jqpcRE7Hb_NHU81QChjfasVUuViWJDf98fO8LMuyqXrixhpoJFhCk20JHO-f8_ES7OE4fvr-9UsZ0FMOrW5F1BBbt0_jt2fvdhPlJZBCK61ioKW_mavrtNLQ8Tq-uunn9A85AveYoQQAAA==)
+	[Playground](btn::https://svelte-5-preview.vercel.app/#H4sIAAAAAAAAE22UwY7TMBCGX8WYPaRSlUgc02ylCsEBIZDgSDh4nXFrcO3InrBUUd6dsZPGWbSXKra_Gf_zz7gjV9pA4PWPkVtxBV7zU9_zPcdbHxfhDxgEWgc3eBl3miC97vHY2hbVYCVqZ5n0IBA-AsoL-GLwZsfGCLRoAJmHMBhkj-whIGGFHYzZHfK5caLT9pwBJUyALQHeO_9qgoRIZwMy-kXvjIFIWnhmpyfn8f26W6SQFCDCzUq2yveDTdqLVTZdu4pCP8Dhvo3-lpn7zVRgT6B4FhqZSpnIgz0bWdBnK0y90VbOW2zaHXKa1aE5RcxX_grOFhmamBSUeHv53ZWWn7pu8egKIYgzMOoDvGn5a3dE93La7OK25tSBBdogD6AUSCxm_8iux2MWlF1cs3vAwdtt9SL25J5428MFXbOd18GJXWHL8VLEtN9ii-wtd6_kJZgs2mKzZxlK6goaZvI-Yv8LX49yiIfU8HodoqW2VNpqXVWxD3_FtTfAhtifuDfPjiK3Xz6fll8Q-1BXVRyB3ggJF2c60kCPUkvXQSndtULXudDy6GFT5Udpm6cBkYba2VoaLX8_jqpcRE7Hb_NHU81QChjfasVUuViWJDf98fO8LMuyqXrixhpoJFhCk20JHO-f8_ES7OE4fvr-9UsZ0FMOrW5F1BBbt0_jt2fvdhPlJZBCK61ioKW_mavrtNLQ8Tq-uunn9A85AveYoQQAAA==)
 </div>
 
 ```ts
@@ -108,7 +108,7 @@ function createFetcher(url) {
 }
 ```
 
-## Websocket
+## Websocket Wrapper
 
 This is a simple utility function that can be used to create a websocket object. It is a simple wrapper around the `WebSocket` API that provides reactivity for Svelte 5.
 
@@ -163,5 +163,38 @@ export default function createSocket<T>(
 			websocket.send(JSON.stringify(data));
 		}
 	};
+}
+```
+
+## Runify Nested Objects
+
+This utility function is useful for creating reactive objects from JSON data. It was first created by this [Twitter user](https://twitter.com/dimfeld/status/1704568707052159097) and modified by [@PaoloRicciuti](https://twitter.com/PaoloRicciuti). TypeScript types added by me.
+
+<div class="button-row">
+	[Playground](btn::https://svelte-5-preview.vercel.app/#H4sIAAAAAAAAE6VW227jNhD9lYG6gGRAleJcmq5vaNB2USy2TbCLPsV5oKWRTYcSVZJKbAj69w4pyZbd7e5DIBgSh2fOXDicce1lXKD2Jo-1V7AcvYl3V5Ze6Jl9aRf6BYVBWmtZqcRKZjpRvDSLZbE0PC-lMlCrquDZvoFMyRyWXhRrwwxGW730poQjZCILbUBWpqwMzKFVCGq7tTSCrVBMwP9zD4TL-NoP241EVoXRE3gch3AZwtVTJ680Kiuurcuk-FFuCr8JoV__xmjZgzPB1gTubAFsWFnuJ2BUhR1iaTRLJ5AxoXtRY1_NqPNeoAHnJLn-zsUW-P7IIen3DrMMExMEI5gvejs2YCkwEnId-E7XD7v4I7d03K2JWXzI6WwzXtwrvuYFE_D594dPbU7NhmuYMdgozOZLb2NMqSdxbF65MaiiROZxyvMMRepSX-l4fHtxffPTz7cXtxc3l-Ob9xfvb5fewrwimlnMFpDLlGccU1jtv0P8wKSQn3mS8Mpw4viltALVCSzZLCavyfdKuKqYCb74-OX-r0gbxYs1HTQwkUs6_1epnkkCxL4BBkmljQ1OWjRkVZEYLosQVlQjhTTwT8UNwt56TJQ99Z0QUJ_yB21iR80J8IM9-P-BRq4qzhT-sJXxTYXIFc-Z2heWfluJqutM5ZMrpnpYD6eAX13lHxDtRTiF_G0vwQHhrkSUszIIKleHVWQvwyjaSl4EVHv-wYVZ3B5UMcukyq2AF_Za2itPNWBwZ5YerHiRTl6YqHB-6ifEVsV9t76caCcbTJ5XctczuDWmB45BGi0TuJxbnwaEb-OmbDtmOpYz3pS_LNrb2fE6lrWSVTk_y_RXTHa5GDcLGL-Z5ZJYLt_MckUsV29muSaWa5eguMvQ6SEsTf0DsmQDw1IDpsF-NH0L_W4RWbSrybaCHG9seZvWdm9wFndlSZ_a7AU6sJX1vTXluhSMengmcDftuzzufky5QtdDJjRIRJUXbY9tGzV1WcdGw6xvft7EToEmPMw-19uP02-rh5MPd27a9X2qH2JytR21nvEsuFOK7SOu3dttjXqv7RChfpZrGiK04e5qSzHqYlBoKlW0oNZzQBpJQLzWIZlZPZjP5-DTB0Xqn5ATGR4HlLU9PW4eRm_d9BmTKrA7z7gH7qLBA52L5WjzkTBPXzdsnyNikBMn6T3oD4Gee0cQpZjxAh-ULFGZvl-G1plwSL1GQ2O1hi411klHPIUmPKI0oajKLPAoPJvBhDHUnP3OhoVPh-ADNUVBm4O9oSUsqhwVWwk8-wfR9GzNyVm2cQ0Psz7dX237Gm3-W5hPzb-WcJU4oAkAAA==)
+</div>
+
+```ts
+export function $runify<T extends object>(obj: T): T {
+	if(Array.isArray(obj)) {
+		let items = obj.map($runify);
+		return items as unknown as T;
+	} else if(typeof obj === 'object') {
+		let rune = $state(obj);
+		let output = {} as T;
+		for(let key in rune) {
+			if(typeof obj[key] === 'object') {
+				obj[key] = $runify(obj[key]);
+			}
+			Object.defineProperty(output, key, {
+				get() { return rune[key] },
+				set(val) { rune[key] = val },
+				enumerable: true,
+			});
+		}
+		return output;
+	} else {
+		return obj;
+	}
 }
 ```
