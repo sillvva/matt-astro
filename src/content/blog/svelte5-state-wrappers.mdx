@@ -17,6 +17,24 @@ tags:
 	Svelte 5 is a work in progress. It is not ready for production use. This post is currently just a set of ideas based on previews of the new features. It will be updated as the features are finalized.
 </div>
 
+## Writeable
+
+Svelte 4 had a simple `writeable` store which allowed you to create a global shared state easily. Svelte 5 does not *yet* have such a method, but it is super easy to create one using the new `$state` hook.
+
+<div class="button-row">
+	[Preview](btn::https://svelte-5-preview.vercel.app/#H4sIAAAAAAAAE61SsW6DMBD9lZPVIVEiqDISQKqqDpk6ZCwdiLk0TsFG9kFTIf69NiaQqlLVoYst37177_nuOnYUJRoWvXRM5hWyiD3UNVsz-qzdw7RYEtq3UY3mLhIbrkVNaSYzElWtNEEHXDWSUEMPR60qyFgQmlOusQjOJmM30Edlb4mSZuAU2gRezRXE4Swj49Mm3Q90sKecEJ4ueVWXGMWhzQyIQrSDo-eGjCjQGhpJI-hGc0Gblw32jntEy3i2E_rAoSFSEpSMeCn4e9ItlpCk8I1iteoHrZ3kGitb7Ch9YWo7ValCHAUWLCJt9dZTY31H5t6ezW1fj43kJKz2hxaE-aHEhZCCRF4uoXNyXElDMDiABO6M68QE2TqERmq09OiM3nBE2y90MOZ8eb_2EDNBWoe5crfQu7w93C3xMozO618nndz4vF9uf_v3POB_36vva3Jdgp384w78dP3afwFeglUmEgMAAA==)
+</div>
+
+```ts
+function writeable<T>(initial: T) {
+	let state = $state(initial);
+	return {
+		get value() { return state },
+		set value(newState: T) { state = newState }
+	};
+}
+```
+
 ## History
 
 This is a simple utility function that can be used to create a history object, which tracks the current value and allows you to undo and redo changes to the value. Set the `maxLength` to `0` to disable the history limit.
