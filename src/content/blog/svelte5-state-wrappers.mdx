@@ -64,7 +64,7 @@ function createHistory<T>(initial: T, maxLength = 50) {
 }
 ```
 
-## Fetcher
+## Fetch Wrapper
 
 This is a simple utility function that can be used to create a fetcher object. It is a simple wrapper around the `fetch` API that provides reactivity for Svelte 5.
 
@@ -108,7 +108,7 @@ function createFetcher(url) {
 }
 ```
 
-## Websocket
+## Websocket Wrapper
 
 This is a simple utility function that can be used to create a websocket object. It is a simple wrapper around the `WebSocket` API that provides reactivity for Svelte 5.
 
@@ -166,7 +166,7 @@ export default function createSocket<T>(
 }
 ```
 
-## Runify
+## Runify Nested Objects
 
 This utility function is useful for creating reactive objects from JSON data. It was first created by this [Twitter user](https://twitter.com/dimfeld/status/1704568707052159097) and modified by [@PaoloRicciuti](https://twitter.com/PaoloRicciuti). TypeScript types added by me.
 
