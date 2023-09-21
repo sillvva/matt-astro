@@ -13,7 +13,7 @@ tags:
 ## Disclaimer
 
 <div class="warning-box">
-  Svelte 5 is a work in progress. It is not ready for production use. This post is currently just a set of ideas based on previews of the new features. It will be updated as the features are finalized.
+	Svelte 5 is a work in progress. It is not ready for production use. This post is currently just a set of ideas based on previews of the new features. It will be updated as the features are finalized.
 </div>
 
 ## History
@@ -21,7 +21,7 @@ tags:
 This is a simple utility function that can be used to create a history object, which tracks the current value and allows you to undo and redo changes to the value. Set the `maxLength` to `0` to disable the history limit.
 
 <div class="button-row">
-  [Preview](btn::https://svelte-5-preview.vercel.app/#H4sIAAAAAAAAE41UwY6bMBD9FcvtAbQ0JJV6IUDVWw_bS6uelj0QmCTWOgbZQ5oI-d9rYwwkWVXNxfF43pt5z2N6umccFE1eeirKE9CEfmtbGlG8tnajzsARzF41naxsJFWVZC3mhShw34kKWSNIJaFE-M4UNvIaMMGQlTwip_LyDOKAR5KRL-uQ9BbEAcnRZZrwR4UGGbyMmNdw63OYqOEyZ6znk6qTEgTasxokO0MdjIQvA8iRmGQJ2EnhyhZ4mKFB6INT0niydWEduVUtMAL-_LKtLLBj2ZVqOasgcC0_kU3kFa640__JyYnIRGIKkeE3ezGxDWQ_SjyujIPB-h22ydnw_jDc-ua8gQ_gzZ1Ia4wRKBmod4wZ4QuM7frgb8ghnJQRMcRHfb5GJ-pmSe6bW6p0MdNfeNeghH-BmQgeJXq2pwWbXbTZaDcdt4N4O8IFLWhEPg9Dl8bzyIv0uMmfTaLChPS-7DghOo3Nqclhou2Q2CeUFRThggUlO9NPci55B9kDjsQWtesQzVtqRFKZAXjLeiM5y6frcw7q_LdZ09gl_wfMeafzn3ADc0pGuYlvvOHDu-4_QFkdJ4pxNkipCEM4GWu1czTljCi8ckiqhjcy6xnJ5nlzF_CVFNT0YBxIzL8dL6u3gurcX2VvGT1dzJmrH9v62lpvOjJfn1NTsz2DmiYoO9Cv-i-3ZGJquAQAAA==)
+	[Preview](btn::https://svelte-5-preview.vercel.app/#H4sIAAAAAAAAE41UwY6bMBD9FcvtAbQ0JJV6IUDVWw_bS6uelj0QmCTWOgbZQ5oI-d9rYwwkWVXNxfF43pt5z2N6umccFE1eeirKE9CEfmtbGlG8tnajzsARzF41naxsJFWVZC3mhShw34kKWSNIJaFE-M4UNvIaMMGQlTwip_LyDOKAR5KRL-uQ9BbEAcnRZZrwR4UGGbyMmNdw63OYqOEyZ6znk6qTEgTasxokO0MdjIQvA8iRmGQJ2EnhyhZ4mKFB6INT0niydWEduVUtMAL-_LKtLLBj2ZVqOasgcC0_kU3kFa640__JyYnIRGIKkeE3ezGxDWQ_SjyujIPB-h22ydnw_jDc-ua8gQ_gzZ1Ia4wRKBmod4wZ4QuM7frgb8ghnJQRMcRHfb5GJ-pmSe6bW6p0MdNfeNeghH-BmQgeJXq2pwWbXbTZaDcdt4N4O8IFLWhEPg9Dl8bzyIv0uMmfTaLChPS-7DghOo3Nqclhou2Q2CeUFRThggUlO9NPci55B9kDjsQWtesQzVtqRFKZAXjLeiM5y6frcw7q_LdZ09gl_wfMeafzn3ADc0pGuYlvvOHDu-4_QFkdJ4pxNkipCEM4GWu1czTljCi8ckiqhjcy6xnJ5nlzF_CVFNT0YBxIzL8dL6u3gurcX2VvGT1dzJmrH9v62lpvOjJfn1NTsz2DmiYoO9Cv-i-3ZGJquAQAAA==)
 </div>
 
 ```ts
@@ -34,11 +34,11 @@ function createHistory<T>(initial: T, maxLength = 50) {
 		get current() { return current },
 		set current(newState: T) {
 			history.splice(index + 1, history.length - index, newState);
-      if (maxLength > 0) history = history.slice(Math.max(0, history.length - maxLength), history.length);
+			if (maxLength > 0) history = history.slice(Math.max(0, history.length - maxLength), history.length);
 			index = history.length - 1;
 		},
 		get entries() { return history },
-    get index() { return index },
+		get index() { return index },
 		undo() { index = Math.max(0, index - 1) },
 		redo() { index = Math.min(history.length - 1, index + 1) }
 	};
@@ -50,7 +50,7 @@ function createHistory<T>(initial: T, maxLength = 50) {
 This is a simple utility function that can be used to create a fetcher object. It is a simple wrapper around the `fetch` API that provides reactivity for Svelte 5.
 
 <div class="button-row">
-  [Preview](btn::https://svelte-5-preview.vercel.app/#H4sIAAAAAAAAE22UwY7TMBCGX8WYPaRSlUgc02ylCsEBIZDgSDh4nXFrcO3InrBUUd6dsZPGWbSXKra_Gf_zz7gjV9pA4PWPkVtxBV7zU9_zPcdbHxfhDxgEWgc3eBl3miC97vHY2hbVYCVqZ5n0IBA-AsoL-GLwZsfGCLRoAJmHMBhkj-whIGGFHYzZHfK5caLT9pwBJUyALQHeO_9qgoRIZwMy-kXvjIFIWnhmpyfn8f26W6SQFCDCzUq2yveDTdqLVTZdu4pCP8Dhvo3-lpn7zVRgT6B4FhqZSpnIgz0bWdBnK0y90VbOW2zaHXKa1aE5RcxX_grOFhmamBSUeHv53ZWWn7pu8egKIYgzMOoDvGn5a3dE93La7OK25tSBBdogD6AUSCxm_8iux2MWlF1cs3vAwdtt9SL25J5428MFXbOd18GJXWHL8VLEtN9ii-wtd6_kJZgs2mKzZxlK6goaZvI-Yv8LX49yiIfU8HodoqW2VNpqXVWxD3_FtTfAhtifuDfPjiK3Xz6fll8Q-1BXVRyB3ggJF2c60kCPUkvXQSndtULXudDy6GFT5Udpm6cBkYba2VoaLX8_jqpcRE7Hb_NHU81QChjfasVUuViWJDf98fO8LMuyqXrixhpoJFhCk20JHO-f8_ES7OE4fvr-9UsZ0FMOrW5F1BBbt0_jt2fvdhPlJZBCK61ioKW_mavrtNLQ8Tq-uunn9A85AveYoQQAAA==)
+	[Preview](btn::https://svelte-5-preview.vercel.app/#H4sIAAAAAAAAE22UwY7TMBCGX8WYPaRSlUgc02ylCsEBIZDgSDh4nXFrcO3InrBUUd6dsZPGWbSXKra_Gf_zz7gjV9pA4PWPkVtxBV7zU9_zPcdbHxfhDxgEWgc3eBl3miC97vHY2hbVYCVqZ5n0IBA-AsoL-GLwZsfGCLRoAJmHMBhkj-whIGGFHYzZHfK5caLT9pwBJUyALQHeO_9qgoRIZwMy-kXvjIFIWnhmpyfn8f26W6SQFCDCzUq2yveDTdqLVTZdu4pCP8Dhvo3-lpn7zVRgT6B4FhqZSpnIgz0bWdBnK0y90VbOW2zaHXKa1aE5RcxX_grOFhmamBSUeHv53ZWWn7pu8egKIYgzMOoDvGn5a3dE93La7OK25tSBBdogD6AUSCxm_8iux2MWlF1cs3vAwdtt9SL25J5428MFXbOd18GJXWHL8VLEtN9ii-wtd6_kJZgs2mKzZxlK6goaZvI-Yv8LX49yiIfU8HodoqW2VNpqXVWxD3_FtTfAhtifuDfPjiK3Xz6fll8Q-1BXVRyB3ggJF2c60kCPUkvXQSndtULXudDy6GFT5Udpm6cBkYba2VoaLX8_jqpcRE7Hb_NHU81QChjfasVUuViWJDf98fO8LMuyqXrixhpoJFhCk20JHO-f8_ES7OE4fvr-9UsZ0FMOrW5F1BBbt0_jt2fvdhPlJZBCK61ioKW_mavrtNLQ8Tq-uunn9A85AveYoQQAAA==)
 </div>
 
 ```ts
@@ -99,38 +99,37 @@ export default function createSocket<T>(
 	options?: {
 		name?: string;
 		protocols?: string | string[];
-    onOpen?: (event: Event) => void;
-    onError?: (error: Event) => void;
-		beforeMessage?: (requests: T[]) => void;
-		afterMessage?: (requests: T[]) => void;
+		onOpen?: (event: Event) => void;
+		onError?: (error: Event) => void;
+		onMessage?: (data: T, requests: T[], event: Event) => void;
 	}
 ) {
 	let requests = $state<T[]>([]);
 	let latest = $derived(requests.at(requests.length - 1));
-  let websocket: WebSocket | null = null;
+	let websocket: WebSocket | null = null;
 
 	$effect(() => {
-    websocket = new WebSocket(url, options?.protocols)
+		websocket = new WebSocket(url, options?.protocols)
 
 		websocket.onopen = (event) => {
 			console.log(`${options?.name || "Websocket"} connected!`);
-      if (options?.onOpen) options.onOpen(event);
+			if (options?.onOpen) options.onOpen(event);
 		};
 
 		websocket.onerror = (error) => {
 			console.log(`${options?.name || "Websocket"} error:`, error);
-      if (options?.onError) options.onError(error);
+			if (options?.onError) options.onError(error);
 		};
 
 		websocket.onmessage = (event) => {
-			if (options?.beforeMessage) options.beforeMessage(requests);
-			requests = requests.concat(JSON.parse(event.data) as T);
-			if (options?.afterMessage) options.afterMessage(requests);
+			const data = JSON.parse(event.data) as T;
+			requests = requests.concat(data);
+			if (options?.afterMessage) options.onMessage(data, requests, event);
 		};
 
-    return () => {
-      if (websocket) websocket.close();
-    }
+		return () => {
+			if (websocket) websocket.close();
+		}
 	});
 
 	return {
