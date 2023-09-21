@@ -376,11 +376,10 @@ items.forEach((item, i) => {
 />
 ```
 
-<div class="grid my-8 gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
-  <div class="flex justify-center">
-    #### Not Rotated
-  </div>
-  <div class="flex justify-center md:order-3 lg:order-2 xl:order-3">
+<div class="flex flex-wrap my-8 gap-12">
+  <div class="flex flex-col gap-8 items-center min-w-fit flex-1">
+		#### Not Rotated
+		
     <HexMenu
       items={[{ link: "/about", label: "About Me" },{ link: "/experience", label: "Experience" },{ link: "/skills", label: "Skills" },{ link: "/projects", label: "Projects" },{ link: "/blog", label: "Blog" }]}
       maxLength={3}
@@ -392,10 +391,9 @@ items.forEach((item, i) => {
     />
   </div>
 
-  <div class="flex justify-center md:order-2 lg:order-3 xl:order-2">
-    #### Rotated
-  </div>
-  <div class="flex justify-center order-4">
+  <div class="flex flex-col gap-6 items-center min-w-fit flex-1">
+		#### Rotated
+		
     <HexMenu
       items={[{ link: "/about", label: "About Me" },{ link: "/experience", label: "Experience" },{ link: "/skills", label: "Skills" },{ link: "/projects", label: "Projects" },null,{ link: "/blog", label: "Blog" }]}
       maxLength={3}
