@@ -168,23 +168,23 @@ export default function createSocket<T>(
 
 ## Runify
 
-This utility function is useful for creating reactive objects from JSON data. It was first created by this [Twitter user](https://twitter.com/dimfeld/status/1704568707052159097) and modified by [@PaoloRicciuti](https://twitter.com/PaoloRicciuti).
+This utility function is useful for creating reactive objects from JSON data. It was first created by this [Twitter user](https://twitter.com/dimfeld/status/1704568707052159097) and modified by [@PaoloRicciuti](https://twitter.com/PaoloRicciuti). TypeScript types added by me.
 
 <div class="button-row">
 	[Playground](btn::https://svelte-5-preview.vercel.app/#H4sIAAAAAAAAE6VW227jNhD9lYG6gGRAleJcmq5vaNB2USy2TbCLPsV5oKWRTYcSVZJKbAj69w4pyZbd7e5DIBgSh2fOXDicce1lXKD2Jo-1V7AcvYl3V5Ze6Jl9aRf6BYVBWmtZqcRKZjpRvDSLZbE0PC-lMlCrquDZvoFMyRyWXhRrwwxGW730poQjZCILbUBWpqwMzKFVCGq7tTSCrVBMwP9zD4TL-NoP241EVoXRE3gch3AZwtVTJ680Kiuurcuk-FFuCr8JoV__xmjZgzPB1gTubAFsWFnuJ2BUhR1iaTRLJ5AxoXtRY1_NqPNeoAHnJLn-zsUW-P7IIen3DrMMExMEI5gvejs2YCkwEnId-E7XD7v4I7d03K2JWXzI6WwzXtwrvuYFE_D594dPbU7NhmuYMdgozOZLb2NMqSdxbF65MaiiROZxyvMMRepSX-l4fHtxffPTz7cXtxc3l-Ob9xfvb5fewrwimlnMFpDLlGccU1jtv0P8wKSQn3mS8Mpw4viltALVCSzZLCavyfdKuKqYCb74-OX-r0gbxYs1HTQwkUs6_1epnkkCxL4BBkmljQ1OWjRkVZEYLosQVlQjhTTwT8UNwt56TJQ99Z0QUJ_yB21iR80J8IM9-P-BRq4qzhT-sJXxTYXIFc-Z2heWfluJqutM5ZMrpnpYD6eAX13lHxDtRTiF_G0vwQHhrkSUszIIKleHVWQvwyjaSl4EVHv-wYVZ3B5UMcukyq2AF_Za2itPNWBwZ5YerHiRTl6YqHB-6ifEVsV9t76caCcbTJ5XctczuDWmB45BGi0TuJxbnwaEb-OmbDtmOpYz3pS_LNrb2fE6lrWSVTk_y_RXTHa5GDcLGL-Z5ZJYLt_MckUsV29muSaWa5eguMvQ6SEsTf0DsmQDw1IDpsF-NH0L_W4RWbSrybaCHG9seZvWdm9wFndlSZ_a7AU6sJX1vTXluhSMengmcDftuzzufky5QtdDJjRIRJUXbY9tGzV1WcdGw6xvft7EToEmPMw-19uP02-rh5MPd27a9X2qH2JytR21nvEsuFOK7SOu3dttjXqv7RChfpZrGiK04e5qSzHqYlBoKlW0oNZzQBpJQLzWIZlZPZjP5-DTB0Xqn5ATGR4HlLU9PW4eRm_d9BmTKrA7z7gH7qLBA52L5WjzkTBPXzdsnyNikBMn6T3oD4Gee0cQpZjxAh-ULFGZvl-G1plwSL1GQ2O1hi411klHPIUmPKI0oajKLPAoPJvBhDHUnP3OhoVPh-ADNUVBm4O9oSUsqhwVWwk8-wfR9GzNyVm2cQ0Psz7dX237Gm3-W5hPzb-WcJU4oAkAAA==)
 </div>
 
 ```ts
-export function runify(obj) {
+export function $runify<T extends object>(obj: T): T {
 	if(Array.isArray(obj)) {
-		let items = obj.map(runify);
-		return items;
+		let items = obj.map($runify);
+		return items as unknown as T;
 	} else if(typeof obj === 'object') {
 		let rune = $state(obj);
-		let output = {};
+		let output = {} as T;
 		for(let key in rune) {
 			if(typeof obj[key] === 'object') {
-				obj[key] = runify(obj[key]);
+				obj[key] = $runify(obj[key]);
 			}
 			Object.defineProperty(output, key, {
 				get() { return rune[key] },
