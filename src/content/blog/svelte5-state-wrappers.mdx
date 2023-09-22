@@ -22,7 +22,7 @@ tags:
 Svelte 4 had a simple `writeable` store which allowed you to create a global shared state easily. Svelte 5 does not *yet* have such a method, but it is super easy to create one using the new `$state` hook. This `ref` method is functionally equivalent in usage to the `writeable` store from Svelte 4, except that it uses a getter/setter instead of the magic `$` syntax.
 
 <div class="button-row">
-	[Playground](btn::https://svelte-5-preview.vercel.app/#H4sIAAAAAAAAE61SsW6DMBD9lZPVIVEiqDISQKqqDpk6ZCwdqDkap2Aj-0CpEP9eGxNIVanq0AXLd-_ee7xzz0pRoWHRS89kXiOL2EPTsC2jz8ZdTIcVob0b1WruKrHhWjSUZjIjUTdKE_TAVSsJNQxQalVDxoLQnHKNRXA2GbuBPip7SpS0AOfSLvBqbiAOFxkZn3bpcaSDI-WE8HTJ66bCKA5tZ0QUohsdPbdkRIHW0EQaQT-ZC7q8anFw3BNaxoud0BfeWiIlQcmIV4J_JP1qDUkK3yg2m2HUOkiusbbDjtIPpjapWhWiFFiwiLTV287B-kSWbM_mNteylZyE1dZYroQUJPJqDb0T4koaglEbErgzLoMZsncIjdRq6dEZveOEtuZ7mHp-fNh6iJkhncNcuTsYXN9-3CnxMi7N6193nIwO79f73_51Weq_v6XvT-O6-IP8495_un4dvgBbF3QVBgMAAA==)
+	[Playground](btn::/r/svelte5-ref)
 </div>
 
 ```ts
@@ -40,7 +40,7 @@ function ref<T>(initial: T) {
 This is a simple utility function that can be used to create a history object, which tracks the current value and allows you to undo and redo changes to the value. Set the `maxLength` to `0` to disable the history limit.
 
 <div class="button-row">
-	[Playground](btn::https://svelte-5-preview.vercel.app/#H4sIAAAAAAAAE41TTY-bMBD9K5bbA2hpSCr1QkKq3nrYXlr1tOyBwCTxrjHIHrKJEP-9Y8xXkl2puTgez3vz3szQ8L2QYHj01HCVFsAj_qOqeMDxUtmLOYFEoLspa53ZyMZkWlS4TVSCoqhKjaxhmYYU4acwWOoLa9lelwVL-CJ802lVgV68mISvCUIgCciOfWZ8jfQSnvCAfV36lLsJp0pqc1xtHynRYMSaHr3Iaq1BYbsJ6ZVyhKpqZFZ5nHCEMyac7YTKo1Mqa4jvcCy0qF2NWCpWqiiTInuNG89n8XaQuKhVXnp-u_1L5yZ0yf8B0-Bgv-EK5pz0dqNBeCm7djafIM2OIwVJ1AIMSw0TCEXARGuzEtxIwQxeJERZKUsdN4LF8Qgjw3Bm36n9pIE6ENG_nUyz14S3W0dApSzjQBdK4eqHtn5rW0-KaOhFmYu9gJxHqGtog3FH-rFOe_Ji5jsC524v9rXKUFCTrocslECRyoAV6fkR1AGPtAfflj5r7tfjs0FCek895tkuhstxNseM5fTSj9e-5aDFCXKvJ3zqQI6EkjVgrZUrm-Bhgnr-EByT-pe1C7eBO80Mo-Dtj5Uyww4jMRWtCHhO8gNbBeOwpPP_xdkJ2EhChVj3m3oxsnVkv1I8LqiD3vIdtrGz_u2jvx7EDQ28A69uTNrG9Lv4TmN6-AxjVR-GCTmEs9Ijunjvb6jhvrKJfBA3d-lipM-_Eei-tY_AQnn3Fge2hxmbPVq6tPeb_9z-A103MLMpBQAA)
+	[Playground](btn::/r/svelte5-history)
 </div>
 
 ```ts
@@ -69,7 +69,7 @@ function createHistory<T>(initial: T, maxLength = 50) {
 This is a simple utility function that can be used to create a fetcher object. It is a simple wrapper around the `fetch` API that provides reactivity for Svelte 5.
 
 <div class="button-row">
-	[Playground](btn::https://svelte-5-preview.vercel.app/#H4sIAAAAAAAAE22TT4_bIBDFvwqle3CkyJZ6dP5IUaUeqqqV2mPdA4uHhJSABbhpZPm7dzBge3d7SGSYN89vfuCBCqnA0frnQDW7Aa3pqevolvpHFxbuDygPuHamtzzs7B23svPHRjde3jpjPRkIt8A8fALPL2DJSIQ1N9LQsrpb1nVgy6traOgIP26080SQw8u2oqEX7ztXV9XVGd0pxuFiVIvdGEZy00LJza3ypjXottk1el8tYfT-uffeaGJ0zZXkvw-DKC2IYD4ev8eHfRVFU8PwXgoiSmVYK_V5DNH23fFLXJZlua861A01KAdkkoK1xk7CIT_Gcmq2cBw-__j2tXTeoocUjyJkcL3yW6J7pbbkw2ZEXxRiayVFaNSI92ZaKSS0tPa2h3E7n0YCuJzI1a1PA_5OJyB6zb3E4V8S7a3akCFkU-BJDILYn5xHURECBYqxmjAsZcFwsKU-Dfyf5vlA8d9boxQElYY7OT1jtI_zbpHlzD00XyLbXk95ixQVXzdHCTB2cdPbR67nN-JAHYrYnUlEMHngxFu8j06eNVP1KlMZt8i42WWTmUc0CG5luHlFloyEMzRdXpsZNPTUtonIDZxjZyDIG9419K17IJUNI4D1hBPlqZyKTyAEcF9ESgjlcMwBFlLJz4LvrV5PyQLzaJdxJ1HyOM8XIfAmqZjCjttFlCKuVTn1WjZBWIsilSyZ8hR4KZFrEL2OOpdyQ_pi6_laTLPgKOPbr-TX-A_ibNzovwQAAA==)
+	[Playground](btn::/r/svelte5-fetcher)
 </div>
 
 ```ts
@@ -168,33 +168,33 @@ export default function createSocket<T>(
 
 ## Runify Nested Objects
 
-This utility function is useful for creating reactive objects from JSON data. It was first created by this [Twitter user](https://twitter.com/dimfeld/status/1704568707052159097) and modified by [@PaoloRicciuti](https://twitter.com/PaoloRicciuti). The TypeScript types were added by me.
+This utility function is useful for creating reactive objects from JSON data. It was first created by this [Twitter user](https://twitter.com/dimfeld/status/1704568707052159097) and modified by [@PaoloRicciuti](https://twitter.com/PaoloRicciuti). I added TypeScript types and fixed an issue with arrays of primitives.
 
 <div class="button-row">
-	[Playground](btn::https://svelte-5-preview.vercel.app/#H4sIAAAAAAAAE6VW227jNhD9lYG6gGRAleJcmq5vaNB2USy2TbCLPsV5oKWRTYcSVZJKbAj69w4pyZbd7e5DIBgSh2fOXDicce1lXKD2Jo-1V7AcvYl3V5Ze6Jl9aRf6BYVBWmtZqcRKZjpRvDSLZbE0PC-lMlCrquDZvoFMyRyWXhRrwwxGW730poQjZCILbUBWpqwMzKFVCGq7tTSCrVBMwP9zD4TL-NoP241EVoXRE3gch3AZwtVTJ680Kiuurcuk-FFuCr8JoV__xmjZgzPB1gTubAFsWFnuJ2BUhR1iaTRLJ5AxoXtRY1_NqPNeoAHnJLn-zsUW-P7IIen3DrMMExMEI5gvejs2YCkwEnId-E7XD7v4I7d03K2JWXzI6WwzXtwrvuYFE_D594dPbU7NhmuYMdgozOZLb2NMqSdxbF65MaiiROZxyvMMRepSX-l4fHtxffPTz7cXtxc3l-Ob9xfvb5fewrwimlnMFpDLlGccU1jtv0P8wKSQn3mS8Mpw4viltALVCSzZLCavyfdKuKqYCb74-OX-r0gbxYs1HTQwkUs6_1epnkkCxL4BBkmljQ1OWjRkVZEYLosQVlQjhTTwT8UNwt56TJQ99Z0QUJ_yB21iR80J8IM9-P-BRq4qzhT-sJXxTYXIFc-Z2heWfluJqutM5ZMrpnpYD6eAX13lHxDtRTiF_G0vwQHhrkSUszIIKleHVWQvwyjaSl4EVHv-wYVZ3B5UMcukyq2AF_Za2itPNWBwZ5YerHiRTl6YqHB-6ifEVsV9t76caCcbTJ5XctczuDWmB45BGi0TuJxbnwaEb-OmbDtmOpYz3pS_LNrb2fE6lrWSVTk_y_RXTHa5GDcLGL-Z5ZJYLt_MckUsV29muSaWa5eguMvQ6SEsTf0DsmQDw1IDpsF-NH0L_W4RWbSrybaCHG9seZvWdm9wFndlSZ_a7AU6sJX1vTXluhSMengmcDftuzzufky5QtdDJjRIRJUXbY9tGzV1WcdGw6xvft7EToEmPMw-19uP02-rh5MPd27a9X2qH2JytR21nvEsuFOK7SOu3dttjXqv7RChfpZrGiK04e5qSzHqYlBoKlW0oNZzQBpJQLzWIZlZPZjP5-DTB0Xqn5ATGR4HlLU9PW4eRm_d9BmTKrA7z7gH7qLBA52L5WjzkTBPXzdsnyNikBMn6T3oD4Gee0cQpZjxAh-ULFGZvl-G1plwSL1GQ2O1hi411klHPIUmPKI0oajKLPAoPJvBhDHUnP3OhoVPh-ADNUVBm4O9oSUsqhwVWwk8-wfR9GzNyVm2cQ0Psz7dX237Gm3-W5hPzb-WcJU4oAkAAA==)
+	[Playground](btn::/r/svelte5-runify)
 </div>
 
 ```ts
 export function $runify<T extends object>(obj: T): T {
-	if(Array.isArray(obj)) {
-		let items = obj.map($runify);
-		return items as unknown as T;
-	} else if(typeof obj === 'object') {
+	if(typeof obj === 'object') {
 		let rune = $state(obj);
-		let output = {} as T;
+		let output = Array.isArray(obj) ? [] as T : {} as T;
 		for(let key in rune) {
 			if(typeof obj[key] === 'object') {
 				obj[key] = $runify(obj[key]);
 			}
 			Object.defineProperty(output, key, {
-				get() { return rune[key] },
-				set(val) { rune[key] = val },
+				get() { return rune[key]; },
+				set(val) { 
+					console.log('setting', key, val);
+					rune[key] = val;
+				},
 				enumerable: true,
 			});
 		}
 		return output;
 	} else {
-		return obj;
+		return obj
 	}
 }
 ```
