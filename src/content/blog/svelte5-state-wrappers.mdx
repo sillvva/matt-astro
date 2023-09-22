@@ -19,7 +19,7 @@ tags:
 
 ## Writeable / Ref
 
-Svelte 4 had a simple `writeable` store which allowed you to create a global shared state easily. Svelte 5 does not *yet* have such a method, but it is super easy to create one using the new `$state` hook. This `ref` method is functionally equivalent in usage to the `writeable` store from Svelte 4, except that it uses a getter/setter instead of the magic `$` syntax.
+Svelte 4 had a simple `writeable` store which allowed you to create a global shared state easily. Svelte 5 does not *yet* have such a method, but it is super easy to create one using the new `$state` hook. This `ref` method is almost functionally equivalent in usage to the `writeable` store from Svelte 4, except that it uses a getter/setter instead of the magic `$` syntax. And that is because, the original `writeable` is an observable, whereas `$state` is a signal. Check out this [article](https://www.builder.io/blog/signals-vs-observables) to learn the difference. To summarize, an observable is subscribed to, whereas a signal is just a value.
 
 <div class="button-row">
 	[Playground](btn::/r/svelte5-ref-repl)
