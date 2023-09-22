@@ -11,7 +11,7 @@ const youTubeId = url?.startsWith("https://www.youtube.com") ? url.match(/v=([^&
 
 {
 	type === "btn" ? (
-		<AnimatedButton link={url} itemClasses={["button3 border border-dotted border-secondary text-secondary"]}>
+		<AnimatedButton link={url} target="_blank" itemClasses={["button3 border border-dotted border-secondary text-secondary"]}>
 			<slot />
 		</AnimatedButton>
 	) : type === "embed" && youTubeId ? (

@@ -7,9 +7,10 @@ interface Props {
 	active?: boolean;
 	activeClick?: boolean;
 	itemClasses: string[];
+	target?: string;
 }
 
-const { active = false, itemClasses = ["button5"], activeClick = false, link = "", label } = Astro.props;
+const { active = false, itemClasses = ["button5"], activeClick = false, link = "", label, target } = Astro.props;
 
 const buttons = {
 	button1: "button1",
@@ -30,7 +31,8 @@ const style = {
 const props = {
 	class: cn(...classes),
 	...(Object.keys(style).length && { style }),
-	...(link.startsWith("http") && { target: "_blank", rel: "noopener noreferrer" })
+	...(link.startsWith("http") && { target: "_blank", rel: "noopener noreferrer" }),
+	...(target && { target, rel: "noopener noreferrer" })
 };
 ---
 
