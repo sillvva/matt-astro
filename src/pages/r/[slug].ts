@@ -7,5 +7,5 @@ export async function GET({ params, redirect }: APIContext) {
 	if (!params.slug) return new Response("Not found", { status: 404 });
 	const link = await getEntry("links", params.slug);
 	if (!link) return new Response("Not found", { status: 404 });
-	return redirect(link.data.url, 301);
+	return redirect(link.data.url, 307);
 }

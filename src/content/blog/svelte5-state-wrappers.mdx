@@ -22,7 +22,7 @@ tags:
 Svelte 4 had a simple `writeable` store which allowed you to create a global shared state easily. Svelte 5 does not *yet* have such a method, but it is super easy to create one using the new `$state` hook. This `ref` method is functionally equivalent in usage to the `writeable` store from Svelte 4, except that it uses a getter/setter instead of the magic `$` syntax.
 
 <div class="button-row">
-	[Playground](btn::/r/svelte5-ref)
+	[Playground](btn::/r/svelte5-ref-repl)
 </div>
 
 ```ts
@@ -40,7 +40,7 @@ function ref<T>(initial: T) {
 This is a simple utility function that can be used to create a history object, which tracks the current value and allows you to undo and redo changes to the value. Set the `maxLength` to `0` to disable the history limit.
 
 <div class="button-row">
-	[Playground](btn::/r/svelte5-history)
+	[Playground](btn::/r/svelte5-history-repl)
 </div>
 
 ```ts
@@ -69,7 +69,7 @@ function createHistory<T>(initial: T, maxLength = 50) {
 This is a simple utility function that can be used to create a fetcher object. It is a simple wrapper around the `fetch` API that provides reactivity for Svelte 5.
 
 <div class="button-row">
-	[Playground](btn::/r/svelte5-fetcher)
+	[Playground](btn::/r/svelte5-fetcher-repl)
 </div>
 
 ```ts
@@ -171,7 +171,7 @@ export default function createSocket<T>(
 This utility function is useful for creating reactive objects from JSON data. It was first created by this [Twitter user](https://twitter.com/dimfeld/status/1704568707052159097) and modified by [@PaoloRicciuti](https://twitter.com/PaoloRicciuti). I added TypeScript types and fixed an issue with arrays of primitives.
 
 <div class="button-row">
-	[Playground](btn::/r/svelte5-runify)
+	[Playground](btn::/r/svelte5-runify-repl)
 </div>
 
 ```ts
@@ -184,11 +184,8 @@ export function $runify<T extends object>(obj: T): T {
 				obj[key] = $runify(obj[key]);
 			}
 			Object.defineProperty(output, key, {
-				get() { return rune[key]; },
-				set(val) { 
-					console.log('setting', key, val);
-					rune[key] = val;
-				},
+				get() { return rune[key] },
+				set(val) { rune[key] = val },
 				enumerable: true,
 			});
 		}
