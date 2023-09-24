@@ -47,12 +47,9 @@ This is a simple utility function that can be used to create a history object, w
 function createHistory<T>(initial: T, maxLength = 50) {
 	let history = $state<T[]>([initial]);
 	let index = $state(0);
-	let current = $derived(history[index]);
-	let canUndo = $derived(index > 0);
-	let canRedo = $derived(index < history.length - 1);
 
 	return {
-		get current() { return current },
+		get current() { return history[index] },
 		set current(newState: T) {
 			history.splice(index + 1, history.length - index, newState);
 			if (maxLength > 0) history = history.slice(Math.max(0, history.length - maxLength), history.length);
@@ -60,8 +57,8 @@ function createHistory<T>(initial: T, maxLength = 50) {
 		},
 		get entries() { return history },
 		get index() { return index },
-		get canUndo() { return canUndo },
-		get canRedo() { return canRedo },
+		get canUndo() { return index > 0 },
+		get canRedo() { return index < history.length - 1 },
 		undo() { index = Math.max(0, index - 1) },
 		redo() { index = Math.min(history.length - 1, index + 1) }
 	};
