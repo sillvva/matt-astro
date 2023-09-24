@@ -48,6 +48,8 @@ function createHistory<T>(initial: T, maxLength = 50) {
 	let history = $state<T[]>([initial]);
 	let index = $state(0);
 	let current = $derived(history[index]);
+	let canUndo = $derived(index > 0);
+	let canRedo = $derived(index < history.length - 1);
 
 	return {
 		get current() { return current },
@@ -58,6 +60,8 @@ function createHistory<T>(initial: T, maxLength = 50) {
 		},
 		get entries() { return history },
 		get index() { return index },
+		get canUndo() { return canUndo },
+		get canRedo() { return canRedo },
 		undo() { index = Math.max(0, index - 1) },
 		redo() { index = Math.min(history.length - 1, index + 1) }
 	};
