@@ -419,7 +419,13 @@ export const dateSchema = transform(
 );
 
 // Validates against both Blob and {} types. Files are an instance of the Blob class.
-export const fileSchema = union([blob(), object({})]);
+export const imageSchema = union([
+	blob([
+		mimeType(["image/png", "image/jpeg", "image/gif", "image/webp"], "Must be an image"), 
+		maxSize(5 * 1024 * 1024, "Must be less than 5MB")
+	]),
+	object({})
+]);
 ```
 
 The `iso()` validator is a more powerful [custom validator](/blog/custom-valibot) that I wrote. If you'd rather use a function built-in to Valibot, I'd recommend `isoTimestamp()`.
