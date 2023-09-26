@@ -19,7 +19,7 @@ tags:
 
 ## Writeable / Ref
 
-Svelte 4 had a simple `writeable` store which allowed you to create a global shared state easily. Svelte 5 does not *yet* have such a method, but it is super easy to create one using the new `$state` hook. This `ref` method is functionally equivalent in usage to the `writeable` store from Svelte 4, except that it uses a getter/setter instead of the magic `$` syntax.
+Svelte 4 had a simple `writeable` store which allowed you to create a global shared state easily. Svelte 5 does not *yet* have such a method, but it is super easy to create one using the new `$state` hook. This `ref` method is almost functionally equivalent in usage to the `writeable` store from Svelte 4, except that it uses a getter/setter instead of the magic `$` syntax. And that is because the original `writeable` is an observable, whereas `$state` is a signal. Check out this [article](https://www.builder.io/blog/signals-vs-observables) to learn the difference. To summarize, an observable is subscribed to, whereas a signal is just a value.
 
 <div class="button-row">
 	[Playground](btn::/r/svelte5-ref-repl)
@@ -47,10 +47,9 @@ This is a simple utility function that can be used to create a history object, w
 function createHistory<T>(initial: T, maxLength = 50) {
 	let history = $state<T[]>([initial]);
 	let index = $state(0);
-	let current = $derived(history[index]);
 
 	return {
-		get current() { return current },
+		get current() { return history[index] },
 		set current(newState: T) {
 			history.splice(index + 1, history.length - index, newState);
 			if (maxLength > 0) history = history.slice(Math.max(0, history.length - maxLength), history.length);
@@ -58,6 +57,8 @@ function createHistory<T>(initial: T, maxLength = 50) {
 		},
 		get entries() { return history },
 		get index() { return index },
+		get canUndo() { return index > 0 },
+		get canRedo() { return index < history.length - 1 },
 		undo() { index = Math.max(0, index - 1) },
 		redo() { index = Math.min(history.length - 1, index + 1) }
 	};
@@ -168,55 +169,49 @@ export default function createSocket<T>(
 
 ## Runify Nested Objects
 
-This utility function is useful for creating reactive objects from JSON data. It was first created by this [Twitter user](https://twitter.com/dimfeld/status/1704568707052159097) and modified by [@PaoloRicciuti](https://twitter.com/PaoloRicciuti). I added TypeScript types and fixed an issue with arrays of primitives.
+This utility function is useful for creating reactive objects from JSON data. The idea was first created by this [Twitter user](https://twitter.com/dimfeld/status/1704568707052159097) and modified by [@PaoloRicciuti](https://twitter.com/PaoloRicciuti). I added TypeScript types and fixed an issue with arrays and effects. Some array issues still remain.
 
 <div class="button-row">
 	[Playground](btn::/r/svelte5-runify-repl)
 </div>
 
 ```ts
-export function runify(obj) {
-	if(Array.isArray(obj)) {
+export function deepState<T extends object>(obj: T): T {
+	if(typeof obj === 'object') {
 		let rune = $state(obj);
 		for(let key in rune) {
-			rune[key] = runify(rune[key]);
+			rune[key] = deepState(rune[key] as T);
 		}
 		return new Proxy(rune, {
 			get(target, prop) {
+				if (typeof target[prop] === "object" && "$" in target[prop]) {
+					return target[prop].$;
+				}
 				if(isNaN(parseInt(prop))) return Reflect.get(...arguments);
-				return "value" in target[prop] ? target[prop].value : target[prop];
+				return target[prop];
 			},
 			set(target, prop, value) {
+				if (Array.isArray(value)) {
+					target[prop] = deepState(value as T);
+					return true;
+				}
+				if (typeof target[prop] === "object" && "$" in target[prop]) {
+					target[prop].$ = value;
+					return true;
+				}
 				if(isNaN(parseInt(prop))) return Reflect.set(...arguments);
-				if ("value" in target[prop]) target[prop].value = value;
-				else target[prop] = value;
+				target[prop] = value;
 				return true;
 			}
 		});
 	}
 
-	if(typeof obj === 'object') {
-		let rune = $state(obj);
-		let output = {};
-		for(let key in rune) {
-			if(typeof rune[key] === 'object') {
-				rune[key] = runify(rune[key]);
-			}
-			Object.defineProperty(output, key, {
-				get() { return rune[key] },
-				set(val) { rune[key] = val },
-				enumerable: true,
-			});
-		}
-		return output;
-	}
-
   let rune = $state(obj);
   return {
-    get value() {
+    get $() {
       return rune;
     },
-    set value(val) {
+    set $(val) {
       rune = val;
     }
   }
