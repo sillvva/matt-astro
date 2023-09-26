@@ -169,55 +169,49 @@ export default function createSocket<T>(
 
 ## Runify Nested Objects
 
-This utility function is useful for creating reactive objects from JSON data. It was first created by this [Twitter user](https://twitter.com/dimfeld/status/1704568707052159097) and modified by [@PaoloRicciuti](https://twitter.com/PaoloRicciuti). I added TypeScript types and fixed an issue with arrays of primitives.
+This utility function is useful for creating reactive objects from JSON data. The idea was first created by this [Twitter user](https://twitter.com/dimfeld/status/1704568707052159097) and modified by [@PaoloRicciuti](https://twitter.com/PaoloRicciuti). I added TypeScript types and fixed an issue with arrays and effects. Some array issues still remain.
 
 <div class="button-row">
 	[Playground](btn::/r/svelte5-runify-repl)
 </div>
 
 ```ts
-export function runify(obj) {
-	if(Array.isArray(obj)) {
+export function deepState<T extends object>(obj: T): T {
+	if(typeof obj === 'object') {
 		let rune = $state(obj);
 		for(let key in rune) {
-			rune[key] = runify(rune[key]);
+			rune[key] = deepState(rune[key] as T);
 		}
 		return new Proxy(rune, {
 			get(target, prop) {
+				if (typeof target[prop] === "object" && "$" in target[prop]) {
+					return target[prop].$;
+				}
 				if(isNaN(parseInt(prop))) return Reflect.get(...arguments);
-				return "value" in target[prop] ? target[prop].value : target[prop];
+				return target[prop];
 			},
 			set(target, prop, value) {
+				if (Array.isArray(value)) {
+					target[prop] = deepState(value as T);
+					return true;
+				}
+				if (typeof target[prop] === "object" && "$" in target[prop]) {
+					target[prop].$ = value;
+					return true;
+				}
 				if(isNaN(parseInt(prop))) return Reflect.set(...arguments);
-				if ("value" in target[prop]) target[prop].value = value;
-				else target[prop] = value;
+				target[prop] = value;
 				return true;
 			}
 		});
 	}
 
-	if(typeof obj === 'object') {
-		let rune = $state(obj);
-		let output = {};
-		for(let key in rune) {
-			if(typeof rune[key] === 'object') {
-				rune[key] = runify(rune[key]);
-			}
-			Object.defineProperty(output, key, {
-				get() { return rune[key] },
-				set(val) { rune[key] = val },
-				enumerable: true,
-			});
-		}
-		return output;
-	}
-
   let rune = $state(obj);
   return {
-    get value() {
+    get $() {
       return rune;
     },
-    set value(val) {
+    set $(val) {
       rune = val;
     }
   }
