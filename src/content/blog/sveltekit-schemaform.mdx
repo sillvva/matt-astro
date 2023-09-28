@@ -420,10 +420,12 @@ export const dateSchema = transform(
 
 // Validates against both Blob and {} types. Files are an instance of the Blob class.
 export const imageSchema = union([
+	// Validates the file shape
 	blob([
 		mimeType(["image/png", "image/jpeg", "image/gif", "image/webp"], "Must be an image"), 
 		maxSize(5 * 1024 * 1024, "Must be less than 5MB")
 	]),
+	// Fallback for stringified data
 	object({})
 ]);
 ```
