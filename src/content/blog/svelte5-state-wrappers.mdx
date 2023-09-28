@@ -26,6 +26,25 @@ Svelte 4 had a simple `writeable` store which allowed you to create a global sha
 </div>
 
 ```ts
+class Ref<T> {
+	_value: T;
+	constructor(initial: T) {
+		let state = $state(initial);
+		this._value = state;
+	}
+
+	get value(): T { return this._value }
+	set value(newState: T) { this._value = newState }
+}
+
+function ref<T>(initial: T) {
+	return new Ref(initial);
+}
+```
+
+Getters and setters on classes are more performant than on objects, but if you prefer the object syntax, you can use this version instead.
+
+```ts
 function ref<T>(initial: T) {
 	let state = $state(initial);
 	return {
