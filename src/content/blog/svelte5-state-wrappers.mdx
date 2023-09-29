@@ -114,45 +114,6 @@ export function deepRef<T extends object>(obj: T): T {
 	[Source](btn::https://gist.github.com/intrnl/9b9313184df1763c5a12cbff3d975c4a)
 </div>
 
-### State Injection
-
-`@elstalky` on the Discord also came up with a builder to inject reactive properties into an existing static object.
-
-<div class="button-row">
-	[Playground](btn::https://www.typescriptlang.org/play?jsx=0#code/MYewdgzgLgBAJNAhlApjAvDAPAFQHwAUAbogDYCuKAXDDgJQZ4wkUoDcAUBwGbljBQAluBgAjcoNIATXIRCiAVjXowA3hxiaYvfkJEB3AE6CoiUaRQQsAeRgoAHqjBSIMAEopQhmdGNgA5gA0MIhgAJ54hAAOhiBREDTWDOpaqdoghjAEoJCwANYoYTCCYDAxcRDJGmk1FrBIqBjwDSgE5fEA2gVhALp0nDU11oqeUAB0UijcJSgACrFRKIZQYQTyCsHdwSmDuyhg5AC2S2YWNFCGlIHVuzX+KFA0BAzoTC3Xt4MQDzREjDAtJpED6fGAAX36NzSYK4u0MD3IhlK4kkUjWihCrhwMAAZDAklCYVCdAJhKVpmBBBAABbPNQweFQRGldbg2FaRnMtRQ1JGEynSwgmoUqnUoXgzhEnLQGCszAo6QEVTFKQ0ACM4LoULGfNM5ksSp5WlQjhoAHIADJmFCkGDUpYoM3i1JScDUbRkb7iiHakU056cDjSkAWMakED+dEKSEAehjnwAegB+IA)
-</div>
-
-```ts
-function build<T>(obj: T) {
-	function writables<O extends Record<string, any>>(props: O) {
-		for (const key in props) {
-			let state = $state(props[key]);
-			Object.defineProperty(obj, key, {
-				enumerable: true,
-				get: () => state,
-				set: v => state = v,
-			});
-		}
-
-		return build(obj as T & O)
-	}
-
-	function finish() { return obj }
-
-	return {
-		writables,
-		finish,
-	};
-}
-
-const obj = build({ id: 1 })
-	.writables({
-		text: 'Label here',
-		done: false,
-	})
-	.finish();
-```
-
 ## History
 
 This is a simple utility function that can be used to create a history object, which tracks the current value and allows you to undo and redo changes to the value. Set the `maxLength` to `0` to disable the history limit.
