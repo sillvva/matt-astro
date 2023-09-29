@@ -1,1 +1,3 @@
-<ul {...Astro.props} class="group flex list-outside flex-col gap-2 text-base-content/80"><slot /></ul>
+<ul {...Astro.props} class="group flex list-outside flex-col gap-2 text-base-content/80 [#table-of-contents+ul>li>&]:text-sm">
+	<slot />
+</ul>
