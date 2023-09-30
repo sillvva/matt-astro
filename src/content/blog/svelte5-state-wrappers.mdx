@@ -26,6 +26,25 @@ Svelte 4 had a simple `writeable` store which allowed you to create a global sha
 </div>
 
 ```ts
+class Ref<T> {
+	_value: T;
+	constructor(initial: T) {
+		let state = $state(initial);
+		this._value = state;
+	}
+
+	get value(): T { return this._value }
+	set value(newState: T) { this._value = newState }
+}
+
+function ref<T>(initial: T) {
+	return new Ref(initial);
+}
+```
+
+Getters and setters on classes are more performant than on objects, but if you prefer the object syntax, you can use this version instead.
+
+```ts
 function ref<T>(initial: T) {
 	let state = $state(initial);
 	return {
@@ -34,6 +53,66 @@ function ref<T>(initial: T) {
 	};
 }
 ```
+
+## Runify Nested Objects
+
+This utility function is useful for creating reactive objects from JSON data. The idea was first created by this [Twitter user](https://twitter.com/dimfeld/status/1704568707052159097) and modified by [@PaoloRicciuti](https://twitter.com/PaoloRicciuti). I added TypeScript types and fixed an issue with arrays and effects. Some array issues still remain.
+
+<div class="button-row">
+	[Playground](btn::/r/svelte5-runify-repl)
+</div>
+
+```ts
+export function deepRef<T extends object>(obj: T): T {
+	if(typeof obj === 'object') {
+		let rune = $state(obj);
+		for(let key in rune) {
+			rune[key] = deepRef(rune[key] as T);
+		}
+		return new Proxy(rune, {
+			get(target, prop) {
+				if (typeof target[prop] === "object" && "$" in target[prop]) {
+					return target[prop].$;
+				}
+				if(isNaN(parseInt(prop))) return Reflect.get(...arguments);
+				return target[prop];
+			},
+			set(target, prop, value) {
+				if (Array.isArray(value)) {
+					target[prop] = deepRef(value as T);
+					return true;
+				}
+				if (typeof target[prop] === "object" && "$" in target[prop]) {
+					target[prop].$ = value;
+					return true;
+				}
+				if(isNaN(parseInt(prop))) return Reflect.set(...arguments);
+				target[prop] = value;
+				return true;
+			}
+		});
+	}
+
+  let rune = $state(obj);
+  return {
+    get $() {
+      return rune;
+    },
+    set $(val) {
+      rune = val;
+    }
+  }
+}
+```
+
+### Solid.js `createMutable()` Approach
+
+`@intrnl` on the [Svelte Discord](https://discord.gg/svelte), created an alternative based on the `createMutable()` function from [Solid](https://www.solidjs.com/docs/latest/api#createmutable). This version is more complex, but it resolves some of the issues with the above version.
+
+<div class="button-row">
+	[Playground](btn::/r/svelte5-reactive-repl)
+	[Source](btn::https://gist.github.com/intrnl/9b9313184df1763c5a12cbff3d975c4a)
+</div>
 
 ## History
 
@@ -165,103 +244,4 @@ export default function createSocket<T>(
 		}
 	};
 }
-```
-
-## Runify Nested Objects
-
-This utility function is useful for creating reactive objects from JSON data. The idea was first created by this [Twitter user](https://twitter.com/dimfeld/status/1704568707052159097) and modified by [@PaoloRicciuti](https://twitter.com/PaoloRicciuti). I added TypeScript types and fixed an issue with arrays and effects. Some array issues still remain.
-
-<div class="button-row">
-	[Playground](btn::/r/svelte5-runify-repl)
-</div>
-
-```ts
-export function deepState<T extends object>(obj: T): T {
-	if(typeof obj === 'object') {
-		let rune = $state(obj);
-		for(let key in rune) {
-			rune[key] = deepState(rune[key] as T);
-		}
-		return new Proxy(rune, {
-			get(target, prop) {
-				if (typeof target[prop] === "object" && "$" in target[prop]) {
-					return target[prop].$;
-				}
-				if(isNaN(parseInt(prop))) return Reflect.get(...arguments);
-				return target[prop];
-			},
-			set(target, prop, value) {
-				if (Array.isArray(value)) {
-					target[prop] = deepState(value as T);
-					return true;
-				}
-				if (typeof target[prop] === "object" && "$" in target[prop]) {
-					target[prop].$ = value;
-					return true;
-				}
-				if(isNaN(parseInt(prop))) return Reflect.set(...arguments);
-				target[prop] = value;
-				return true;
-			}
-		});
-	}
-
-  let rune = $state(obj);
-  return {
-    get $() {
-      return rune;
-    },
-    set $(val) {
-      rune = val;
-    }
-  }
-}
-```
-
-### Solid.js `createMutable()` Approach
-
-`@intrnl` on the [Svelte Discord](https://discord.gg/svelte), created an alternative based on the `createMutable()` function from [Solid](https://www.solidjs.com/docs/latest/api#createmutable). This version is more complex, but it resolves some of the issues with the above version.
-
-<div class="button-row">
-	[Playground](btn::/r/svelte5-reactive-repl)
-	[Source](btn::https://gist.github.com/intrnl/9b9313184df1763c5a12cbff3d975c4a)
-</div>
-
-### State Injection
-
-`@elstalky` on the Discord also came up with a builder to inject reactive properties into an existing static object.
-
-<div class="button-row">
-	[Playground](btn::https://www.typescriptlang.org/play?jsx=0#code/MYewdgzgLgBAJNAhlApjAvDAPAFQHwAUAbogDYCuKAXDDgJQZ4wkUoDcAUBwGbljBQAluBgAjcoNIATXIRCiAVjXowA3hxiaYvfkJEB3AE6CoiUaRQQsAeRgoAHqjBSIMAEopQhmdGNgA5gA0MIhgAJ54hAAOhiBREDTWDOpaqdoghjAEoJCwANYoYTCCYDAxcRDJGmk1FrBIqBjwDSgE5fEA2gVhALp0nDU11oqeUAB0UijcJSgACrFRKIZQYQTyCsHdwSmDuyhg5AC2S2YWNFCGlIHVuzX+KFA0BAzoTC3Xt4MQDzREjDAtJpED6fGAAX36NzSYK4u0MD3IhlK4kkUjWihCrhwMAAZDAklCYVCdAJhKVpmBBBAABbPNQweFQRGldbg2FaRnMtRQ1JGEynSwgmoUqnUoXgzhEnLQGCszAo6QEVTFKQ0ACM4LoULGfNM5ksSp5WlQjhoAHIADJmFCkGDUpYoM3i1JScDUbRkb7iiHakU056cDjSkAWMakED+dEKSEAehjnwAegB+IA)
-</div>
-
-```ts
-function build<T>(obj: T) {
-	function writables<O extends Record<string, any>>(props: O) {
-		for (const key in props) {
-			let state = $state(props[key]);
-			Object.defineProperty(obj, key, {
-				enumerable: true,
-				get: () => state,
-				set: v => state = v,
-			});
-		}
-
-		return build(obj as T & O)
-	}
-
-	function finish() { return obj }
-
-	return {
-		writables,
-		finish,
-	};
-}
-
-const obj = build({ id: 1 })
-	.writables({
-		text: 'Label here',
-		done: false,
-	})
-	.finish();
 ```
