@@ -8,6 +8,7 @@ tags:
   - TypeScript
 ---
 import Collapsible from "$/components/markdown/collapsible.astro";
+import Tweet from "$/components/markdown/tweet.astro";
 
 ## Table of Contents
 
@@ -157,3 +158,43 @@ type PathValue<T, P extends Paths<T, 10>, TLength = 10> = P extends `${infer Key
 		: never
 	: Idx<LimitDepth<T, TLength>, P>;
 ```
+
+## Prettify
+
+The `Prettify` type is a simple type which takes an object type with intersections and combines them to make them easier to read.
+
+```ts
+type Prettify<T> = {
+    [K in keyof T]: T[K];
+} & {};
+```
+
+<div class="grid sm:grid-cols-2 gap-4">
+  <Tweet username="mattpockockuk" displayName="Matt Pockock" avatar="https://pbs.twimg.com/profile_images/1666460461884211204/SmBm505D_400x400.jpg" link="https://twitter.com/mattpocockuk/status/1622730173446557697" date={new Date("2023-02-06T16:53-06:00")}>
+    Here's a quick thread on a super useful type helper you've probably never heard of (nope, not even advanced folks).
+
+    ![img](https://pbs.twimg.com/media/FoUXyE2XwAA2lIW?format=png&name=small)
+  </Tweet>
+
+  <Tweet username="mattpockockuk" displayName="Matt Pockock" avatar="https://pbs.twimg.com/profile_images/1666460461884211204/SmBm505D_400x400.jpg" link="https://twitter.com/mattpocockuk/status/1622730175266926592" date={new Date("2023-02-06T16:53-06:00")}>
+    Imagine you've got some type that's got a bunch of intersections:
+
+    ![img](https://pbs.twimg.com/media/FoUX44sWcAE4ssR?format=png&name=small)
+  </Tweet>
+
+  <Tweet username="mattpockockuk" displayName="Matt Pockock" avatar="https://pbs.twimg.com/profile_images/1666460461884211204/SmBm505D_400x400.jpg" link="https://twitter.com/mattpocockuk/status/1622730176931983360" date={new Date("2023-02-06T16:53-06:00")}>
+    When you hover over it, it gives you a bunch of gross intersections instead of displaying the resolved type.
+
+    Wouldn't it be nice if we could Prettify this?
+
+    ![img](https://pbs.twimg.com/media/FoUYB5bXEAYKipT?format=png&name=small)
+  </Tweet>
+
+  <Tweet username="mattpockockuk" displayName="Matt Pockock" avatar="https://pbs.twimg.com/profile_images/1666460461884211204/SmBm505D_400x400.jpg" link="https://twitter.com/mattpocockuk/status/1622730179289251840" date={new Date("2023-02-06T16:53-06:00")}>
+    Well, with this funky type helper, we can.
+
+    We now get a beautiful readout of all of the members of that intersection.
+
+    ![img](https://pbs.twimg.com/media/FoUYS3fXEAQFuE2?format=png&name=900x900)
+  </Tweet>
+</div>
