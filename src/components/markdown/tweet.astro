@@ -21,7 +21,9 @@ function tweetDate(date: Date) {
 	<div class="flex items-center">
 		<img src={avatar} class="h-12 w-12 rounded-full" />
 		<div class="ml-4 flex flex-col">
-			<a class="font-bold" href={`https://twitter.com/${username}`}>{displayName}</a>
+			<a class="font-bold" href={`https://twitter.com/${username}`} target="_blank" rel="noreferrer noopener">
+				{displayName}
+			</a>
 			<span class="text-gray-500">@{username}</span>
 		</div>
 		<a href={link} class="ml-auto">
@@ -33,7 +35,7 @@ function tweetDate(date: Date) {
 		</a>
 	</div>
 	<div class="mb-1 mt-3 flex-1 text-lg leading-normal [&>p]:mb-2"><slot /></div>
-	<a href={link} class="mb-3 text-sm text-gray-500">
+	<a href={link} class="mb-3 text-sm text-gray-500" target="_blank" rel="noreferrer noopener">
 		{tweetDate(date)}
 	</a>
 </div>
