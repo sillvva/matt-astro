@@ -245,3 +245,49 @@ export default function createSocket<T>(
 	};
 }
 ```
+
+## Getter/Setter Helper
+
+```ts
+type Prettify<T> = {
+	[K in keyof T]: T[K];
+} & {};
+
+function getset<TGets extends object, TSets extends object>(gets: TGets, sets: TSets) {
+	if (gets && typeof gets != "object") throw new Error("gets must be an object");
+	if (sets && typeof sets != "object") throw new Error("sets must be an object");
+
+	const keys = [...new Set([...Object.keys(gets), ...Object.keys(sets)])];
+	if (!keys.length) throw new Error("gets must not be empty");
+	
+	let out = {} as Prettify<TGets & TSets>;
+	for (let key of keys) {
+		if (sets && typeof sets[key] != "undefined") {
+			let state = $state(sets[key]);
+			Object.defineProperty(out, key, {
+				get() { return state },
+				set(value) { state = value }
+			})
+		}
+		else {
+			let state = $state(gets[key]);
+			Object.defineProperty(out, key, {
+				get() { return state }
+			});
+		}
+	}
+	return out;
+}
+
+// Example usage
+export function foobar() {
+	let foo = 0;
+	let bar = 0;
+
+	return getset({bar}, {foo})
+}
+
+const fb = foobar();
+fb.foo = 1; // OK
+fb.bar = 1; // Error
+```
