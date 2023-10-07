@@ -3,41 +3,43 @@ import { cn } from "$/util";
 ---
 
 <script>
-	import { copy } from "$/assets/js/svgs";
-
 	function copyBlock(el: Element) {
-		navigator.clipboard.writeText(el.parentNode?.querySelector("pre")?.innerText || "");
-		document.querySelectorAll(".copy").forEach((btn) => (btn.innerHTML = copy));
+		navigator.clipboard.writeText(el.parentNode?.parentNode?.querySelector("pre")?.innerText || "");
+		document.querySelectorAll(".copy").forEach((btn) => {
+			btn.innerHTML = "Copy";
+			btn.classList.add("bg-gray-700");
+			btn.classList.remove("bg-green-700");
+		});
 		el.innerHTML = "Copied";
+		el.classList.remove("bg-gray-700");
+		el.classList.add("bg-green-700");
 	}
 
 	document.addEventListener("astro:page-load", () => {
-		document.querySelectorAll("article > section > .pre-block > .copy").forEach((btn) => {
+		document.querySelectorAll("article > section > .pre-block .copy").forEach((btn) => {
 			btn.addEventListener("click", () => copyBlock(btn));
 		});
 	});
 </script>
 
-<div class="pre-block relative">
-	<pre
-		class={cn(
-			Astro.props.class,
-			"max-w-portfolio mb-4 overflow-x-auto rounded-lg bg-base-300 text-sm text-base-content md:p-4",
-			"group-[.combined-block]:bg-transparent group-[.combined-block]:my-0 group-[.combined-block]:p-0 group-[.combined-block]:overflow-visible group-[.combined-block]:min-w-fit group-[.combined-block]:pr-4",
-			"group-[.wrapped-block]:overflow-hidden group-[.wrapped-block]:[&>code]:whitespace-pre-wrap"
-		)}><slot /></pre>
-	<button
-		role="button"
-		class={cn(
-			"copy absolute right-2 top-2 flex items-center justify-center rounded-md",
-			"bg-primary p-2 font-sans text-xs font-bold group-[.combined-block]:hidden"
-		)}
-	>
-		<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="h-4 w-4"
-			><path
-				fill="currentColor"
-				d="M19 21H8V7h11m0-2H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2m-3-4H4a2 2 0 0 0-2 2v14h2V3h12V1Z"
-			></path></svg
-		>
-	</button>
+<div
+	class="pre-block relative mb-4 mt-2 rounded-md border border-base-300 bg-neutral-900 text-base-content group-[.combined-block]:my-0"
+>
+	<div class="flex items-center justify-between rounded-t bg-neutral-800 p-2 text-sm group-[.combined-block]:hidden">
+		<div class="flex space-x-1">
+			<div class="h-2 w-2 rounded-full bg-gray-500"></div>
+			<div class="h-2 w-2 rounded-full bg-gray-500"></div>
+			<div class="h-2 w-2 rounded-full bg-gray-500"></div>
+		</div>
+		<button class="copy rounded-md bg-gray-700 px-2 py-1 text-sm text-white" type="button"> Copy</button>
+	</div>
+	<div class="pre-block group-[.combined-block]:overflow-x-visible">
+		<pre
+			class={cn(
+				Astro.props.class,
+				"max-w-portfolio m-0 rounded-lg bg-neutral-900 text-sm text-base-content md:p-4",
+				"group-[.combined-block]:bg-transparent group-[.combined-block]:my-0 group-[.combined-block]:p-0 group-[.combined-block]:overflow-visible group-[.combined-block]:min-w-fit group-[.combined-block]:pr-4",
+				"group-[.wrapped-block]:overflow-hidden group-[.wrapped-block]:[&>code]:whitespace-pre-wrap"
+			)}><slot /></pre>
+	</div>
 </div>
