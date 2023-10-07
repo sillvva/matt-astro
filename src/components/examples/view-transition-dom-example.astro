@@ -1,0 +1,31 @@
+<script is:inline>
+	function startTransition() {
+		document.startViewTransition(() => {
+			const box1 = document.getElementById("box1");
+			const box2 = document.getElementById("box2");
+			if (box1.classList.contains("hidden")) {
+				box1.classList.remove("hidden");
+				box2.classList.add("hidden");
+			} else {
+				box2.classList.remove("hidden");
+				box1.classList.add("hidden");
+			}
+		});
+	}
+</script>
+
+<div class="flex flex-col gap-4">
+	<div>
+		<button class="btn btn-primary capitalize" onclick="startTransition()">Run Transition</button>
+	</div>
+	<div class="relative h-40">
+		<div id="box1" class="box absolute left-0 h-40 w-40 bg-red-500"></div>
+		<div id="box2" class="box absolute right-0 hidden h-40 w-40 bg-blue-500"></div>
+	</div>
+</div>
+
+<style>
+	.box {
+		view-transition-name: box;
+	}
+</style>
