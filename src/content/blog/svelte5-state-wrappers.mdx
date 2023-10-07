@@ -253,24 +253,24 @@ type Prettify<T> = {
 	[K in keyof T]: T[K];
 } & {};
 
-function getset<TGets extends object, TSets extends object>(gets: TGets, sets: TSets) {
-	if (gets && typeof gets != "object") throw new Error("gets must be an object");
-	if (sets && typeof sets != "object") throw new Error("sets must be an object");
+function getset<TSets extends object, TGets extends object>(writeables: TSets, readonly: TGets) {
+	if (writeables && typeof writeables != "object") throw new Error("writeables must be an object");
+	if (readonly && typeof readonly != "object") throw new Error("readonly must be an object");
 
-	const keys = [...new Set([...Object.keys(gets), ...Object.keys(sets)])];
+	const keys = [...new Set([...Object.keys(readonly), ...Object.keys(writeables)])];
 	if (!keys.length) throw new Error("gets must not be empty");
 	
 	let out = {} as Prettify<TGets & TSets>;
 	for (let key of keys) {
-		if (sets && typeof sets[key] != "undefined") {
-			let state = $state(sets[key]);
+		if (writeables && typeof writeables[key] != "undefined") {
+			let state = $state(writeables[key]);
 			Object.defineProperty(out, key, {
 				get() { return state },
 				set(value) { state = value }
 			})
 		}
 		else {
-			let state = $state(gets[key]);
+			let state = $state(readonly[key]);
 			Object.defineProperty(out, key, {
 				get() { return state }
 			});
@@ -281,13 +281,14 @@ function getset<TGets extends object, TSets extends object>(gets: TGets, sets: T
 
 // Example usage
 export function foobar() {
-	let foo = 0;
-	let bar = 0;
-
-	return getset({bar}, {foo})
+	return getset({
+		foo: 0
+	}, {
+		bar: 0
+	})
 }
 
 const fb = foobar();
-fb.foo = 1; // OK
-fb.bar = 1; // Error
+fb.foo = 1; // OK, has getter and setter
+fb.bar = 1; // Error, has no setter
 ```
