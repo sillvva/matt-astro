@@ -64,6 +64,11 @@ interface Props {
 	svgClasses?: string | string[];
 	hexagonClasses?: string | string[];
 	labelClasses?: string | string[];
+	bgColor?:
+		| `fill-${string}`
+		| `rgb(${number}, ${number}, ${number})`
+		| `rgba(${number}, ${number}, ${number}, ${number})`
+		| `#${string}`;
 	itemColor?:
 		| `fill-${string}`
 		| `rgb(${number}, ${number}, ${number})`
@@ -86,6 +91,20 @@ interface Props {
 		| `#${string}`;
 }
 
+type CSSVars = {
+	"--itemColor"?: string;
+	"--hoverColor"?: string;
+	"--activeColor"?: string;
+	"--labelColor"?: string;
+};
+
+const defaultColors = {
+	itemColor: "rgb(0, 0, 0)",
+	hoverColor: "rgb(80, 80, 80)",
+	activeColor: "rgb(80, 80, 80)",
+	labelColor: "rgb(255, 255, 255)"
+};
+
 const {
 	items,
 	pathname,
@@ -96,11 +115,61 @@ const {
 	svgClasses = [],
 	hexagonClasses = [],
 	labelClasses = [],
-	itemColor = "rgb(0, 0, 0)",
-	hoverColor = "rgb(80, 80, 80)",
-	activeColor = "rgb(80, 80, 80)",
-	labelColor = "rgb(255, 255, 255)"
+	itemColor = defaultColors.itemColor,
+	hoverColor = defaultColors.hoverColor,
+	activeColor = defaultColors.activeColor,
+	labelColor = defaultColors.labelColor
 } = Astro.props;
+
+const baseClasses = typeof menuClasses === "string" ? menuClasses.split(" ").filter(Boolean) : menuClasses;
+if (!baseClasses.find((c) => c.startsWith("[--scale:"))) {
+	baseClasses.push("[--scale:1]");
+}
+
+const baseHexagonClasses = typeof hexagonClasses === "string" ? hexagonClasses.split(" ").filter(Boolean) : hexagonClasses;
+const baseLabelClasses = typeof labelClasses === "string" ? labelClasses.split(" ").filter(Boolean) : labelClasses;
+if (itemColor.startsWith("fill-")) baseHexagonClasses.push(itemColor);
+if (hoverColor.startsWith("hover:fill-")) baseHexagonClasses.push(hoverColor);
+if (activeColor.startsWith("[.active]:fill-")) baseHexagonClasses.push(activeColor);
+if (labelColor.startsWith("text-")) baseLabelClasses.push(labelColor);
+
+const cssvars: CSSVars = {};
+if (itemColor.startsWith("rgb") || itemColor.startsWith("#")) cssvars["--itemColor"] = itemColor;
+if (hoverColor.startsWith("rgb") || hoverColor.startsWith("#")) cssvars["--hoverColor"] = hoverColor;
+if (activeColor.startsWith("rgb") || activeColor.startsWith("#")) cssvars["--activeColor"] = activeColor;
+if (labelColor.startsWith("rgb") || labelColor.startsWith("#")) cssvars["--labelColor"] = labelColor;
+
+const itemcssvars: Record<number, CSSVars> = {};
+items.forEach((it, i) => {
+	const {
+		itemColor = it?.itemColor && it?.itemColor != defaultColors.itemColor ? it.itemColor : undefined,
+		hoverColor = it?.hoverColor && it?.hoverColor != defaultColors.hoverColor ? it.hoverColor : undefined,
+		activeColor = it?.activeColor && it?.activeColor != defaultColors.activeColor ? it.activeColor : undefined,
+		labelColor = it?.labelColor && it?.labelColor != defaultColors.labelColor ? it.labelColor : undefined,
+		...item
+	} = it || {
+		label: "",
+		link: ""
+	};
+	if (it && item.label) {
+		const baseHexagonClasses =
+			typeof item.hexagonClasses === "string" ? item.hexagonClasses.split(" ").filter(Boolean) : item.hexagonClasses || [];
+		const baseLabelClasses =
+			typeof item.labelClasses === "string" ? item.labelClasses.split(" ").filter(Boolean) : item.labelClasses || [];
+		if (itemColor?.startsWith("fill-")) baseHexagonClasses.push(itemColor);
+		if (hoverColor?.startsWith("hover:fill-")) baseHexagonClasses.push(hoverColor);
+		if (activeColor?.startsWith("[.active]:fill-")) baseHexagonClasses.push(activeColor);
+		if (labelColor?.startsWith("text-")) baseLabelClasses.push(labelColor);
+		item.hexagonClasses = baseHexagonClasses;
+		item.labelClasses = baseLabelClasses;
+
+		itemcssvars[i] = {} as CSSVars;
+		if (itemColor?.startsWith("rgb") || itemColor?.startsWith("#")) itemcssvars[i]["--itemColor"] = itemColor;
+		if (hoverColor?.startsWith("rgb") || hoverColor?.startsWith("#")) itemcssvars[i]["--hoverColor"] = hoverColor;
+		if (activeColor?.startsWith("rgb") || activeColor?.startsWith("#")) itemcssvars[i]["--activeColor"] = activeColor;
+		if (labelColor?.startsWith("rgb") || labelColor?.startsWith("#")) itemcssvars[i]["--labelColor"] = labelColor;
+	}
+});
 
 let menuRows: Item[][] = [[]];
 items.forEach((item, i) => {
@@ -116,58 +185,13 @@ items.forEach((item, i) => {
 		menuRows.push([]);
 	}
 });
-
-const baseClasses = typeof menuClasses === "string" ? menuClasses.split(" ").filter(Boolean) : menuClasses;
-if (!baseClasses.find((c) => c.startsWith("[--scale:"))) {
-	baseClasses.push("[--scale:1]");
-}
-
-const baseHexagonClasses = typeof hexagonClasses === "string" ? hexagonClasses.split(" ").filter(Boolean) : hexagonClasses;
-const baseLabelClasses = typeof labelClasses === "string" ? labelClasses.split(" ").filter(Boolean) : labelClasses;
-if (itemColor.startsWith("fill-")) baseHexagonClasses.push(itemColor);
-if (hoverColor.startsWith("hover:fill-")) baseHexagonClasses.push(hoverColor);
-if (activeColor.startsWith("[.active]:fill-")) baseHexagonClasses.push(activeColor);
-if (labelColor.startsWith("text-")) baseLabelClasses.push(labelColor);
-
-const cssvars: Record<string, string> = {};
-if (itemColor.startsWith("rgb") || itemColor.startsWith("#")) cssvars["--itemColor"] = itemColor;
-else if (!itemColor) cssvars["--itemColor"] = "rgb(0, 0, 0)";
-if (hoverColor.startsWith("rgb") || hoverColor.startsWith("#")) cssvars["--hoverColor"] = hoverColor;
-else if (!itemColor) cssvars["--hoverColor"] = "rgb(80, 80, 80)";
-if (activeColor.startsWith("rgb") || activeColor.startsWith("#")) cssvars["--activeColor"] = activeColor;
-else if (!itemColor) cssvars["--activeColor"] = "rgb(80, 80, 80)";
-if (labelColor.startsWith("rgb") || labelColor.startsWith("#")) cssvars["--labelColor"] = labelColor;
-else if (!itemColor) cssvars["--labelColor"] = "rgb(255, 255, 255)";
-
-const itemcssvars: Record<number, Record<string, string>> = {};
-items.forEach((item, i) => {
-	if (item && item.label) {
-		const baseHexagonClasses =
-			typeof item.hexagonClasses === "string" ? item.hexagonClasses.split(" ").filter(Boolean) : item.hexagonClasses || [];
-		const baseLabelClasses =
-			typeof item.labelClasses === "string" ? item.labelClasses.split(" ").filter(Boolean) : item.labelClasses || [];
-		if (item.itemColor?.startsWith("fill-")) baseHexagonClasses.push(item.itemColor);
-		if (item.hoverColor?.startsWith("hover:fill-")) baseHexagonClasses.push(item.hoverColor);
-		if (item.activeColor?.startsWith("[.active]:fill-")) baseHexagonClasses.push(item.activeColor);
-		if (item.labelColor?.startsWith("text-")) baseLabelClasses.push(item.labelColor);
-
-		const cssvars: Record<string, string> = {};
-		if (item.itemColor?.startsWith("rgb") || item.itemColor?.startsWith("#")) cssvars["--itemColor"] = item.itemColor;
-		else if (!item.itemColor && !itemColor) cssvars["--itemColor"] = "rgb(0, 0, 0)";
-		if (item.hoverColor?.startsWith("rgb") || item.hoverColor?.startsWith("#")) cssvars["--hoverColor"] = item.hoverColor;
-		else if (!item.hoverColor && !hoverColor) cssvars["--hoverColor"] = "rgb(80, 80, 80)";
-		if (item.activeColor?.startsWith("rgb") || item.activeColor?.startsWith("#")) cssvars["--activeColor"] = item.activeColor;
-		else if (!item.activeColor && !activeColor) cssvars["--activeColor"] = "rgb(80, 80, 80)";
-		if (item.labelColor?.startsWith("rgb") || item.labelColor?.startsWith("#")) cssvars["--labelColor"] = item.labelColor;
-		else if (!item.labelColor && !labelColor) cssvars["--labelColor"] = "rgb(255, 255, 255)";
-
-		itemcssvars[i] = cssvars;
-	}
-});
 ---
 ```
 ```tsx
-<nav class={cn("hex-menu-wrapper", rotated && "rotated", ...baseClasses)} style={cssvars}>
+<nav
+	class={cn("hex-menu-wrapper", rotated && "rotated", ...baseClasses)}
+	style={Object.keys(cssvars).length ? cssvars : undefined}
+>
 	{
 		menuRows.map((row, r) => (
 			<div class={cn("hex-menu-row", r % 2 === 1 && !rotated && "shift")}>
@@ -183,7 +207,7 @@ items.forEach((item, i) => {
 								item.label && itemClasses,
 								item.itemClasses
 							)}
-							style={itemcssvars[i]}
+							style={Object.keys(itemcssvars[i]).length ? itemcssvars[i] : undefined}
 							aria-label={item.label || undefined}
 						>
 							<svg

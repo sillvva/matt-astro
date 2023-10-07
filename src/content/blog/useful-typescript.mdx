@@ -2,12 +2,13 @@
 title: Useful TypeScript Code
 description: Useful functions and types for TypeScript
 date: 2023-09-07T03:18:13.471Z
-updated: 2023-09-16T04:37:39.225Z
+updated: 2023-10-01T20:33:16.962Z
 image: $/assets/images/typescript.png
 tags:
   - TypeScript
 ---
 import Collapsible from "$/components/markdown/collapsible.astro";
+import Tweet from "$/components/markdown/tweet.astro";
 
 ## Table of Contents
 
@@ -157,3 +158,20 @@ type PathValue<T, P extends Paths<T, 10>, TLength = 10> = P extends `${infer Key
 		: never
 	: Idx<LimitDepth<T, TLength>, P>;
 ```
+
+## Prettify
+
+The `Prettify` type is a simple type which takes an object type with intersections and combines them to make them easier to read.
+
+```ts
+type Prettify<T> = {
+    [K in keyof T]: T[K];
+} & {};
+```
+
+<div class="grid sm:grid-cols-2 gap-4">
+  <Tweet link="https://twitter.com/mattpocockuk/status/1622730173446557697" />
+  <Tweet link="https://twitter.com/mattpocockuk/status/1622730175266926592" />
+  <Tweet link="https://twitter.com/mattpocockuk/status/1622730176931983360" />
+  <Tweet link="https://twitter.com/mattpocockuk/status/1622730179289251840" />
+</div>
