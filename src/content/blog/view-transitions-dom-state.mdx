@@ -2,52 +2,97 @@
 title: View Transitions Between DOM States
 description: It is possible to animate the transition between DOM states using CSS and JavaScript.
 date: 2023-10-07T14:45:47.374Z
-image: $/assets/images/startViewTransition.png
+image: $/assets/images/startViewTransition.webp
 tags:
+  - Animation
   - CSS
   - JavaScript
   - UI
 ---
 import Example from '$/components/examples/view-transition-dom-example.astro';
 
-The most common use case for view transitions is to animate the transition between two pages. However, it is also possible to animate the transition between two DOM states on the same page.
+The most common use case for view transitions is to animate the transition between two pages. You can see an example of this in this blog, by navigating to the [Blog](/blog) directory page. However, it is also possible to animate the transition between two DOM states on the same page.
 
 In order for view transitions between two elements to work, they must share a `view-transition-name` property in CSS. However, if two rendered elements have the same view-transition-name at the same time, ViewTransition.ready will reject and the transition will be skipped. [[Source](https://developer.mozilla.org/en-US/docs/Web/CSS/view-transition-name)] To get the transition to work, you must ensure only one of those elements is rendered at a time. Then you can use `document.startViewTransition` to transition between two DOM states.
 
 ## Example
 
+### Example 1: Transition Between Elements
+
+The first example shows how to transition between two elements. The second element is hidden by default. When the button is clicked, the first element is hidden and the second element is shown. When the button is clicked again, the second element is hidden and the first element is shown.
+
+### Example 2: Transition Between States
+
+The second example only has one element. When the button is clicked, the element changes its background color and moves to the other side of the screen. When the button is clicked again, the element changes its background color and moves back to the original side of the screen.
+
 <Example />
 
 ```html
-<script>
+<script is:inline>
 	function startTransition() {
 		document.startViewTransition(() => {
 			const box1 = document.getElementById("box1");
 			const box2 = document.getElementById("box2");
 			if (box1.classList.contains("hidden")) {
+				box1.classList.add("flex");
 				box1.classList.remove("hidden");
 				box2.classList.add("hidden");
+				box2.classList.remove("flex");
 			} else {
+				box2.classList.add("flex");
 				box2.classList.remove("hidden");
 				box1.classList.add("hidden");
+				box1.classList.remove("flex");
+			}
+		});
+	}
+
+	function startTransition2() {
+		document.startViewTransition(() => {
+			const box3 = document.getElementById("box3");
+			if (box3.classList.contains("bg-red-500")) {
+				box3.classList.remove("bg-red-500");
+				box3.classList.remove("left-0");
+				box3.classList.add("bg-blue-500");
+				box3.classList.add("right-0");
+			} else {
+				box3.classList.add("bg-red-500");
+				box3.classList.add("left-0");
+				box3.classList.remove("bg-blue-500");
+				box3.classList.remove("right-0");
 			}
 		});
 	}
 </script>
 
 <div class="flex flex-col gap-4">
-	<div>
-		<button class="btn btn-primary capitalize" onclick="startTransition()">Run Transition</button>
+	<div class="flex gap-4">
+		<button class="btn btn-primary capitalize" onclick="startTransition()">Run Transition 1</button>
+		<button class="btn btn-primary capitalize" onclick="startTransition2()">Run Transition 2</button>
 	</div>
+	<!-- Example 1: Transition between elements -->
 	<div class="relative h-40">
-		<div id="box1" class="box absolute left-0 h-40 w-40 bg-red-500"></div>
-		<div id="box2" class="box absolute right-0 hidden h-40 w-40 bg-blue-500"></div>
+		<div id="box1" class="box1 absolute left-0 flex h-40 w-40 items-center justify-center bg-red-500 text-2xl text-white">
+			Box 1
+		</div>
+		<div id="box2" class="box1 absolute right-0 hidden h-40 w-40 items-center justify-center bg-blue-500 text-2xl text-white">
+			Box 2
+		</div>
+	</div>
+	<!-- Example 2: Transition between states -->
+	<div class="relative h-40">
+		<div id="box3" class="box2 absolute left-0 flex h-40 w-40 items-center justify-center bg-red-500 text-2xl text-white">
+			Box 3
+		</div>
 	</div>
 </div>
 
 <style>
-	.box {
-		view-transition-name: box;
+	.box1 {
+		view-transition-name: box1;
+	}
+	.box2 {
+		view-transition-name: box2;
 	}
 </style>
 ```
