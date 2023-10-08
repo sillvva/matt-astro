@@ -34,11 +34,15 @@ The second example only has one element. When the button is clicked, the element
 			const box1 = document.getElementById("box1");
 			const box2 = document.getElementById("box2");
 			if (box1.classList.contains("hidden")) {
+				box1.classList.add("flex");
 				box1.classList.remove("hidden");
 				box2.classList.add("hidden");
+				box2.classList.remove("flex");
 			} else {
+				box2.classList.add("flex");
 				box2.classList.remove("hidden");
 				box1.classList.add("hidden");
+				box1.classList.remove("flex");
 			}
 		});
 	}
@@ -68,22 +72,27 @@ The second example only has one element. When the button is clicked, the element
 	</div>
 	<!-- Example 1: Transition between elements -->
 	<div class="relative h-40">
-		<div id="box1" class="box absolute left-0 h-40 w-40 bg-red-500"></div>
-		<div id="box2" class="box absolute right-0 hidden h-40 w-40 bg-blue-500"></div>
+		<div id="box1" class="box1 absolute left-0 flex h-40 w-40 items-center justify-center bg-red-500 text-2xl text-white">
+			Box 1
+		</div>
+		<div id="box2" class="box1 absolute right-0 hidden h-40 w-40 items-center justify-center bg-blue-500 text-2xl text-white">
+			Box 2
+		</div>
 	</div>
 	<!-- Example 2: Transition between states -->
 	<div class="relative h-40">
-		<div id="box3" class="box2 absolute left-0 h-40 w-40 bg-red-500"></div>
+		<div id="box3" class="box2 absolute left-0 flex h-40 w-40 items-center justify-center bg-red-500 text-2xl text-white">
+			Box 3
+		</div>
 	</div>
 </div>
 
 <style>
-	.box {
-		view-transition-name: box;
+	.box1 {
+		view-transition-name: box1;
 	}
 	.box2 {
 		view-transition-name: box2;
 	}
 </style>
-
 ```
