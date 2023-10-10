@@ -7,7 +7,14 @@ import remarkToc from "remark-toc";
 // https://astro.build/config
 export default defineConfig({
 	output: "hybrid",
-	adapter: vercel(),
+	adapter: vercel({
+		webAnalytics: {
+			enabled: true
+		},
+		speedInsights: {
+			enabled: true
+		}
+	}),
 	integrations: [tailwind(), mdx()],
 	markdown: {
 		syntaxHighlight: "prism",
