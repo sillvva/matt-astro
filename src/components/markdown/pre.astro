@@ -5,7 +5,7 @@ import { cn } from "$/util";
 <script>
 	function copyBlock(el: Element) {
 		navigator.clipboard.writeText(el.parentNode?.parentNode?.querySelector("pre")?.innerText || "");
-		document.querySelectorAll(".copy").forEach((btn) => {
+		document.querySelectorAll(".copy, .combined-copy").forEach((btn) => {
 			btn.innerHTML = "Copy";
 			btn.classList.add("bg-gray-700");
 			btn.classList.remove("bg-green-700");
