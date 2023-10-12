@@ -76,11 +76,13 @@ export function iso<TInput extends string>(options?: {
 
 		if (!regex.test(input)) {
 			return {
-				issue: {
-					validation: "iso",
-					message: error,
-					input,
-				},
+				issues: [
+					{
+						validation: "iso",
+						message: error,
+						input
+					}
+				]
 			};
 		}
 		return { output: input };

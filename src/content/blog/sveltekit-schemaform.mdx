@@ -2,7 +2,7 @@
 title: SvelteKit SchemaForm
 description: A custom form component that validates most validation library schemas.
 date: 2023-08-24T12:01:12.000Z
-updated: 2023-09-26T22:31:28.933Z
+updated: 2023-10-12T02:20:04.069Z
 image: $/assets/images/forms.webp
 tags:
   - Component
@@ -17,7 +17,13 @@ import CombinedBlock from "$/components/markdown/combined.astro";
 
 ### Install Dependencies
 
-You will need to have a validation library installed. This component works with almost every validation library, including zod, valibot, etc. For this example, I am using valibot.
+You will need to have a schema validation library installed. This component works with almost every validation library, including [Zod](https://zod.dev/), [Valibot](https://valibot.dev/), etc. For this example, I am using Valibot.
+
+In addition, you will need to install the `decode-formdata` library to parse the `FormData` on the server side and `@decs/typeschema` to handle the schema validation. You can install these with the following command:
+
+```bash
+pnpm i decode-formdata @decs/typeschema
+```
 
 ### The Types
 
@@ -104,14 +110,58 @@ The following is a self-contained SvelteKit component which extends SvelteKit fo
 	<script lang="ts" context="module">
 		import type { Infer, InferIn, Schema } from "@decs/typeschema";
 		import { validate } from "@decs/typeschema";
+		import { decode } from "decode-formdata";
 
-		const stringify = "validated";
-
-		export async function parseFormData<TSchema extends Schema>(formData: FormData, schema: TSchema): Promise<Infer<TSchema>> {
-			const data = (formData.get(stringify) as string) || "{}";
-			const result = await validate(schema, JSON.parse(data));
+		/**
+		* Parse form data from strings to their correct types and
+		* validate them against a schema from Zod, Yup, Valibot, etc.
+		*
+		* @param formData The form data to parse
+		* @param schema The schema to validate against
+		* @param info Arrays of field names that should be parsed as arrays, booleans, dates, files or numbers
+		* @param info.arrays Field names that should be parsed as arrays
+		* @param info.booleans Field names that should be parsed as booleans
+		* @param info.dates Field names that should be parsed as dates
+		* @param info.files Field names that should be parsed as files
+		* @param info.numbers Field names that should be parsed as numbers
+		*
+		* @returns The parsed and validated data
+		*/
+		export async function parseFormData<TSchema extends Schema>(
+			formData: FormData,
+			schema: TSchema,
+			info?: Partial<{
+				/**
+				* Field names that should be parsed as arrays
+				*/
+				arrays: string[];
+				/**
+				* Field names that should be parsed as booleans
+				*/
+				booleans: string[];
+				/**
+				* Field names that should be parsed as dates
+				*/
+				dates: string[];
+				/**
+				* Field names that should be parsed as files
+				*/
+				files: string[];
+				/**
+				* Field names that should be parsed as numbers
+				*/
+				numbers: string[];
+			}>
+		): Promise<Infer<TSchema>> {
+			const formValues = decode(formData, {
+				...info,
+				dates: info?.dates?.filter((d) => formData.get(d))
+			});
+			const result = await validate(schema, formValues);
 			if ("issues" in result && result.issues.length) {
-				throw new Error(result.issues.map((i) => `❌ ${(i.path || ["form"]).join(".")}: ${i.message}`).join("\n"));
+				console.log("Value:", formValues);
+				console.error("Issues:", result.issues);
+				throw new Error([...new Set(result.issues.map((i) => i.message))].join(";\n"));
 			}
 			if (!("data" in result)) throw new Error("No data returned");
 			return result.data;
@@ -123,7 +173,7 @@ The following is a self-contained SvelteKit component which extends SvelteKit fo
 		import { beforeNavigate } from "$app/navigation";
 		import type { ActionResult } from "@sveltejs/kit";
 		import { createEventDispatcher } from "svelte";
-		import { SvelteMap, type DeepStringify, type Paths } from "@/types/util";
+		import { SvelteMap, type DeepStringify, type Paths } from "../types/util";
 
 		const dispatch = createEventDispatcher<{
 			"before-submit": null;
@@ -136,26 +186,50 @@ The following is a self-contained SvelteKit component which extends SvelteKit fo
 			};
 		}>();
 
-		let elForm: HTMLFormElement;
-		let validatedData: Infer<Schema>;
-		let changes: Array<string> = [];
-
+		/**
+		* A schema from Zod, Yup, Valibot, etc. to validate the form against
+		*/
 		export let schema: TSchema;
+		/**
+		* The data to be validated
+		*/
 		export let data: InferIn<TSchema>;
+		/**
+		* The URL to submit the form to
+		*/
 		export let action: string;
+		/**
+		* The HTTP method to use when submitting the form
+		*/
 		export let method = "POST";
+		/**
+		* Whether to reset the form after submitting
+		*/
 		export let resetOnSave = false;
-		export let saving = false;
-		export let errors = new SvelteMap<"form" | Paths<InferIn<TSchema>, 6>, string>();
 
 		let initialStructure = emptyClone(data);
 		$: currentStructure = emptyClone(data);
 
-		async function checkErrors(data: InferIn<TSchema>) {
-			errors = errors.clear();
+		let errors = new SvelteMap<"form" | Paths<typeof initialStructure, 6>, string>();
+		let elForm: HTMLFormElement;
+		let changes: Array<string> = [];
+		let saving = false;
+
+		async function checkChanges() {
+			// Check for changes
+			const formStructureIsDiff = JSON.stringify(currentStructure) !== JSON.stringify(initialStructure);
+			changes = !saving
+				? [...elForm.querySelectorAll("[data-dirty]")]
+						.map((el) => el.getAttribute("name") || "hidden")
+						.concat(formStructureIsDiff ? "form" : "")
+						.filter(Boolean)
+				: [];
+
+			// Check for errors
+			errors = new SvelteMap<"form" | Paths<typeof initialStructure, 6>, string>();
 			const result = await validate(schema, data);
 			if ("data" in result) {
-				dispatch("validate", { data: (validatedData = result.data), changes, errors, setError });
+				dispatch("validate", { data: result.data, changes, errors, setError });
 			} else if ("issues" in result) {
 				result.issues.forEach((issue) => {
 					if (!issue.path) issue.path = ["form"];
@@ -167,20 +241,8 @@ The following is a self-contained SvelteKit component which extends SvelteKit fo
 			}
 		}
 
-		function checkChanges() {
-			const formStructureIsDiff = JSON.stringify(currentStructure) !== JSON.stringify(initialStructure);
-			changes = !saving
-				? [...elForm.querySelectorAll("[data-dirty]")]
-						.map((el) => el.getAttribute("name") || "hidden")
-						.concat(formStructureIsDiff ? "form" : "")
-						.filter(Boolean)
-				: [];
-
-			checkErrors(data);
-		}
-
 		$: {
-			if (saving || (elForm && data)) {
+			if (elForm && data) {
 				checkChanges();
 				setTimeout(() => {
 					elForm.querySelectorAll(":is(input, textarea, select):not([data-listener])").forEach((el) => {
@@ -213,7 +275,7 @@ The following is a self-contained SvelteKit component which extends SvelteKit fo
 			return result;
 		}
 
-		function setError<K extends "form" | Paths<InferIn<TSchema>, 6>>(path: K, message: string) {
+		function setError<K extends "form" | Paths<typeof initialStructure, 6>>(path: K, message: string) {
 			errors = errors.set(path, message);
 		}
 	</script>
@@ -226,23 +288,26 @@ The following is a self-contained SvelteKit component which extends SvelteKit fo
 		bind:this={elForm}
 		novalidate
 		use:enhance={async (f) => {
+			if (saving) return f.cancel();
+
 			dispatch("before-submit");
 			saving = true;
 
-			await checkErrors(data);
+			// Check for errors before submitting
+			await checkChanges();
 			if (errors.size) {
 				saving = false;
 				return f.cancel();
 			}
 
-			if (validatedData && typeof validatedData === "object" && !(stringify in validatedData)) {
-				for (const key of [...f.formData.keys()]) {
-					if (key === stringify) continue;
-					if (f.formData.get(key) instanceof File) continue;
-					f.formData.delete(key);
+			// Change dates to ISO format in client to prevent timezone issues
+			f.formData.forEach((value, key) => {
+				const inputType = document.querySelector(`[name="${key}"]`)?.getAttribute("type");
+				if (inputType?.includes("date") && typeof value === "string") {
+					const d = new Date(value);
+					if (!isNaN(d.getTime())) f.formData.set(key, d.toISOString());
 				}
-				f.formData.set(stringify, JSON.stringify(validatedData));
-			}
+			});
 
 			return async ({ update, result }) => {
 				await update({ reset: resetOnSave });
@@ -256,7 +321,7 @@ The following is a self-contained SvelteKit component which extends SvelteKit fo
 			};
 		}}
 	>
-		<slot errors={errors} saving={saving} />
+		<slot {errors} {saving} />
 	</form>
 	```
 </CombinedBlock>
@@ -269,9 +334,14 @@ Using this component is very simple. In your `+page.svelte`, simply add it like 
 
 ```typescript
 // $libs/types/schemas
-import { object, string, email } from "valibot";
+import { object, string, email, number, boolean, minValue } from "valibot";
 
-export const subscribeSchema = object({ email: string([email("Must be a valid email")]) });
+export const subscribeSchema = object({
+	name: string(),
+	age: number([minValue(18, "Must be at least 18 years old")]),
+	email: string([email("Must be a valid email")]),
+	subscribe: boolean()
+});
 ```
 <CombinedBlock>
 	```html
@@ -280,17 +350,39 @@ export const subscribeSchema = object({ email: string([email("Must be a valid em
 		import SchemaForm from "$lib/components/SchemaForm.svelte";
 		import { subscribeSchema } from "$lib/types/schemas";
 
-		let data = { email: "" };
+		let data = { name: "", age: 18, email: "", subscribe: true };
 	</script>
 	```
 	```tsx
-	<SchemaForm action="?/subscribe" schema="{subscribeSchema}" data={data} let:saving let:errors resetOnSave>
-		<label>Subscribe to our newsletter</label>
-		<input name="email" bind:value="{data.email}" required />
-		{#if errors.has("email")}
-			<span class="error">{errors.get("email")}</span>
-		{/if}
-		<button disabled="{saving}">Subscribe</button>
+	<SchemaForm action="?/subscribe" schema={subscribeSchema} data={data} let:saving let:errors resetOnSave>
+		<div class="form-field">
+			<label>Name</label>
+			<input name="name" bind:value={data.name} required />
+			{#if errors.has("name")}
+				<span class="error">{errors.get("name")}</span>
+			{/if}
+		</div>
+		<div class="form-field">
+			<label>Age</label>
+			<input name="age" type="number" min="18" size="3" bind:value={data.age} required />
+			{#if errors.has("age")}
+				<span class="error">{errors.get("age")}</span>
+			{/if}
+		</div>
+		<div class="form-field">
+			<label>Email</label>
+			<input name="email" type="email" bind:value={data.email} required />
+			{#if errors.has("email")}
+				<span class="error">{errors.get("email")}</span>
+			{/if}
+		</div>
+		<div class="form-field">
+			<label>Subscribe to our newsletter</label>
+			<input name="subscribe" type="checkbox" bind:checked={data.subscribe} />
+		</div>
+		<div>
+			<button aria-disabled="{saving}">Subscribe</button>
+		</div>
 	</SchemaForm>
 	```
 </CombinedBlock>
@@ -306,8 +398,10 @@ export const actions = {
 	subscribe: async (event) => {
 		try {
 			const data = await event.request.formData();
-			const parsedData = await parseFormData(data, subscribeSchema);
-			//    ^? { email: string }
+			const parsedData = await parseFormData(data, subscribeSchema, {
+				numbers: ["age"],
+				booleans: ["subscribe"]
+			});
 			...
 		} catch (error) {
 			...
@@ -383,9 +477,9 @@ You can use this event to add custom error checking to your form. For example, i
 
 ## Some Things to Note
 
-### Field Names
+### Field Names for Nested Data
 
-Error checking will always work on submit, but for error checking to work correctly upon input changes, field names should be the data object path that corresponds to that field. For example, if your data is:
+Both error checking and server-side data parsing require field names to be the data object path that corresponds to that field. For example, if your data is:
 
 ```typescript
 {
@@ -396,38 +490,3 @@ Error checking will always work on submit, but for error checking to work correc
 ```
 
 Then the field name for `c` should be `name="a.b.{index}.c"`.
-
-### Dates and Files
-
-When the form is submitted, the FormData object is converted to a stringified JSON object and then revalidated on the server side with `parseFormData`. This may cause issues with files and dates.
-
-- **Dates:** The form data gets stringified as JSON, so in order for `parseFormData` to parse it to the correct type, your schema should coerce it back to a Date object, if that is the type you require.
-- **Files:** As with dates, when a File object is stringified it becomes an empty object like `{}`, so ensure your schema takes that into account, or have a separate schema for your backend. Files remain included in the FormData object with their field names as keys, so they can and should be handled separately.
-
-#### Examples using Valibot
-
-```typescript
-// Transforms a Date, string, or number into a Date
-export const dateSchema = transform(
-	// Input types: Date, string, number
-	union(
-		[date(), string([iso()]), number([minValue(0)])], 
-		"Must be a valid Date object, ISO string, or UNIX timestamp"
-	),
-	// Output type: Date
-	input => new Date(input)
-);
-
-// Validates against both Blob and {} types. Files are an instance of the Blob class.
-export const imageSchema = union([
-	// Validates the file shape
-	blob([
-		mimeType(["image/png", "image/jpeg", "image/gif", "image/webp"], "Must be an image"), 
-		maxSize(5 * 1024 * 1024, "Must be less than 5MB")
-	]),
-	// Fallback for stringified data
-	object({})
-]);
-```
-
-The `iso()` validator is a more powerful [custom validator](/blog/custom-valibot) that I wrote. If you'd rather use a function built-in to Valibot, I'd recommend `isoTimestamp()`.

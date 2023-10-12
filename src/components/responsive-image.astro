@@ -32,13 +32,13 @@ type Props = ImgAttributes & {
 	}[];
 };
 
-const { src, pictureClass, include2x, include3x, ...rest } = Astro.props;
+const { src, srcSet, pictureClass, include2x, include3x, ...rest } = Astro.props;
 const className = Astro.props.class;
 const loading = Astro.props.loading || "lazy";
 
-const srcSet = (
+const srcset = (
 	await Promise.all(
-		Astro.props.srcSet.map(async ({ media, size, format, ...img }) => {
+		srcSet.map(async ({ media, size, format, ...img }) => {
 			const url = src || img.src;
 			const images: string[] = [];
 
@@ -65,12 +65,12 @@ const srcSet = (
 	)
 ).sort((a, b) => a.size - b.size);
 
-const maxSize = srcSet.reduce((acc, curr) => (curr.size > acc ? curr.size : acc), 0);
-const imgSrc = srcSet.find((ss) => ss.size === maxSize);
+const maxSize = srcset.reduce((acc, curr) => (curr.size > acc ? curr.size : acc), 0);
+const imgSrc = srcset.find((ss) => ss.size === maxSize);
 if (!imgSrc) throw new Error("No image source found");
 ---
 
 <picture class={cn("h-full w-full", pictureClass)}>
-	{srcSet.map((ss) => <source srcset={ss.src} media={ss.media} type={ss.type} />)}
+	{srcset.map((ss) => <source srcset={ss.src} media={ss.media} type={ss.type} />)}
 	<img src={imgSrc.src.split(", ")[0]} loading={loading} class={className} {...rest} />
 </picture>
