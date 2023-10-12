@@ -334,7 +334,7 @@ Using this component is very simple. In your `+page.svelte`, simply add it like 
 
 ```typescript
 // $libs/types/schemas
-import { object, string, email } from "valibot";
+import { object, string, email, number, boolean, minValue } from "valibot";
 
 export const subscribeSchema = object({
 	name: string(),
