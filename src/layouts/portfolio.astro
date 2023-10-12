@@ -9,16 +9,17 @@ interface Props extends HeadProps {
 		href: string;
 		text: string;
 	};
+	noBg?: boolean;
 }
 
-const { title, description, image, articleMeta, stylesheets, backTo } = Astro.props;
+const { title, description, image, articleMeta, stylesheets, backTo, noBg } = Astro.props;
 ---
 
 <html id="app" lang="en">
 	<head>
 		<Head {title} {description} {image} {articleMeta} {stylesheets} />
 	</head>
-	<body data-theme="black" class="bg-img min-h-screen bg-cover bg-left-bottom bg-no-repeat">
+	<body data-theme="black" class={cn("min-h-screen bg-cover bg-left-bottom bg-no-repeat", noBg ? "bg-base-300" : "bg-img")}>
 		<Drawer>
 			<header class="flex h-20 w-full items-center justify-center gap-4">
 				<div class="flex w-16 justify-center">
