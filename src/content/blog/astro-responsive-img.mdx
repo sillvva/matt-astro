@@ -28,6 +28,7 @@ For more information on responsive images, see the MDN article.
 <CombinedBlock>
 ```ts
 ---
+---
 import type { ImageOutputFormat } from "astro";
 import { getImage, type ImgAttributes } from "astro:assets";
 
@@ -45,32 +46,29 @@ type MediaQueries = MinMediaQuery | MaxMediaQuery | OtherMediaQuery;
 type Props = Omit<ImgAttributes, "sizes"> & {
 	src: ImageMetadata;
 	format?: ImageOutputFormat;
-	sizes: number[];
-	media?: (
-		| `${MediaQueries} ${Size}`
-		| `(${MinMediaQuery} and ${MaxMediaQuery}) ${Size}`
-		| `(${MaxMediaQuery} or ${MinMediaQuery}) ${Size}`
-		| Size
-	)[];
+	srcSet: {
+		media?: `${MediaQueries}` | `(${MinMediaQuery} and ${MaxMediaQuery})` | `(${MaxMediaQuery} or ${MinMediaQuery})`;
+		size: number;
+	}[];
 };
 
-const { src, sizes, format, alt, id, media } = Astro.props;
+const { src, format, alt, id, srcSet } = Astro.props;
 const className = Astro.props.class;
 
-if (!sizes.length) throw new Error("No sizes provided");
-if (sizes.length !== media?.length) throw new Error("Sizes and media queries must be the same length");
+if (!srcSet.length) throw new Error("No srcSet provided");
 
-const imgSrc = await getImage({ src, width: Math.min(...sizes), format });
-const srcSet = await Promise.all(
-	sizes.map(async (size) => {
-		const image = await getImage({ src, width: size, format });
-		return `${image.src} ${size}w`;
+const imgSrc = await getImage({ src, width: Math.min(...srcSet.map((ss) => ss.size)), format });
+const srcset = await Promise.all(
+	srcSet.map(async (ss) => {
+		const image = await getImage({ src, width: ss.size, format });
+		return `${image.src} ${ss.size}w`;
 	})
 );
+const sizes = srcSet.map((ss) => (ss.media ? `${ss.media} ${ss.size}px` : `${ss.size}px`));
 ---
 ```
 ```tsx
-<img srcset={srcSet.join(", ")} sizes={media?.join(", ")} {id} {alt} src={imgSrc.src} class={className} loading="lazy" />
+<img srcset={srcset.join(", ")} sizes={sizes.join(", ")} {id} {alt} src={imgSrc.src} class={className} loading="lazy" />
 ```
 </CombinedBlock>
 
@@ -82,8 +80,11 @@ const srcSet = await Promise.all(
   src={image}
   alt={title}
   id="post-image"
-  sizes={[500, 700, 900]}
-  media={["(max-width: 500px) 500px", "(max-width: 700px) 700px", "900px"]}
+  srcSet={[
+    { media: "(max-width: 500px)", size: 500 },
+    { media: "(max-width: 700px)", size: 700 },
+    { size: 900 }
+  ]}
   class="h-full w-full object-cover object-center shadow shadow-black/50"
 />
 
@@ -91,8 +92,10 @@ const srcSet = await Promise.all(
 <ResponsiveImage
   src={post.data.image}
   alt={post.data.title}
-  sizes={[424, 640]}
-  media={["(min-width: 564px) 424px", "640px"]}
+  srcSet={[
+    { media: "(min-width: 564px)", size: 424 },
+    { size: 640 }
+  ]}
   class="h-full w-full object-cover object-center"
 />
 ```
@@ -149,13 +152,13 @@ type Props = ImgAttributes & {
 	}[];
 };
 
-const { src, pictureClass, include2x, include3x, ...rest } = Astro.props;
+const { src, srcSet, pictureClass, include2x, include3x, ...rest } = Astro.props;
 const className = Astro.props.class;
 const loading = Astro.props.loading || "lazy";
 
-const srcSet = (
+const srcset = (
 	await Promise.all(
-		Astro.props.srcSet.map(async ({ media, size, format, ...img }) => {
+		srcSet.map(async ({ media, size, format, ...img }) => {
 			const url = src || img.src;
 			const images: string[] = [];
 
@@ -182,14 +185,14 @@ const srcSet = (
 	)
 ).sort((a, b) => a.size - b.size);
 
-const maxSize = srcSet.reduce((acc, curr) => (curr.size > acc ? curr.size : acc), 0);
-const imgSrc = srcSet.find((ss) => ss.size === maxSize);
+const maxSize = srcset.reduce((acc, curr) => (curr.size > acc ? curr.size : acc), 0);
+const imgSrc = srcset.find((ss) => ss.size === maxSize);
 if (!imgSrc) throw new Error("No image source found");
 ---
 ```
 ```tsx
 <picture class={cn("h-full w-full", pictureClass)}>
-	{srcSet.map((ss) => <source srcset={ss.src} media={ss.media} type={ss.type} />)}
+	{srcset.map((ss) => <source srcset={ss.src} media={ss.media} type={ss.type} />)}
 	<img src={imgSrc.src.split(", ")[0]} loading={loading} class={className} {...rest} />
 </picture>
 ```
@@ -198,6 +201,7 @@ if (!imgSrc) throw new Error("No image source found");
 ### Example
 
 ```tsx
+// Post Cover Image
 <ResponsiveImage
   src={image}
   alt={title}
@@ -210,6 +214,7 @@ if (!imgSrc) throw new Error("No image source found");
   class="h-full w-full object-cover object-center shadow shadow-black/50"
 />
 
+// Post Card Image
 <ResponsiveImage
   src={post.data.image}
   alt={post.data.title}
@@ -220,3 +225,24 @@ if (!imgSrc) throw new Error("No image source found");
   class="h-full w-full object-cover object-center"
 />
 ```
+
+#### The Result
+
+<WrappedBlock>
+```html
+<!-- Post Cover Image -->
+<picture class="h-full w-full">
+	<source srcset="/_astro/astro.b134230a_1zSOD8.webp" media="(max-width: 500px)">
+	<source srcset="/_astro/astro.b134230a_ZoRSGi.webp" media="(max-width: 700px)">
+	<source srcset="/_astro/astro.b134230a_Z2oEC1I.webp" media="(min-width: 701px)">
+	<img src="/_astro/astro.b134230a_Z2oEC1I.webp" loading="lazy" class="h-full w-full object-cover object-center shadow shadow-black/50" alt="Astro Responsive Image" id="post-image">
+</picture>
+
+<!-- Post Card Image -->
+<picture class="h-full w-full">
+	<source srcset="/_astro/astro.b134230a_Z10wjS6.webp" media="(min-width: 564px)">
+	<source srcset="/_astro/astro.b134230a_Z24VRyK.webp" media="(max-width: 564px)">
+	<img src="/_astro/astro.b134230a_Z24VRyK.webp" loading="lazy" class="h-full w-full object-cover object-center" alt="Astro Responsive Image">
+</picture>
+```
+</WrappedBlock>
