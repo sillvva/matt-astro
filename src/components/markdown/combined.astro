@@ -1,25 +1,30 @@
 <script>
-	import { copy } from "$/assets/js/svgs";
-
 	function copyCombinedBlock(el: Element) {
 		const combinedText: string[] = [];
-		el.parentElement?.querySelectorAll("pre").forEach((pre) => {
+		el.parentElement?.parentElement?.querySelectorAll("pre").forEach((pre) => {
 			combinedText.push(pre.innerText);
 		});
 		navigator.clipboard.writeText(combinedText.join("\n\n"));
-		document.querySelectorAll(".copy").forEach((btn) => (btn.innerHTML = copy));
+		document.querySelectorAll(".copy, .combined-copy").forEach((btn) => {
+			btn.innerHTML = "Copy";
+			btn.classList.add("bg-gray-700");
+			btn.classList.remove("bg-green-700");
+		});
+		el.innerHTML = "Copied";
+		el.classList.remove("bg-gray-700");
+		el.classList.add("bg-green-700");
 		el.innerHTML = "Copied";
 	}
 
 	document.addEventListener("astro:page-load", () => {
-		document.querySelectorAll(".combined-block > .copy").forEach((btn) => {
+		document.querySelectorAll(".combined-copy").forEach((btn) => {
 			btn.addEventListener("click", () => copyCombinedBlock(btn));
 		});
 	});
 </script>
 
 <div
-	class="pre-block max-w-portfolio relative mb-4 mt-2 w-full rounded-md border border-base-300 bg-neutral-900 text-base-content"
+	class="combined-block max-w-portfolio group relative mb-4 mt-2 w-full overflow-hidden rounded-md border border-base-300 bg-neutral-900 text-base-content"
 >
 	<div class="flex items-center justify-between bg-neutral-800 p-2 text-sm">
 		<div class="flex space-x-1">
@@ -27,10 +32,10 @@
 			<div class="h-2 w-2 rounded-full bg-gray-500"></div>
 			<div class="h-2 w-2 rounded-full bg-gray-500"></div>
 		</div>
-		<button class="copy rounded-md bg-gray-700 px-2 py-1 text-sm text-white" type="button">Copy</button>
+		<button class="combined-copy rounded-md bg-gray-700 px-2 py-1 text-sm text-white" type="button">Copy</button>
 	</div>
 	<div
-		class="combined-block max-w-portfolio group relative flex max-h-[20rem] flex-col gap-4 overflow-auto rounded-lg p-4 text-sm text-base-content md:max-h-[40rem] lg:max-h-[60rem]"
+		class="max-w-portfolio relative flex max-h-[20rem] flex-col gap-4 overflow-auto rounded-lg p-4 text-sm text-base-content md:max-h-[40rem] lg:max-h-[60rem]"
 	>
 		<slot />
 	</div>
