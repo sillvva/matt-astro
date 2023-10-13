@@ -19,10 +19,10 @@ import CombinedBlock from "$/components/markdown/combined.astro";
 
 You will need to have a schema validation library installed. This component works with almost every validation library, including [Zod](https://zod.dev/), [Valibot](https://valibot.dev/), etc. For this example, I am using Valibot.
 
-In addition, you will need to install the `decode-formdata` library to parse the `FormData` on the server side and `@decs/typeschema` to handle the schema validation. You can install these with the following command:
+In addition, you will need to install the [decode-formdata](https://github.com/fabian-hiller/decode-formdata) library to parse the `FormData` on the server side and [@decs/typeschema](https://github.com/decs/typeschema) to handle the schema validation. You can install these with the following command:
 
 ```bash
-pnpm i decode-formdata @decs/typeschema
+pnpm add decode-formdata @decs/typeschema
 ```
 
 ### The Types
@@ -120,8 +120,9 @@ The following is a self-contained SvelteKit component which extends SvelteKit fo
 		* @param schema The schema to validate against
 		* @param info Arrays of field names that should be parsed as arrays, booleans, dates, files or numbers
 		* @param info.arrays Field names that should be parsed as arrays
-		* @param info.booleans Field names that should be parsed as booleans
-		* @param info.dates Field names that should be parsed as dates
+		* @param info.booleans Field names that should be parsed as booleans. "false", "0" or undefined will 
+		* be converted to false. Everything else will be converted to true.
+		* @param info.dates Field names that should be parsed as dates. Empty dates will be converted to null.
 		* @param info.files Field names that should be parsed as files
 		* @param info.numbers Field names that should be parsed as numbers
 		*
@@ -136,11 +137,12 @@ The following is a self-contained SvelteKit component which extends SvelteKit fo
 				*/
 				arrays: string[];
 				/**
-				* Field names that should be parsed as booleans
+				* Field names that should be parsed as booleans. "false", "0" or undefined will 
+				* be converted to false. Everything else will be converted to true.
 				*/
 				booleans: string[];
 				/**
-				* Field names that should be parsed as dates
+				* Field names that should be parsed as dates. Empty dates will be converted to null.
 				*/
 				dates: string[];
 				/**
@@ -153,10 +155,7 @@ The following is a self-contained SvelteKit component which extends SvelteKit fo
 				numbers: string[];
 			}>
 		): Promise<Infer<TSchema>> {
-			const formValues = decode(formData, {
-				...info,
-				dates: info?.dates?.filter((d) => formData.get(d))
-			});
+			const formValues = decode(formData, info);
 			const result = await validate(schema, formValues);
 			if ("issues" in result && result.issues.length) {
 				console.log("Value:", formValues);
@@ -173,7 +172,7 @@ The following is a self-contained SvelteKit component which extends SvelteKit fo
 		import { beforeNavigate } from "$app/navigation";
 		import type { ActionResult } from "@sveltejs/kit";
 		import { createEventDispatcher } from "svelte";
-		import { SvelteMap, type DeepStringify, type Paths } from "../types/util";
+		import { SvelteMap, type DeepStringify, type Paths } from "$/types/util";
 
 		const dispatch = createEventDispatcher<{
 			"before-submit": null;
@@ -387,7 +386,9 @@ export const subscribeSchema = object({
 	```
 </CombinedBlock>
 
-Then in your server action, you can use the `parseFormData` method from the component to parse the form data on the server and get a validated data object.
+Then in your server action, you can use the `parseFormData` method from the component to parse the form data on the server and get a validated data object. 
+
+As you can see, the third argument is an object with arrays of field names that should be parsed as arrays, booleans, dates, files or numbers. This is necessary because the `FormData` object only returns strings. For nested object data, the field names should be the data object path that corresponds to that field. See the [Field Names](#field-names-for-nested-data) section for more information.
 
 ```typescript
 // +page.server.ts
@@ -421,7 +422,7 @@ errors: The errors map
 setError: A function to set an error
 ```
 
-The `setError` function is also type-safe. It takes two arguments: the `path` to the error as a string, and the value to set at that path. The `path` parameter will have autocomplete based on a dot-separated string that corresponds to the data object path. See the [Field Names](#field-names) section for more information.
+The `setError` function is also type-safe. It takes two arguments: the `path` to the error as a string, and the value to set at that path. The `path` parameter will have autocomplete based on a dot-separated string that corresponds to the data object path. See the [Field Names](#field-names-for-nested-data) section for more information.
 
 You can use this event to add custom error checking to your form. For example, if you have a password field and a confirm password field, you can use the `validate` event to check that they match.
 
