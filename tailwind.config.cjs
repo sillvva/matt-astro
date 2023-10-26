@@ -79,6 +79,7 @@ module.exports = {
 					"error-content": "#4c0519"
 				}
 			}
-		]
+		],
+		logs: false
 	}
 };
