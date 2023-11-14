@@ -28,7 +28,7 @@
 	},
 	"devDependencies": {
 		"@total-typescript/ts-reset": "^0.5.1",
-		"daisyui": "^3.9.2",
+		"daisyui": "^4.0.4",
 		"sass": "^1.69.3"
 	},
 	"trustedDependencies": [

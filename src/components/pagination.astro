@@ -57,7 +57,7 @@ const pages = Array.from(range(first, last, 1));
 						href={url.format.replace(":page", p == 1 ? "" : p.toString())}
 						class={cn(
 							"btn join-item btn-sm sm:btn-md",
-							p === currentPage && "btn-primary",
+							p === currentPage && "btn-primary text-white",
 							Math.abs(p - currentPage) > 1 && currentPage !== 1 && currentPage !== lastPage && "hidden sm:inline-flex"
 						)}
 					>

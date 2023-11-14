@@ -1,4 +1,5 @@
 const plugin = require("tailwindcss/plugin");
+const themes = require("daisyui/src/theming/themes");
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -72,7 +73,7 @@ module.exports = {
 		themes: [
 			{
 				black: {
-					...require("daisyui/src/theming/themes")["[data-theme=black]"],
+					...themes.black,
 					primary: "rgb(0, 136, 121)",
 					secondary: "rgb(0, 187, 167)",
 					accent: "rgb(0, 85, 76)",
