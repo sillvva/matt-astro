@@ -22,5 +22,8 @@ export default defineConfig({
 	},
 	image: {
 		domains: ["slxazldgfeytirfrculz.supabase.co"]
+	},
+	experimental: {
+		contentCollectionCache: true
 	}
 });
