@@ -84,6 +84,23 @@
 }
 
 @layer utilities {
+	.scroll-fade-in {
+		@media (prefers-reduced-motion: no-preference) {
+			& {
+				scale: 0.8;
+				opacity: 0;
+				animation: scroll-fade-in linear forwards;
+				animation-timeline: view();
+				animation-range: min(50vw, 250px) min(100vw, 500px);
+			}
+			@keyframes scroll-fade-in {
+				to {
+					scale: 1;
+					opacity: 1;
+				}
+			}
+		}
+	}
 }
 
 @layer components {
@@ -140,23 +157,6 @@
 			height: 24px;
 			background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath fill='yellow' d='M12 2L1 21h22M12 6l7.53 13H4.47M11 10v4h2v-4m-2 6v2h2v-2'/%3E%3C/svg%3E")
 				no-repeat top center;
-		}
-	}
-	.scroll-fade-in {
-		@media (prefers-reduced-motion: no-preference) {
-			& {
-				scale: 0.8;
-				opacity: 0;
-				animation: scroll-fade-in linear forwards;
-				animation-timeline: view();
-				animation-range: 250px 500px;
-			}
-			@keyframes scroll-fade-in {
-				to {
-					scale: 1;
-					opacity: 1;
-				}
-			}
 		}
 	}
 }
