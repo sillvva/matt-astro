@@ -142,4 +142,21 @@
 				no-repeat top center;
 		}
 	}
+	.scroll-fade-in {
+		@media (prefers-reduced-motion: no-preference) {
+			& {
+				scale: 0.8;
+				opacity: 0;
+				animation: scroll-fade-in linear forwards;
+				animation-timeline: view();
+				animation-range: 250px 500px;
+			}
+			@keyframes scroll-fade-in {
+				to {
+					scale: 1;
+					opacity: 1;
+				}
+			}
+		}
+	}
 }

@@ -70,7 +70,7 @@ const imgSrc = srcset.find((ss) => ss.size === maxSize);
 if (!imgSrc) throw new Error("No image source found");
 ---
 
-<picture class={cn("h-full w-full", pictureClass)}>
+<picture class={cn("h-full w-full flex justify-center", pictureClass)}>
 	{srcset.map((ss) => <source srcset={ss.src} media={ss.media} type={ss.type} />)}
 	<img src={imgSrc.src.split(", ")[0]} loading={loading} class={className} {...rest} />
 </picture>
