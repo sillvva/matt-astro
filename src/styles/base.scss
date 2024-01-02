@@ -84,6 +84,23 @@
 }
 
 @layer utilities {
+	.scroll-fade-in {
+		@media (prefers-reduced-motion: no-preference) {
+			& {
+				scale: 0.8;
+				opacity: 0;
+				animation: scroll-fade-in linear forwards;
+				animation-timeline: view();
+				animation-range: min(50vw, 250px) min(100vw, 500px);
+			}
+			@keyframes scroll-fade-in {
+				to {
+					scale: 1;
+					opacity: 1;
+				}
+			}
+		}
+	}
 }
 
 @layer components {
