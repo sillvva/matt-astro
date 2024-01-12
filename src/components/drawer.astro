@@ -1,6 +1,6 @@
 ---
 import me from "$/assets/images/me3x.webp";
-import { cn, slugify } from "$/util";
+import { cn } from "$/util";
 import { Image } from "astro:assets";
 
 interface Props {
@@ -43,13 +43,9 @@ const items = [
 				</a>
 				<ul class="menu relative">
 					{
-						items.map((item) => (
-							<li>
-								<a
-									href={item.link}
-									class={cn("text-lg", Astro.url.pathname.startsWith(item.link) && "active-page font-bold")}
-									transition:name={!home ? slugify(`Menu Item ${item.label}`) : undefined}
-								>
+						items.map((item, i) => (
+							<li class={cn(Astro.url.pathname.startsWith(item.link) && "active-page")}>
+								<a href={item.link} transition:name={!home ? `menu-item-${i}` : undefined}>
 									{item.label}
 								</a>
 							</li>
@@ -62,23 +58,16 @@ const items = [
 </div>
 
 <style>
-	.menu li::before {
-		@apply hover:bg-accent focus:!bg-accent;
-		content: "";
-		position: absolute;
-		inset: 0;
-	}
-	.menu li:has(a.active-page)::before {
-		@apply bg-primary;
-		view-transition-name: active-menu-item-highlight;
-	}
-
-	.menu li a.active-page {
+	.menu li.active-page {
 		text-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+		view-transition-name: active-menu-item-highlight;
+		@apply bg-primary;
 	}
 
 	.menu li a {
+		display: block;
 		position: relative;
 		z-index: 10;
+		@apply text-lg;
 	}
 </style>
