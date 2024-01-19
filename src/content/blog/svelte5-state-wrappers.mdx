@@ -2,7 +2,7 @@
 title: Svelte 5 (Preview) State Wrappers
 description: Useful state wrappers using the new runes feature for Svelte 5
 date: 2023-09-20T19:50:04.311Z
-update: 2023-09-21T16:47:48.140Z
+update: 2024-01-12T22:51:08.584Z
 image: $/assets/images/runes.png
 tags:
   - SvelteKit
@@ -53,66 +53,6 @@ function ref<T>(initial: T) {
 	};
 }
 ```
-
-## Runify Nested Objects
-
-This utility function is useful for creating reactive objects from JSON data. The idea was first created by this [Twitter user](https://twitter.com/dimfeld/status/1704568707052159097) and modified by [@PaoloRicciuti](https://twitter.com/PaoloRicciuti). I added TypeScript types and fixed an issue with arrays and effects. Some array issues still remain.
-
-<div class="button-row">
-	[Playground](btn::/r/svelte5-runify-repl)
-</div>
-
-```ts
-export function deepRef<T extends object>(obj: T): T {
-	if(typeof obj === 'object') {
-		let rune = $state(obj);
-		for(let key in rune) {
-			rune[key] = deepRef(rune[key] as T);
-		}
-		return new Proxy(rune, {
-			get(target, prop) {
-				if (typeof target[prop] === "object" && "$" in target[prop]) {
-					return target[prop].$;
-				}
-				if(isNaN(parseInt(prop))) return Reflect.get(...arguments);
-				return target[prop];
-			},
-			set(target, prop, value) {
-				if (Array.isArray(value)) {
-					target[prop] = deepRef(value as T);
-					return true;
-				}
-				if (typeof target[prop] === "object" && "$" in target[prop]) {
-					target[prop].$ = value;
-					return true;
-				}
-				if(isNaN(parseInt(prop))) return Reflect.set(...arguments);
-				target[prop] = value;
-				return true;
-			}
-		});
-	}
-
-  let rune = $state(obj);
-  return {
-    get $() {
-      return rune;
-    },
-    set $(val) {
-      rune = val;
-    }
-  }
-}
-```
-
-### Solid.js `createMutable()` Approach
-
-`@intrnl` on the [Svelte Discord](https://discord.gg/svelte), created an alternative based on the `createMutable()` function from [Solid](https://www.solidjs.com/docs/latest/api#createmutable). This version is more complex, but it resolves some of the issues with the above version.
-
-<div class="button-row">
-	[Playground](btn::/r/svelte5-reactive-repl)
-	[Source](btn::https://gist.github.com/intrnl/9b9313184df1763c5a12cbff3d975c4a)
-</div>
 
 ## History
 
