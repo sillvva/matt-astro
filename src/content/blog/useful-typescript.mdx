@@ -2,7 +2,7 @@
 title: Useful TypeScript Helpers
 description: Useful functions and type helpers for TypeScript
 date: 2023-09-07T03:18:13.471Z
-updated: 2023-10-12T18:22:24.696Z
+updated: 2024-02-15T05:19:01.951Z
 image: $/assets/images/typescript.png
 tags:
   - TypeScript
@@ -187,3 +187,57 @@ The `Combine` type is a simple type which takes 2 object types and combines them
 <div class="grid sm:grid-cols-2 gap-4">
   <Tweet link="https://twitter.com/mattpocockuk/status/1712391832573718721" />
 </div>
+
+## SuperStruct
+
+The `SuperStruct` type is a utility type that transforms the properties of an object to an alternative provided type. It is used by [sveltekit-superforms](https://github.com/ciscoheat/sveltekit-superforms/tree/main) to transform the properties of a form schema to a type used for validation errors.
+
+```ts
+export type SuperStructArray<T extends Record<string, unknown>, Data, ArrayData = unknown> = {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	[Property in keyof T]?: T extends any
+		? T[Property] extends Record<string, unknown>
+			? SuperStructArray<T[Property], Data, ArrayData>
+			: T[Property] extends (infer A)[]
+				? ArrayData & Record<number, A extends Record<string, unknown> ? SuperStructArray<A, Data, ArrayData> : Data>
+				: Data
+		: never;
+};
+
+export type SuperStruct<T extends Record<string, unknown>, Data> = Partial<{
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	[Property in keyof T]: T extends any
+		? T[Property] extends Record<string, unknown>
+			? SuperStruct<T[Property], Data>
+			: T[Property] extends (infer A)[]
+				? A extends Record<string, unknown>
+					? SuperStruct<A, Data>
+					: Data
+				: Data
+		: never;
+}>;
+```
+
+### Example:
+
+```ts
+type LogData = {
+  id: number;
+  message: string;
+  date: string;
+  user: {
+    id: number;
+    name: string;
+  };
+  tags: string[];
+}
+
+type LogErrors = SuperStructArray<LogData, string[]>;
+
+// LogErrors["id"] => string[] | undefined
+// LogErrors["message"] => string[] | undefined
+// LogErrors["date"] => string[] | undefined
+// LogErrors["user"] => SuperStructArray<LogData["user"], string[]> | undefined
+// Exclude<LogErrors["user"], undefined>["id"] => string[] | undefined
+// etc.
+```
