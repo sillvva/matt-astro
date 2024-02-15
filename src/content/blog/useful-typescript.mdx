@@ -192,6 +192,11 @@ The `Combine` type is a simple type which takes 2 object types and combines them
 
 The `SuperStruct` type is a utility type that transforms the properties of an object to an alternative provided type. It is used by [sveltekit-superforms](https://github.com/ciscoheat/sveltekit-superforms/tree/main) to transform the properties of a form schema to a type used for validation errors.
 
+<div class="button-row">
+  [Playground](https://www.typescriptlang.org/play?#code/PTAEGEHkBEFECh4FMAeAHA9gJwC6hwJ5pKgDKArsVqTluQMY4CCWWAhgQDwAqoqOSAHYATAM6gASknrZhnUbQCWggOYAaUOUEBrQRgDuggHwbobHGw0t2BMxdABeTTr2Gjj0AG94ASBB9RABtlHABaYUVRNgAjQKRQwX5Q4MTQAAFCYlF6LEU0MKQgkOA9UNQ0YPpFMLZBAl8AbQAFLAwqQlBlUG0kAgwAM1BuAF0AfgAuIb4UARFxWvqfH1Gh5tb2gmHp2bFJaVl5JVUNLV0DY18llYoqGjpGaw4eNbakXE3Tc0tQR9svo0uPkm3BeGy2-CEuwAFMp+m8fgBKBrDQHLH6sDh2NigABkexkWDkgnIAFtom8rNtIeIpAS5ApcsdnGc3KBrpQ3ncGMwMVwmJ8LFZeVj3JMRaixV9LpNEgA3N4AbngAF8lch0Ng8JkSDdObRuTwqXN8QcGcp1MzXMYBWx3E4mmxcIo2IFON4-GBCikwhEorF4okZsllCQMkRCjk8gUioIcCUMGV0JVqqEFo0Wq93p1BN1egMhsNgUbdmmrqsM2DizT9oTDoyLacrQClmjddR9YxnhW3oRhjbm0tgaCe5sq6AYYI4VhEcjUSsmGPaaajg2XOcBy32bcOzhOPzQOKW4OD1Kj5KLNLQHLFSqjGr-NxYKRuKREIoSZhcF5QLAAI7kF0NFgdBpDwZVQH6VoSVAAAiDIMAsQJQm1bJcnyYAAAskECKhRBgtVtVAAAZDAVCxDxvFATphBlUlySwJUqJJQoohUJBJjNVRGNAYRzHY0BOJUbjyFEN5JkoqjqNoskb0kq82GYjiV241V4CoiwVFEJT62RJVlUQQiSJUWBWGwUQFycNsuQeXlOCMrENEE5E73gfwqIAPVGeBDNIkzWiwUQACEPCsnc7NIhyBJXZylTc0BPIM8MhkKZgPGA4hOz-ADXSMvyzKYBoYMUYQYL7KKdK2AAfZxhCQfoQ2EIwXLihLCO4FLgqcdLQM4LKXXC4zTICwLCuK0rHOiqqarqhqmtisAPK8+AZEEBQ+CGrTiN8jbOq8NTNFErBxP2qjismQq8unZjRFYpBSv2-TVSAA)
+  [Source](https://github.com/ciscoheat/sveltekit-superforms/blob/main/src/lib/superStruct.ts)
+</div>
+
 ```ts
 export type SuperStructArray<T extends Record<string, unknown>, Data, ArrayData = unknown> = {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
