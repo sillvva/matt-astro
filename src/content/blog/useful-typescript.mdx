@@ -2,7 +2,7 @@
 title: Useful TypeScript Helpers
 description: Useful functions and type helpers for TypeScript
 date: 2023-09-07T03:18:13.471Z
-updated: 2023-10-12T18:22:24.696Z
+updated: 2024-02-22T16:41:00.968Z
 image: $/assets/images/typescript.png
 tags:
   - TypeScript
@@ -62,103 +62,6 @@ declare global {
   [YouTube](embed::https://www.youtube.com/watch?v=q_2irZO4SS8)
 </Collapsible>
 
-## Set Nested Value
-
-Below is a `setValue` function which takes an object, a path, and a value. The path is a string of dot-separated keys. The function should set the value at the given path. The path parameter will have autocomplete and the value parameter will be required to be of the same type as the property at that path. See the playground for examples. This function works very similarly to [lodash.set](https://lodash.com/docs/4.17.15#set), but with stronger type safety.
-
-The [SchemaForm](/blog/sveltekit-schemaform) component for SvelteKit is also using a modified version of this function.
-
-<div class="button-row">
-  [Playground](btn::https://www.typescriptlang.org/play?ts=4.2.3#code/C4TwDgpgBAkgJgDwDwBUA0UDSA+KBeLKCBYCAOzgGcoBrCEAewDMoUoB+VgbUwF0oAXAFgAUFChkArgFsARhABOREuSq16zVh0LFSFagAMAJAG8pcxQF8D2lF3PyF-ARIgA3RYNceFo0aEgoACkGAEsyJEwMAAVcAkxlPTVKYAVwgHMoAB8JGUcOUXFoxNVqFLSyTJyHT3ZCqGMTTEtTACJWkv0oYs52r1aAOlaWk2jrepcyd09J6YUAbj8RAOhohXd8KHs5jAAGDABGDAAmDABmDAAWDABWDAA2DAB2DAAODABOQ-36g6OoA6nAEXAHXAF3AGPAEvAHvAFfKDHfZQAao3ZcXi8JYrboAQ2AAAtKKgMAARTpqGpKAgHXZxLak-i6UpbKY+ficNkzLTMroMWQAKwgAGNgAUxFATFsEuF1IwWCheABadguBK85KpDLZXIWJR1CXiRrNGw5ELhSIxfFE1A8XgxdZuLiM7DYeriWY+eqWLh0eWsZxQdpLAD0IaVEcjUejUei1qgblxABtJNAcUqoClcQpgDG8-mC4Wi8XC9jwKtrQA1ZOpkndCnUOOE4noKCXV2bYoawymcJMTyYeiWAa9sj9pQAJQgKXGEs4U5SDbxzaQ8GQrcHIGwVzdc+XBOrKYgq8Qdc326gC+Au493kUE1gp9bsVD4ZL0abBITNbT5agGdUf932AkDQNLERRCYSQyFFUIGDITMIGAQ9a3qNhu0lLY-RccoMl4FxcTIEAoEsNB6i7FQuk-Fsd1EbAAAp+QFFxWzAa0XGiDBEyPDiqx-OtYgASklepQhYeiVk0NjCXwPACFaXDKlaYSTHdKBhXgxcwAAGVCRcCGkgkBkoMAk1CYB6MGZTFkNdTNLFJNcRSTdNh0vTgAGMAGDAejBJs8RxA0sgtLCMhSGpKA3JSAZ1jgSRhQgei1PEejcWFYUZEkRzgAYBQXClLgEBwrVKnwqBCOI0j1MkBR1jClCIGKioql1RxhLwXBVNsgKoDEqBUvSzLstyrgMtq8hkJ-fg5IIaC4AgJhwggOBBOSnrysG6QsvxEaxrqyaj2myVLH89bxHWYAaoQtKMq24aFFGmr9oa3hTp60i1qYtS-LUvqJPLTRHOc+goAAQjkoM5oWpa4GUkTusi0Lwq4IHgE3I7uNTN6Aouq6oCY7HLG9epcYUBCCdEImIJEcJwqYNLoAAIQYfFSSQ3FQiTaguvEWQWeASh8rUvn8QOJqMmxkXgGOSY8kUU6TvqSgCVCMBBagABBWrcRAJAAGUVbAXcqdpxR6YSqADdV+HxGV1WADlcWkRrMxK9JKdEILFyltngA5rmXGZ1n2c56gCB5qApfViPef5sWg0cuBiNkI9WjI2ypZlgF0-ED6JTttWXC4NSpQLx3nZcVpHOFBQGEoCAOip8QsRERWRC9sVJDAOB8WWq3C8tw2MU2LgI7Lp2XdaP2woUGRWkpluwzApU9fihLKEoKCkyTYjcRTtMGEQsVCWgTHf0CJhcqgE-I4gJMGAAd0i61DCjgYpYOAwMAMAvKAMZeAF5lEPXA6qYkoSh9iHLmOcGhvw-l-eoU80iEXSEmBuogfoiBAQ1cBsdg5+1DjAhShtKADF2GneoXce6kDgP3SgXBdgt0wTiIOwBqKdhfkgVhvt-aUF3GGa+f5WHsPklHDoORiGq0oOIoMcC44yNaHI-ExwZE-xISOMwcsFDWB1GoqRGiqTDnHs7Aw-ghH82og1DhhIGpcP5jwwhUBhEv34SGcQLCLEvysQQRSLUqQ6i6gInqH9xaVBskEgKmdZZ6nCW4ywOp+4YlfMWRmABRbSAB5AA6rAPWrAAASqTcl6wAKpFMARUypVTqkRiWNgn8uDI72KgZQGBei1ZkOMobcuEAEESinuZQioRhTzxEH5KAAiGA0B1qIEMAAqKAUEYLADgghepR47H4N4RgSRHTdhdIdhPVoDFkpMUDs0gh0Dn6Ekrr-TpxiG5cR-KE92YzzlbNDlAOZIYliiCAA)
-  [Source](btn::https://stackoverflow.com/questions/67607069/typescript-set-value-type-of-a-deep-nested-object-path)
-</div>
-
-<div class="warning-box">
-  The sort of recursive conditional types with template literal type manipulation being done in `Paths<T>` and `PathValue<T, P>` are taxing on the compiler (you can easily get explicit recursion limit warnings, or worse, exponentially long compile times) and have various edge cases.
-</div>
-
-```typescript
-type Idx<T, K> = K extends keyof T ? T[K] :
-  number extends keyof T ? K extends `${number}` ? T[number] : never : never
-
-type Join<K, P> = K extends string | number ?
-  P extends string | number ?
-  `${K}${"" extends P ? "" : "."}${P}`
-  : never : never;
-
-type Prev = [never, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
-  11, 12, 13, 14, 15, 16, 17, 18, 19, 20, ...0[]]
-
-type Paths<T, D extends number = 10> = [D] extends [never] ? never : T extends object ?
-  { [K in keyof T]-?: K extends string | number ?
-    `${K}` | Join<K, Paths<T[K], Prev[D]>>
-    : never
-  }[keyof T] : ""
-
-type PathValue<T, P extends Paths<T, 4>> = P extends `${infer Key}.${infer Rest}`
-  ? Rest extends Paths<Idx<T, Key>, 4>
-  ? PathValue<Idx<T, Key>, Rest>
-  : never
-  : Idx<T, P>
-
-function setValue<
-  T extends { [key: string]: any },
-  P extends Paths<T, 4>
->(obj: T, path: P, value: PathValue<T, P>) {
-  if (typeof path === "string") {
-    const pList = path.split(".");
-    const lastKey = pList.pop();
-    const pointer = pList.reduce(
-      (accumulator: { [x: string]: any }, currentValue: string | number) => {
-        if (accumulator[currentValue] === undefined)
-          accumulator[currentValue] = {};
-        return accumulator[currentValue];
-      },
-      obj
-    );
-    if (typeof lastKey !== "undefined") {
-      pointer[lastKey] = value;
-      return obj;
-    }
-  }
-  return obj;
-}
-```
-
-### Update: Resolve Recusive Type Issue
-*Added 2023-09-15*
-
-To resolve the depth issue, you can use the following type to extend `PathValue` and make it safer and more performant.
-
-<div class="button-row">
-  [Playground](btn::https://www.typescriptlang.org/play?#code/C4TwDgpgBAkgJgDwDwBUA0UDSA+KBeLKCBYCAOzgGcoBrCEAewDMoUoB+VgbUwF0oAXACgoUMgFcAtgCMIAJyIlyVWvWasOhYqQrUABgBIA3hJnyAvns0oup2XP4CxEAG7zBzt3IDcQoaEgoACkGAEsyJEwMAAVcAkxFHRVKYDlwgHMoAB8xKXsOEShoxOVqFLSyTJy7d3ZCwyNMc2MAIhaS3SLNNo8WgDoW5qNoy0KnMld3ccmfPwDoaLlXfChbGYwABgwARgwAJgwAZgwAFgwAVgwANgwAdgwADgwATh2twu3dqG2D7+Pvs7fS7fG7fe7fJ7fV5QPZbKB9BEbLi8Xi+fzgBYAQ2AAAtKKgMAARDoqGoKAjbDZxVaE-jaUqrCZeficJlTDT0zoMaQAKwgAGNgAVREZVglwqpGCwULwALTsJwJTnJVIZbK5MwKOqiUQNJpWHIhcKRGLYvGoHi8GJLFxcWnYbCFUTTLyFcxcOhS1iOKBtNEAen9UEJEDAuKgYDkDFIgtCDDIAEJ0YEADKhSShYAhsM4pCFdD5lPkdLhgiXfPZ8PK6jiMg0MgMADuZGRK2RQmpKErOK4AHIADbF3G9ulKTooIuVXGFVkzMYcscqbl8wUzqBGJ06nhQCWe9QypxpjNZ0O4i18DAToc4jBcWv1ptkDAIvpd0843iOnVQczztjVqAAEE5DkTEQCQcImHcABVL9NGA0DwKPTNuyQaDL0nEsb1We8G2bZ8ETfHNPzgpwUDReYijNAA1TF+3ECACS6ADojNfF0G+KkMOvFZKWpYoAIaSD3EwehzD6YxhIUAAlCAUlGABIThZJSElqFY3F8XgZBkJPHMmKvKccWwDBRJAEzOMdBSlKo3FaPoxjtKQXTUI4wysIssyLJU4ArIUl15CEfzYEQZz0xQ98DMw3ELNiNEmFrWN4ygSgIGAeyGLzUR-0XahRQ9egnHKDJeCcTEyBAH80EKATcts80OPOR1sAACmXMiMDAM0nGiDAXDohiepogbGI42IAEp10KUIWBa+Z1C60s8AIFpisqFpJo3b9+XjVSwDTVSCEWnE+koMB+0zFr+g23xtt2oV+0xFIzJWfbQhSPowAYMAWvG26dR2sg9rCMhSHJCMDuAPoljgcR+QgFrN1EFrMX5fkpHER7gAYOQnHyhAitVSpSqgcrKvMDB0ZA8h0pGwmKiqDV7EmvBcC278dRmqAUbRjGsZxrgqaWUGMogfhloIWs4AgJhwggOBxqRjnUfRyRMexAWhZp0XxfXcx-o5qAlmAcQ5DIUnebV-m5EF03hdphzUSVimleXTc-s3Lm5oxdRHue+goATZbfSlmW5bgDapsNr7wjBrg-eAMzdf6hyDZ1Y3TfN5c09-URc6NtLM6gbOhF-IRAdUiYUnllZ2cxPHN2kJwuCV9nDf5BvDe-OAnA2JW8+dzdeDdUvy-uqAEBWVKHYYlqq9IOAMBaTE+mkPoNj6fk+gjzYPb8PwgA)
-  [Source](btn::https://twitter.com/tannerlinsley/status/1702760813981999411)
-</div>
-
-```ts
-type LimitDepth<
-  T,
-  TLength = 5,
-  TDepth extends unknown[] = []
-> = TDepth['length'] extends TLength
-  ? never
-  : T extends (...args: infer Args) => infer R 
-  ? (...args: LimitDepth<Args, TLength, [unknown, ...TDepth]>) => LimitDepth<R, TLength, [unknown, ...TDepth]>
-  : T extends object
-  ? {
-      [K in keyof T]: LimitDepth<T[K], TLength, [unknown, ...TDepth]>
-    }
-  : T extends Array<infer U>
-  ? Array<LimitDepth<U, TLength, [unknown, ...TDepth]>>
-  : T;
-
-type PathValue<T, P extends Paths<T, 10>, TLength = 10> = P extends `${infer Key}.${infer Rest}`
-	? Rest extends Paths<Idx<LimitDepth<T, TLength>, Key>, 10>
-		? PathValue<Idx<LimitDepth<T, TLength>, Key>, Rest>
-		: never
-	: Idx<LimitDepth<T, TLength>, P>;
-```
-
 ## Prettify
 
 The `Prettify` type is a simple type which takes an object type with intersections and combines them to make them easier to read.
@@ -184,6 +87,332 @@ The `Combine` type is a simple type which takes 2 object types and combines them
   [Playground](btn::https://www.typescriptlang.org/play?#code/PTAEGEHkBEFECh4BcCeAHApqACgJw0kgJYBmKAPACoB8oAvKAN7yigDaA0qEQHagDWGFAHsSoSgF0AXOM4SA3PAC+oAGRMli5OizhhAWwBGvDFQCMAGnEAmWgzwFiZciyavWnbn0EixACkozUAAfGwBKaXEzORCbOUVWFXVsAENcYhSAG3M1G2p4ai0QcVgAZUpSxCJ9NGF0plBYAEcAVyyrWAAPTABjJFAVElwDUAAiAAEkYSQsgFpUTABnHtwiNCRgAAsMTMxcRdGtBaxKHQBBejdWfBSAE2EeTJRQHhT9DBlFpFWeAHME0A3e6PZ53W74RaLT7fXj-ZRHHTiHQAIUujEBGDuDyeLzeH1AXx+-1AaE2D3xhNhAwRmFAACUMIsWpl+gw9EYTFRzlZTphkYVEMdGt0MH0MLc0a4gdjnq93tCiQDpSDQGCIYsAPwK2EA0nkrUEmF-RSaQWIpCM1nC3pIcjNNrZBlMlkdEVi27UAVAA)
 </div>
 
+```ts
+type Prettify<T> = {
+  [K in keyof T]: T[K];
+} & {};
+
+type Combine<T1, T2> = Prettify<
+  {
+    [K in keyof (T1 | T2)]: T1[K] | T2[K];
+  } & Partial<T1 & T2>
+>;
+```
+
 <div class="grid sm:grid-cols-2 gap-4">
   <Tweet link="https://twitter.com/mattpocockuk/status/1712391832573718721" />
 </div>
+
+## SuperStruct
+
+The `SuperStruct` type is a utility type that transforms the properties of an object to an alternative provided type. It is used by [sveltekit-superforms](https://github.com/ciscoheat/sveltekit-superforms) to transform the properties of a form schema to a type used for validation errors.
+
+<div class="button-row">
+  [Playground](btn::https://www.typescriptlang.org/play?#code/PTAEGEHkBEFECh4FMAeAHA9gJwC6hwJ5pKgDKArsVqTluQMY4CCWWAhgQDwAqoqOSAHYATAM6gASknrZhnUbQCWggOYAaUOUEBrQRgDuggHwbobHGw0t2BMxdABeTTr2Gjj0AG94ASBB9RABtlHABaYUVRNgAjQKRQwX5Q4MTQAAFCYlF6LEU0MKQgkOA9UNQ0YPpFMLZBAl8AbQAFLAwqQlBlUG0kAgwAM1BuAF0AfgAuIb4UARFxWvqfH1Gh5tb2gmHp2bFJaVl5JVUNLV0DY18llYoqGjpGaw4eNbakXE3Tc0tQR9svo0uPkm3BeGy2-CEuwAFMp+m8fgBKBrDQHLH6sDh2NigABkexkWDkgnIAFtom8rNtIeIpAS5ApcsdnGc3KBrpQ3ncGMwMVwmJ8LFZeVj3JMRaixV9LpNEgA3N4AbngAF8lch0Ng8JkSDdObRuTwqXN8QcGcp1MzXMYBWx3E4mmxcIo2IFON4-GBCikwhEorF4okZsllCQMkRCjk8gUioIcCUMGV0JVqqEFo0Wq93p1BN1egMhsNgUbdmmrqsM2DizT9oTDoyLacrQClmjddR9YxnhW3oRhjbm0tgaCe5sq6AYYI4VhEcjUSsmGPaaajg2XOcBy32bcOzhOPzQOKW4OD1Kj5KLNLQHLFSqjGr-NxYKRuKREIoSZhcF5QLAAI7kF0NFgdBpDwZVQH6VoSVAAAiDIMAsQJQm1bJcnyYAAAskECKhRBgtVtVAAAZDAVCxDxvFATphBlUlySwJUqJJQoohUJBJjNVRGNAYRzHY0BOJUbjyFEN5JkoqjqNoskb0kq82GYjiV241V4CoiwVFEJT62RJVlUQQiSJUWBWGwUQFycNsuQeXlOCMrENEE5E73gfwqIAPVGeBDNIkzWiwUQACEPCsnc7NIhyBJXZylTc0BPIM8MhkKZgPGA4hOz-ADXSMvyzKYBoYMUYQYL7KKdK2AAfZxhCQfoQ2EIwXLihLCO4FLgqcdLQM4LKXXC4zTICwLCuK0rHOiqqarqhqmtisAPK8+AZEEBQ+CGrTiN8jbOq8NTNFErBxP2qjismQq8unZjRFYpBSv2-TVSAA)
+  [Source](btn::https://github.com/ciscoheat/sveltekit-superforms/blob/main/src/lib/superStruct.ts)
+</div>
+
+```ts
+export type SuperStructArray<T extends Record<string, unknown>, Data, ArrayData = unknown> = {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	[Property in keyof T]?: T extends any
+		? NonNullable<T[Property]> extends Record<string, unknown>
+			? SuperStructArray<NonNullable<T[Property]>, Data, ArrayData>
+			: NonNullable<T[Property]> extends (infer A)[]
+				? ArrayData &
+						Record<
+							number,
+							NonNullable<A> extends Record<string, unknown>
+								? SuperStructArray<NonNullable<A>, Data, ArrayData>
+								: Data
+						>
+				: Data
+		: never;
+};
+
+export type SuperStruct<T extends Record<string, unknown>, Data> = Partial<{
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	[Property in keyof T]: T extends any
+		? NonNullable<T[Property]> extends Record<string, unknown>
+			? SuperStruct<NonNullable<T[Property]>, Data>
+			: NonNullable<T[Property]> extends (infer A)[]
+				? NonNullable<A> extends Record<string, unknown>
+					? SuperStruct<NonNullable<A>, Data>
+					: Data
+				: Data
+		: never;
+}>;
+```
+
+### Example
+
+```ts
+type LogData = {
+  id: number;
+  message: string;
+  date: string;
+  user: {
+    id: number;
+    name: string;
+  };
+  tags: string[];
+}
+
+type LogErrors = SuperStructArray<LogData, string[]>;
+
+// LogErrors["id"] => string[] | undefined
+// LogErrors["message"] => string[] | undefined
+// LogErrors["date"] => string[] | undefined
+// LogErrors["user"] => SuperStructArray<LogData["user"], string[]> | undefined
+// Exclude<LogErrors["user"], undefined>["id"] => string[] | undefined
+// etc.
+```
+
+## FormPathLeaves
+
+The `FormPathLeaves` type is a utility type that takes an object type and returns a union of all the leaf paths of the object. It has an optional second parameter to specify the type (ex. `Date` or `number`) of paths to return. This is also used by [sveltekit-superforms](https://github.com/ciscoheat/sveltekit-superforms).
+
+<div class="button-row">
+  [Playground](btn::https://www.typescriptlang.org/play?#code/PTAEGEHkBEFECgAuBPADgU1AIQK4EsAbRASQDtIAjAK3QGNEBnUAXlGgENFMAfUAZXSIAPDlIBrUgHsA7qQB8oXgDFC6ANzx46AB6pJAJ0SgUGUAEECBANLpkDIQBUFrB6B1dSAEyauA-KDFbSQAzUFcALlBSdAA3dH0NeBA3BgI8UkQAWk88BnYKAnRM6O0stOjQAAETdAZafTxULNryxGApTJ1UNNo8LPZSZC1dAyMa0AAFPFoxBzR0RwAaUCs3UvQvJgtrW3snZzC1j29QAG9QAG0xUHSVgF1IgeRQAF9QfwcLqzvQSOi4hKaZIOAAWAzETEQklAIMQiFQDHCIE8sQAdFDgAQcL0BhRaMBRHhJKRMjVMgBbeIAc3SVMy6VJ8zqDSamQAnOwCMM9IZjPNQABZanoACqpCJpEcB1O8AAkF8bqRzJYbHYpQ9JtNZvMlis5BoXolgAAqY3wUDG0AAGVyjFAnIIoFQnBBTFuA1AkmodCM7CYDEQDVIVPttFotQYBgYqPNxuA3NGfNMSgM5ImLscRw2Jy9NHoyzmplY-3iBwDQZDADI5XxA7T04gQbrzsFCFx9JEAOQOztqT3UMyoDBeP6xeJ952Nru9pPoSKFzAvfVA02x622p0ut1Kj25n32-114Oh8MMSP6BjLCg4IzEgjPaR9EFRYmZPf0Jh+k8RvAFTCofRJAwQw8FqGMLX4PByUIdh9GMaFG0wQp2Dibd7RfFFjH0dB0GWPBQmQSQcFAAhJEka5OGMEFMHfX1PywnDQHLbFEBwbDwLjBNeXGFN9DTF0rXQFDakzdxsyYWiC35Ysx30MsjyrGsFIbJsHGWFs23iLtkNQmdc0HYdPFHAEJxdac+xqed+SXI1Vwgm0A03Rs0N3b16APJiFO-M8oyvG9PVIe9QEfRsXxJWjP0-MMfz-J1AOAxBQOjNcLEjRVaCxFFIWo0AAH14kAi9QFbdACE8YqDH7PM7QGcrYP0dg7A4+MukTHjUxUwThIYAB1J9YH0Qq9izTYqp9KSiyiWT5IrUBq1lWsKxU5tis0jtQE7HTaj0gch2zLt8sGqMZ0nEFzNnKzTBslczXsjcHXtQbGpcpVaI88taW889kotFqRm4-leP4xszCetVXDE0bJLCaSpoBGbPvmxb6wzNSzlWogtI2+rnp2qgDP2uHxycs6NpnSyYau5ckH5cBiVoTghDlFSRpOD7g0WOUADl3FZw8K3gA4AAMABJThUl4xZZyGTk7Tt3jJ34NtRTtJdOHnSheIXEnGZHgxUyAmglJhWBlWVW0x9buzBhh5d4TahN0xRscsXs5X0vaR082beBLQFZVOyJ2apDRZQp0QJBkJVfdkg0df5YhgiZ2VDcS4kmBlpg9apA2jfTznZQmbDyszgIglCbPc7T0hLxrHBqAL0ENgL2ACAYTAZIBAuADVORwDvQAjqRZEFlhQFT42LiL9BPB+Uu+Hrqg5X8Cf04uTsak7Of1lGv25VlD5qNIffIl7rFMFL1ea-Xze7n3g+wiP+-jPiOVIlb9v49MSuMzlCGd5zG5RABcr4ZwAVnZSLpQFjzNubNaXYeyh1lB7QyL9-YBzMmTJBFM-ahxeKPFwfNsD4CIGQSg1UGDL1AInIQoDlidgtu2Ts9Ctq22dt2V2yxQHr1OlvOQb9DilwABTpGCPEUAIoACUFw76ygPvfWUvAaF0I2ig7MzDva0mWHTUgDNhDcM7Lwu4XC87X07GorwfDlh+wLPwuRcilFJxUQwtaGjrYNTsHbF2BANEGKMdY2StiFG8CEVzYkXMcCWHyIUIQIoFCl1ogouR-gf6NmTvYjJYTSARKiX+WJcgC4ZPsbAopcjGFYwMeU-QW8kGlOQbtVB49TEMHXhYzwNSkkZMDqAUWpw-Eui3i8C4YtSA4HJBQeILw7ja06fYimBjb61KKfgupdiimRGUc0+hVS3GsK8Rwnxyxen9MbIM4ZpxRnjMmdMgJXcwhyEkSfM4CiFS3FgKUBq9AhDbFVHsApmjgxyA1FknJBBokLE+N8eJ4Cxr0CSb4WZjj0l1LobMuR5iGnqMKXU4O2LSk6L0bQ5pPCBnGKadXFpGL8ae3aXcApaLZQ2IZZC2RpTQCgDWUU3gILIlgrySy6FxwmAiNIGIuCUiZGdIRXUxR1CnFbI2js+hONPHsJ7No+mjMTkgi3ssKw-ybFhC+HStFISeW5JiXEohQ8o6SplckuVyL7WovtfYlxltmEMrdSqth9t1VerkQSrVxLDGkqOWLKwQyRljImfoKZQt6WurkUypNsoWUBs5XUjZScA0py2bm91TC8Uyodt1fZ-rU1Bv0SG-xPSI1RouTG65Cbi11JTUmkUGbHkyrNeE3l4L8lEMSa6lJkC0m5vNXyy1iak0lNdVUyIlTXF3CWfatpi6Q1tI6amjBU4ICaurRSklpyyW9Mjecy5sb43Lh3fMkNizc0rNdZm0paDu3rNNY65xSrvEaKrUSo9oaT16oNYEo1ULP2pKbF6ydA6BWtoyXOupC7yWT0LfEbdrr12obXlSgmliV0Bu6f+7Vuq9SrtKXewDD7XVPrZRypJ2aAPG22a4lhjttpqs4fu3RwbAO1v1bc+IBZjU3rkUM95gZ2BfJ+bsKUyxg5AsSK1AGyYOougXLqCYRDFNj206XQIhFQgOCoZ8CYsjIj6ZhZe1+DqTNyMs0QoWqIxaiPEQAJVqIgLW99-BAxUpp2D-L-meYDJyxzpdek2bjXcVzoqPNeZ8xk-wQWYlOCISKsVEjpGsvsX59TjZNMimWKFxAL7IjnHSDETkeBPC5VOgARks32Bc85XgKIizC3pbm4Lnri1l0rSXksrCIYZkIoBUsQpfQ-fzGmdSTalMakrXnpuRFm4VnUaNSvlcmE5-r4jI0udOD10Ag2hZSpGwZ8uE2+0Wqm7M-LfEAvzdu1OqbS3TsrdmZEBb6XhEnYlblopj3gYgiK8tsLaKKuKmq2kOrp0ABMzXKZzkOHR+xnWhU9POSdyNdwjsnbOw9y71mm36DRR8DLAOcsMpB89jAsSIdlYZdDqrNX4cugAMzI9a2jqHu3IvRquXG879qUuvbg4K8SoBMviMB16-wnbXWs9ILD2r9WXQABYefzDa+j9ZAuYVjdCL96bw3TdTyB6+w3WOotk6G2Lm72T+3Bap-F8VNPU2K9zSrtXHPGwAFYdcYD1wG337ONeNgAGzB9R64fXDmbfS7lhTsI-OrNY9k+DM3DqhT6CpKKcUxJFvmZZ+jNncPI8ggAOyx714kYIoh6ASiYoIM+-cmbsv-ljzztADCeCELiwe4hh7yE5uyjP0v1sgi6qheT5pQDdyIdPzTaMJj8LkEI3M85ljdImMsWH-dT6SOeey-CMuajjdOiwZgrAABEwc78n5lOy9lfea5GFQA5IwrBTqogYN0H0EInfqiE-hoK-qAO-o5GCgGKqGPF-raKiHoKgEIpIuAa-lAZ-pIOkO2PAd-qiMXNiOgEIgvhAUItJrQGMpEpwAYNDhcNoEHApBqE8K8MsJQYNBsIgO3qjsHM7NFifswAoC-hAa-ufuQWGFQWClCPoBcOwdhBkNwT8LfqwKICiK2NEJ4I8iISIRQZITQTIXIZwYoTAoaKQSIdhKxPoDuBIeSNQdIbIWxPIVwX3OgIRtoS8OPiIbmGYWgWYWIZfqEDAYgHAQAIS36gB36qHoDqEzxP6n4iF6A4HxAXBBGqhKGgCH7qBmHsoWFsSvTUDoHsr4JFEL65FWFVQGhAhgAOCwB8AOB8CaDjBWiSBUgcCIDsAwIL61Z-Bk7oGUhnjsAF6MEVjoGeCcCo5tFZHso4Dtz6C+AVZ+FGRRC9FmGkDsCUjDG0joGmHsrtFUiIgApUgyJxyaCYEkQtFtHsCRDNGtGcAdGmxdFLENaeH9F5BDERF36eFjFcCjjSBsDjGoGeEzFYxmzdGgDPFyhrEbERFKANS6K5B34L4eEL57EHGSr4I0ymA3Gz61BjzT44n2A3GXHLjJDsoAB6CKTRLRESwuBJeJBWM+HGhJFxdx1iZOJJYA5JCK8A7czh58QipEtx7Rywd+3x6AnxU0fxkxqBaBQAA)
+  [Source](btn::https://github.com/ciscoheat/sveltekit-superforms/blob/main/src/lib/stringPath.ts)
+</div>
+
+```ts
+type BuiltInObjects = Date | Set<unknown> | File;
+
+export type AllKeys<T> = T extends T ? keyof T : never;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type PickType<T, K extends AllKeys<T>> = T extends { [k in K]: any } ? T[K] : never;
+
+// Thanks to https://dev.to/lucianbc/union-type-merging-in-typescript-9al
+export type MergeUnion<T> = {
+	[K in AllKeys<T>]: PickType<T, K>;
+};
+
+/**
+ * Lists all paths in an object as string accessors.
+ */
+export type FormPath<T extends object, Type = never> = string &
+	StringPath<T, { filter: 'all'; objAppend: never; path: ''; type: Type }>;
+
+/**
+ * List paths in an object as string accessors, but only with non-objects as accessible properties.
+ * Similar to the leaves in a node tree, if you look at the object as a tree structure.
+ */
+export type FormPathLeaves<T extends object, Type = never> = string &
+	StringPath<T, { filter: 'leaves'; objAppend: never; path: ''; type: Type }>;
+
+/**
+ * List paths in an object as string accessors, but only with non-objects as accessible properties.
+ * Also includes the _errors field for objects and arrays.
+ */
+export type FormPathLeavesWithErrors<T extends object, Type = never> = string &
+	StringPath<T, { filter: 'leaves'; objAppend: '_errors'; path: ''; type: Type }>;
+
+/**
+ * List all arrays in an object as string accessors.
+ */
+export type FormPathArrays<T extends object, Type = never> = string &
+	StringPath<T, { filter: 'arrays'; objAppend: never; path: ''; type: Type }>;
+
+type Concat<
+	Path extends string,
+	Next extends string
+> = `${Path}${Path extends '' ? '' : '.'}${Next}`;
+
+type StringPathOptions = {
+	filter: 'arrays' | 'leaves' | 'all';
+	objAppend: string | never;
+	path: string;
+	type: unknown | never;
+};
+
+type If<
+	Options extends StringPathOptions,
+	Pred extends keyof StringPathOptions,
+	Subj,
+	Then,
+	Else = never,
+	Value = unknown
+> = Options[Pred] extends Subj
+	? Options['type'] extends never
+		? Then
+		: Value extends Options['type']
+			? Then
+			: never
+	: Else;
+
+type StringPath<
+	T extends object,
+	Options extends StringPathOptions = {
+		filter: 'all';
+		objAppend: never;
+		path: '';
+		type: never;
+	}
+> = T extends BuiltInObjects
+	? If<Options, 'filter', 'leaves' | 'all', Options['path']>
+	: T extends (infer U)[]
+		?
+				| If<Options, 'objAppend', string, Concat<Options['path'], Options['objAppend']>, never, T>
+				| If<Options, 'filter', 'arrays' | 'all', Options['path'], never, T>
+				| (NonNullable<U> extends object
+						? StringPath<
+								NonNullable<U>,
+								{
+									filter: Options['filter'];
+									objAppend: Options['objAppend'];
+									path: `${Options['path']}[${number}]`;
+									type: Options['type'];
+								}
+							>
+						: If<Options, 'filter', 'leaves' | 'all', `${Options['path']}[${number}]`, never, T>)
+		: {
+				[K in Extract<AllKeys<T>, string>]: NonNullable<T[K]> extends object
+					?
+							| If<
+									Options,
+									'objAppend',
+									string,
+									Concat<Options['path'], Options['objAppend']>,
+									never,
+									T[K]
+							  >
+							| NonNullable<T[K]> extends (infer U)[]
+						?
+								| If<Options, 'filter', 'arrays' | 'all', Concat<Options['path'], K>, never, T[K]>
+								| (NonNullable<U> extends unknown[]
+										? If<
+												Options,
+												'filter',
+												'arrays' | 'all',
+												Concat<Options['path'], `${K}[${number}]`>,
+												never,
+												T[K]
+											>
+										: If<
+												Options,
+												'filter',
+												'leaves' | 'all',
+												Concat<Options['path'], `${K}[${number}]`>,
+												never,
+												U
+											>)
+								| (NonNullable<U> extends object
+										? StringPath<
+												NonNullable<U>,
+												{
+													filter: Options['filter'];
+													objAppend: Options['objAppend'];
+													path: Concat<Options['path'], `${K}[${number}]`>;
+													type: Options['type'];
+												}
+											>
+										: never)
+						:
+								| If<Options, 'filter', 'all', Concat<Options['path'], K>, never, T[K]>
+								| StringPath<
+										NonNullable<T[K]>,
+										{
+											filter: Options['filter'];
+											objAppend: Options['objAppend'];
+											path: Concat<Options['path'], K>;
+											type: Options['type'];
+										}
+								  >
+					: If<Options, 'filter', 'leaves' | 'all', Concat<Options['path'], K>, never, T[K]>;
+			}[Extract<AllKeys<T>, string>];
+
+export type FormPathType<T, P extends string> = P extends keyof T
+	? T[P]
+	: P extends number
+		? T
+		: P extends `.${infer Rest}`
+			? FormPathType<NonNullable<T>, Rest>
+			: P extends `${number}]${infer Rest}`
+				? NonNullable<T> extends (infer U)[]
+					? FormPathType<U, Rest>
+					: { invalid_path1: P; Type: T }
+				: P extends `${infer K}[${infer Rest}`
+					? K extends keyof NonNullable<T>
+						? FormPathType<NonNullable<T>[K], Rest>
+						: FormPathType<T, Rest>
+					: P extends `${infer K}.${infer Rest}`
+						? K extends keyof NonNullable<T>
+							? FormPathType<NonNullable<T>[K], Rest>
+							: NonNullable<T> extends (infer U)[]
+								? FormPathType<U, Rest>
+								: { invalid_path2: P; Type: T }
+						: P extends `[${infer K}].${infer Rest}`
+							? K extends number
+								? T extends (infer U)[]
+									? FormPathType<U, Rest>
+									: { invalid_path3: P; Type: T }
+								: P extends `${number}`
+									? NonNullable<T> extends (infer U)[]
+										? U
+										: { invalid_path4: P; Type: T }
+									: P extends keyof NonNullable<T>
+										? NonNullable<T>[P]
+										: P extends `${number}`
+											? NonNullable<T> extends (infer U)[]
+												? U
+												: { invalid_path5: P; Type: T }
+											: { invalid_path6: P; Type: T }
+							: P extends ''
+								? T
+								: P extends AllKeys<T>
+									? MergeUnion<T>[P]
+									: { invalid_path7: P; Type: T };
+```
+
+### Example
+
+```ts
+type LogData = {
+  id: number;
+  message: string;
+  date: Date;
+  user: {
+    id: number;
+    name: string;
+  };
+  tags: string[];
+}
+
+type LogLeaves = FormPathLeaves<LogData>;
+//   ^? "id" | "message" | "date" | "user.id" | "user.name" | `tags[${number}]`
+type LogNumberLeaves = FormPathLeaves<LogData, number>;
+//   ^? "id" | "user.id"
+```
+
+### Set Nested Value
+
+Below is a `setValue` function which takes an object, a path, and a value. The path is a string of dot-separated keys. The function should set the value at the given path. The path parameter will have autocomplete and the value parameter will be required to be of the same type as the property at that path. See the playground for examples. This function works very similarly to [lodash.set](https://lodash.com/docs/4.17.15#set), but with stronger type safety.
+
+```typescript
+function setValue<
+  T extends Record<string, unknown>,
+  P extends FormPathLeaves<T>,
+  V extends FormPathType<T, P>
+>(obj: T, path: P, value: V) {
+  if (typeof path === "string") {
+    const pList = path.split(".");
+    const lastKey = pList.pop();
+    const pointer = pList.reduce(
+      (accumulator: { [x: string]: any }, currentValue: string | number) => {
+        if (accumulator[currentValue] === undefined)
+          accumulator[currentValue] = {};
+        return accumulator[currentValue];
+      },
+      obj
+    );
+    if (typeof lastKey !== "undefined") {
+      pointer[lastKey] = value;
+      return obj;
+    }
+  }
+  return obj;
+}
+```
