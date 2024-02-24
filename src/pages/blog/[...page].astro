@@ -37,7 +37,7 @@ export const getStaticPaths = (async ({ paginate }) => {
 	const allPosts: PaginatedTagPosts[] = [
 		...tags.flatMap((tag) =>
 			paginate(
-				posts.filter((p) => p.data.tags.includes(tag)).sort((a, b) => sorter(b.data.date, a.data.date)),
+				posts.filter((p) => p.data.tags.includes(tag)).sort((a, b) => sorter(b.data.updated || b.data.date, a.data.updated || a.data.date)),
 				{
 					pageSize: perPage,
 					params: {
@@ -52,7 +52,7 @@ export const getStaticPaths = (async ({ paginate }) => {
 			)
 		),
 		...paginate(
-			posts.sort((a, b) => sorter(b.data.date, a.data.date)),
+			posts.sort((a, b) => sorter(b.data.updated || b.data.date, a.data.updated || a.data.date)),
 			{
 				pageSize: perPage,
 				props: {
@@ -117,15 +117,28 @@ const {
 						<div class="card-body p-4">
 							<div class="flex flex-col">
 								<h2 class="card-title text-base font-medium text-theme-heading wrap-balance">{post.data.title}</h2>
-								{post.data.date && (
-									<span class="mb-2 text-sm text-theme-faded underline decoration-dotted underline-offset-2">
-										{formatDate(post.data.date)}
-									</span>
-								)}
 							</div>
 							<p class="text-sm">{post.data.description}</p>
 						</div>
-						<figure class="h-40" transition:name={slugify(`image ${post.slug}`)}>
+						<figure class="h-40 relative" transition:name={slugify(`image ${post.slug}`)}>
+							<div class="absolute top-0 right-0 bg-black/60 px-2 py-1 flex flex-col rounded-bl-md">
+								{post.data.date && (
+									<span class="text-sm">
+										Published: 
+										<span class="text-theme-faded underline decoration-dotted underline-offset-2">
+											{formatDate(post.data.date)}
+										</span>
+									</span>
+								)}
+								{post.data.updated && (
+									<span class="text-sm">
+										Updated: 
+										<span class="text-theme-faded underline decoration-dotted underline-offset-2">
+											{formatDate(post.data.updated)}
+										</span>
+									</span>
+								)}
+							</div>
 							{typeof post.data.image === "string" ? (
 								post.data.image.match(/v=([^&]+)/)?.[1] ? (
 									<Image
