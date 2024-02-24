@@ -15,12 +15,43 @@ tags:
 
 Aside from cold starts, often the slowest part of an application is fetching data. Caching data requests can speed up loading times. Using an internal store is one way to do it, or you can use a Redis cache. These functions can make working with a Redis cache extremely simple.
 
+If the Redis connection is lost or not ready, the functions will use the callback function on each call instead as a fallback to prevent the application from crashing.
+
 ```typescript
 // $lib/server/cache.ts
 import { REDIS_URL } from "$env/static/private";
 import { Redis } from "ioredis";
 
-const redis = new Redis(REDIS_URL);
+let redis: Redis;
+let status = "";
+function connect() {
+	if (["ready", "connect", "connecting", "reconnecting"].includes(status)) return;
+	status = "connecting";
+	try {
+		redis = new Redis(REDIS_URL, {
+			retryStrategy: function (times) {
+				status = redis.status || "";
+				const delay = Math.min(times * 2000, 10000);
+				if (times >= 10) return;
+				return delay;
+			}
+		});
+	} catch (e) {
+		console.error("Redis connection failed:", e);
+	}
+}
+
+connect();
+
+async function readyCheck<T>(callback: () => Promise<T>) {
+	status = redis?.status || "";
+	if (!redis || !["ready"].includes(status)) {
+		console.log("Redis status:", status);
+		connect();
+		return await callback();
+	}
+	return;
+}
 
 /**
  * A cache key as an array of strings with at least one element.
@@ -30,12 +61,15 @@ export type CacheKey = [string, ...string[]];
 /**
  * Retrieves a cache from Redis or caches the results of a callback function.
  * @template TReturnType The return type of the callback function.
- * @param {() => Promise<TReturnType>} callback The callback function to cache.
- * @param {CacheKey} key The cache key as an array of strings.
- * @param {number} [expires=259200] The cache expiration time in seconds. Defaults to 3 days.
- * @returns {Promise<TReturnType>} The cached result of the callback function.
+ * @param [callback] The callback function to cache.
+ * @param [key] The cache key as an array of strings.
+ * @param [expires=259200] The cache expiration time in seconds. Defaults to 3 days.
+ * @returns The cached result of the callback function.
  */
 export async function cache<TReturnType>(callback: () => Promise<TReturnType>, key: CacheKey, expires = 3 * 86400) {
+	const check = await readyCheck(async () => await callback());
+	if (check) return check;
+
 	const rkey = key.join("|");
 	const currentTime = Date.now();
 
@@ -59,54 +93,78 @@ export async function cache<TReturnType>(callback: () => Promise<TReturnType>, k
 /**
  * Retrieves caches from Redis or caches the results of a callback function for each key.
  * @template TReturnType The return type of the callback function.
- * @param {(key: CacheKey) => Promise<TReturnType>} callback The callback function to cache.
- * @param {Array<CacheKey>} key The cache keys as an array of arrays of strings.
- * @param {number} [expires=259200] The cache expiration time in seconds. Defaults to 3 days.
- * @returns {Promise<Array<TReturnType>>} An array of cached results of the callback function for each key.
+ * @param [callback] The callback function to cache. The hits parameter is an array of cached results of the callback function for each key.
+ * @param [keys] The cache keys as an array of arrays of strings.
+ * @param [expires=259200] The cache expiration time in seconds. Defaults to 3 days.
+ * @returns An array of cached results of the callback function for each key.
  */
-export async function mcache<TReturnType>(
-	callback: (key: CacheKey) => Promise<TReturnType>,
-	key: Array<CacheKey>,
+export async function mcache<TReturnType extends object>(
+	callback: (keys: CacheKey[], hits: TReturnType[]) => Promise<Array<{ key: CacheKey; value: TReturnType }>>,
+	keys: CacheKey[],
 	expires = 3 * 86400
 ) {
-	const keys = key.map((t) => t.join("|"));
+	const check = await readyCheck(() => callback(keys, []).then((t) => t.map((t) => t.value)));
+	if (check) return check;
+
+	const joinedKeys = keys.map((t) => t.join("|"));
 
 	// Get the caches from Redis
-	const caches = await redis.mget(keys);
+	const caches = await redis.mget(joinedKeys);
+	const hits = caches.filter(Boolean) as string[];
 
-	const results: Array<TReturnType> = [];
+	if (hits.length < keys.length) {
+		// Call the mass callback function
+		const results = await callback(
+			keys,
+			hits.map((t) => {
+				const cache: { data: TReturnType; timestamp: number } = JSON.parse(t);
+				return cache.data;
+			})
+		);
+
+		// Update the results in the caches array
+		for (const result of results) {
+			const k = result.key.join("|");
+			const index = joinedKeys.indexOf(k);
+			if (index >= 0) caches[index] = JSON.stringify({ data: result.value, timestamp: Date.now() });
+		}
+	}
+
+	const multi = redis.multi();
+	const results: TReturnType[] = [];
 	for (let i = 0; i < caches.length; i++) {
 		const currentTime = Date.now();
 		const value = caches[i];
 		if (value) {
-			const cache: { data: TReturnType; timestamp: number } = JSON.parse(value);
+			try {
+				const cache: { data: TReturnType; timestamp: number } = JSON.parse(value);
 
-			// Update the timestamp and reset the cache expiration
-			cache.timestamp = currentTime;
-			redis.setex(keys[i], expires, JSON.stringify(cache));
+				// Update the timestamp and reset the cache expiration
+				cache.timestamp = currentTime;
+				multi.setex(joinedKeys[i], expires, JSON.stringify(cache));
 
-			// Add the cached result to the results array
-			results[i] = cache.data;
-			continue;
+				// Add the cached result to the results array
+				results.push(cache.data);
+				continue;
+			} catch (e) {
+				console.error(e);
+			}
 		}
-
-		// Call the callback function and cache the result
-		const result = await callback(key[i]);
-		redis.setex(keys[i], expires, JSON.stringify({ data: result, timestamp: currentTime }));
-
-		// Add the result to the results array
-		results[i] = result;
 	}
 
+	multi.exec();
+
+	// Return the results
 	return results;
 }
 
 /**
  * Invalidates Redis caches based on an array of keys.
- * @param {Array<CacheKey | "" | false | null | undefined>} keys The cache keys as an array of arrays of strings. Empty strings, false, null, and undefined are ignored.
- * @returns {void}
+ * @param [keys] The cache keys as an array of arrays of strings. Empty strings, false, null, and undefined are ignored.
  */
 export function revalidateKeys(keys: Array<CacheKey | "" | false | null | undefined>) {
+	if (!redis || !["ready"].includes(redis.status)) return connect();
+
 	const cacheKeys = keys.filter((t) => Array.isArray(t) && t.length).map((t) => (t as string[]).join("|"));
 	if (cacheKeys.length) redis.del(...cacheKeys);
 }
