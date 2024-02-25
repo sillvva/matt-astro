@@ -394,8 +394,12 @@ type LogData = {
 
 type LogLeaves = FormPathLeaves<LogData>;
 //   ^? "id" | "message" | "date" | "user.id" | "user.name" | `tags[${number}]`
+type LogStringLeaves = FormPathLeaves<LogData, string>;
+//   ^? "message" | "user.name" | `tags[${number}]`
 type LogNumberLeaves = FormPathLeaves<LogData, number>;
 //   ^? "id" | "user.id"
+type LogDateLeaves = FormPathLeaves<LogData, Date>;
+//   ^? "date"
 ```
 
 ### Set Nested Value
