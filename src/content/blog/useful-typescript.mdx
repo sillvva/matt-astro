@@ -103,36 +103,35 @@ type Combine<T1, T2> = Prettify<
   <Tweet link="https://twitter.com/mattpocockuk/status/1712391832573718721" />
 </div>
 
-## SuperStruct
+## Type Guards
 
-The `SuperStruct` type is a utility type that transforms the properties of an object to an alternative provided type. It is used by [sveltekit-superforms](https://github.com/ciscoheat/sveltekit-superforms) to transform the properties of a form schema to a type used for validation errors.
+### IsAny
+
+You can (ab)use the fact that any is both a subtype and a supertype of almost everything (except for never). So the inner [(Distributive) Conditional Type](https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types) resolves to a Union of `true | false (=boolean)` instead of either of them.
 
 <div class="button-row">
-  [Playground](btn::https://www.typescriptlang.org/play?#code/PTAEGEHkBEFECh4FMAeAHA9gJwC6hwJ5pKgDKArsVqTluQMY4CCWWAhgQDwAqoqOSAHYATAM6gASknrZhnUbQCWggOYAaUOUEBrQRgDuggHwbobHGw0t2BMxdABeTTr2Gjj0AG94ASBB9RABtlHABaYUVRNgAjQKRQwX5Q4MTQAAFCYlF6LEU0MKQgkOA9UNQ0YPpFMLZBAl8AbQAFLAwqQlBlUG0kAgwAM1BuAF0AfgAuIb4UARFxWvqfH1Gh5tb2gmHp2bFJaVl5JVUNLV0DY18llYoqGjpGaw4eNbakXE3Tc0tQR9svo0uPkm3BeGy2-CEuwAFMp+m8fgBKBrDQHLH6sDh2NigABkexkWDkgnIAFtom8rNtIeIpAS5ApcsdnGc3KBrpQ3ncGMwMVwmJ8LFZeVj3JMRaixV9LpNEgA3N4AbngAF8lch0Ng8JkSDdObRuTwqXN8QcGcp1MzXMYBWx3E4mmxcIo2IFON4-GBCikwhEorF4okZsllCQMkRCjk8gUioIcCUMGV0JVqqEFo0Wq93p1BN1egMhsNgUbdmmrqsM2DizT9oTDoyLacrQClmjddR9YxnhW3oRhjbm0tgaCe5sq6AYYI4VhEcjUSsmGPaaajg2XOcBy32bcOzhOPzQOKW4OD1Kj5KLNLQHLFSqjGr-NxYKRuKREIoSZhcF5QLAAI7kF0NFgdBpDwZVQH6VoSVAAAiDIMAsQJQm1bJcnyYAAAskECKhRBgtVtVAAAZDAVCxDxvFATphBlUlySwJUqJJQoohUJBJjNVRGNAYRzHY0BOJUbjyFEN5JkoqjqNoskb0kq82GYjiV241V4CoiwVFEJT62RJVlUQQiSJUWBWGwUQFycNsuQeXlOCMrENEE5E73gfwqIAPVGeBDNIkzWiwUQACEPCsnc7NIhyBJXZylTc0BPIM8MhkKZgPGA4hOz-ADXSMvyzKYBoYMUYQYL7KKdK2AAfZxhCQfoQ2EIwXLihLCO4FLgqcdLQM4LKXXC4zTICwLCuK0rHOiqqarqhqmtisAPK8+AZEEBQ+CGrTiN8jbOq8NTNFErBxP2qjismQq8unZjRFYpBSv2-TVSAA)
+	[Playground](btn::https://www.typescriptlang.org/play?#code/C4TwDgpgBAkgzgQQHYgDwBUB8UC8UBGA9oQDYQCGSUEAHsBEgCZxQAU61dDzUSEAbhABOUAPxRgQgK7QAXFABm5EnAgBKMROlzFy1QG4AsACgToSFAS5YiFKkohMJgPTOo7gHqiz4aACFreGQ0JCkAW3xhJ2NXdygvHwsAYUDbNCkkAGskQgB3JGjYz29jc2gAEVTg1D5BIUK3YsToAFEqu35CAEtGBriE0t8oADF2tABvAF8+psGLAHEx1EJ8ACsIAGNgGfiSsqgACSWMxggFLr5el0bd5tgl0JISHa8gA)
+  [Source](btn::https://stackoverflow.com/a/77451367/70894)
+</div>
+
+```ts
+type IsAny<T> = boolean extends (T extends never ? true : false) ? true : false;
+```
+
+## SuperStructArray
+
+The `SuperStructArray` type is a utility type that transforms the properties of an object to an alternative provided type. It is used by [sveltekit-superforms](https://github.com/ciscoheat/sveltekit-superforms) to transform the properties of a form schema to a type used for validation errors.
+
+<div class="button-row">
+  [Playground](btn::https://www.typescriptlang.org/play?#code/PTAEBUFEGV2goeBLAtgBwPYCcAuoDeokAjgK4CGANgDREAeaApgMZ4C+oAZlhiqAEQABHBhxUAtDgCeTAM7MsSNDmAALRpSZZZ-ANyJpTUABkMAcwAi5MaAC8BeKFBIAJgC5QAO1IoARoyx9JxRGWVlyM0YPWRxFTzMg0BdrKNAYuITHUFJZAI98LKdXD28-AMSnT3IQ6NikeMS2RLEzWVqMgG0AXX02AxlGE3NILB5tO1BoUi1oWNJWAB5TS2tyWnT6s26APn0QJ1AAPQB+fqNwULx7SAYWHAWSCkol4dHsWQ7+V34u9br47qgAA+2U8LkYnHqjBc2128H2ThOiGYGE8MVAATGbSGZhGWImBScOTyDgOzncoE+eOwoBCYQijB+WT6TUQ+wAwgB5CyQM6DACSsgAgp4pAtwNsJr4MBhKIxyJ4MXQcIwwbJQAAKcBKlVqryMABuAVAx1Ac0GHk4VFyAEoTWasKQLVxrYx9PBGAxsHhDIMpjM5ottZ7dS51QAlFjYFwLDbxWikTwAa08GAA7p5trQrGJJfYAArkXBIKgLAoASA6+Z4WmkzkVScYUgwnAgXQ8gpFYolOtVYZdlFy8HL5dNADlUWPSJRKORfHLxVWawFpF1JSG+xGo1gY3GzAnk6mM9thyPTf6ArNHYsJ54pzO5wvwEuMLWpGvs6sTyPyx5b-fZ3nRhF2rV8V3fddlU3TV6k4Y0hRtbpTzPUB-2nQCFyFSDQy3FEd1jf591BFN00zZCUIvLAr3me40IfICFiwz9c3I39QBzchyI8DjTxKQ1yngNg4Q9L1cDNAZJmmS9AxwIVRnIbtez1SM8N3QiDxI49mLWUA5KwBSOImRNNMzAlhxfN961ARtm1bcAumODthVFcVsOgq1B0YU9TWfUC3y6JT+xU6MCIyDSjzIn9zykqiZL0hSQOXXB3202h4qkDjvxHDxfKS1dAvVDVYPgxCunI010sMgAyUBgvw0p-CwNKCtq7c1LC4iIslaKA2vWT5LFIVUt0gbMtAbivy49jVl4-UjUCQTdCAA)
   [Source](btn::https://github.com/ciscoheat/sveltekit-superforms/blob/main/src/lib/superStruct.ts)
 </div>
 
 ```ts
-export type SuperStructArray<T extends Record<string, unknown>, Data, ArrayData = unknown> = {
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	[Property in keyof T]?: T extends any
-		? NonNullable<T[Property]> extends Record<string, unknown>
-			? SuperStructArray<NonNullable<T[Property]>, Data, ArrayData>
-			: NonNullable<T[Property]> extends (infer A)[]
-				? ArrayData &
-						Record<
-							number,
-							NonNullable<A> extends Record<string, unknown>
-								? SuperStructArray<NonNullable<A>, Data, ArrayData>
-								: Data
-						>
-				: Data
-		: never;
-};
+type IsAny<T> = boolean extends (T extends never ? true : false) ? true : false;
 
 export type SuperStruct<T extends Record<string, unknown>, Data> = Partial<{
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	[Property in keyof T]: T extends any
+	[Property in keyof T]: IsAny<T> extends false
 		? NonNullable<T[Property]> extends Record<string, unknown>
 			? SuperStruct<NonNullable<T[Property]>, Data>
 			: NonNullable<T[Property]> extends (infer A)[]
@@ -142,6 +141,16 @@ export type SuperStruct<T extends Record<string, unknown>, Data> = Partial<{
 				: Data
 		: never;
 }>;
+
+export type SuperStructArray<T extends Record<string, unknown>, Data, ArrayData = unknown> = {
+	[Property in keyof T]?: IsAny<T> extends false
+		? T[Property] extends Record<string, unknown>
+			? SuperStructArray<T[Property], Data, ArrayData>
+			: T[Property] extends (infer A)[]
+				? ArrayData & Record<number, A extends Record<string, unknown> ? SuperStructArray<A, Data, ArrayData> : Data>
+				: Data
+		: never;
+};
 ```
 
 #### Example
@@ -158,7 +167,7 @@ type LogData = {
   tags: string[];
 }
 
-type LogErrors = SuperStructArray<LogData, string[]>;
+type LogErrors = SuperStruct<LogData, string[]>;
 
 // LogErrors["id"] => string[] | undefined
 // LogErrors["message"] => string[] | undefined
