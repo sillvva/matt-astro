@@ -123,15 +123,14 @@ type IsAny<T> = boolean extends (T extends never ? true : false) ? true : false;
 The `SuperStructArray` type is a utility type that transforms the properties of an object to an alternative provided type. It is used by [sveltekit-superforms](https://github.com/ciscoheat/sveltekit-superforms) to transform the properties of a form schema to a type used for validation errors.
 
 <div class="button-row">
-  [Playground](btn::https://www.typescriptlang.org/play?#code/PTAEBUFEGV2goeBLAtgBwPYCcAuoDeokAjgK4CGANgDREAeaApgMZ4C+oAZlhiqAEQABHBhxUAtDgCeTAM7MsSNDmAALRpSZZZ-ANyJpTUABkMAcwAi5MaAC8BeKFBIAJgC5QAO1IoARoyx9JxRGWVlyM0YPWRxFTzMg0BdrKNAYuITHUFJZAI98LKdXD28-AMSnT3IQ6NikeMS2RLEzWVqMgG0AXX02AxlGE3NILB5tO1BoUi1oWNJWAB5TS2tyWnT6s26APn0QJ1AAPQB+fqNwULx7SAYWHAWSCkol4dHsWQ7+V34u9br47qgAA+2U8LkYnHqjBc2128H2ThOiGYGE8MVAATGbSGZhGWImBScOTyDgOzncoE+eOwoBCYQijB+WT6TUQ+wAwgB5CyQM6DACSsgAgp4pAtwNsJr4MBhKIxyJ4MXQcIwwbJQAAKcBKlVqryMABuAVAx1Ac0GHk4VFyAEoTWasKQLVxrYx9PBGAxsHhDIMpjM5ottZ7dS51QAlFjYFwLDbxWikTwAa08GAA7p5trQrGJJfYAArkXBIKgLAoASA6+Z4WmkzkVScYUgwnAgXQ8gpFYolOtVYZdlFy8HL5dNADlUWPSJRKORfHLxVWawFpF1JSG+xGo1gY3GzAnk6mM9thyPTf6ArNHYsJ54pzO5wvwEuMLWpGvs6sTyPyx5b-fZ3nRhF2rV8V3fddlU3TV6k4Y0hRtbpTzPUB-2nQCFyFSDQy3FEd1jf591BFN00zZCUIvLAr3me40IfICFiwz9c3I39QBzchyI8DjTxKQ1yngNg4Q9L1cDNAZJmmS9AxwIVRnIbtez1SM8N3QiDxI49mLWUA5KwBSOImRNNMzAlhxfN961ARtm1bcAumODthVFcVsOgq1B0YU9TWfUC3y6JT+xU6MCIyDSjzIn9zykqiZL0hSQOXXB3202h4qkDjvxHDxfKS1dAvVDVYPgxCunI010sMgAyUBgvw0p-CwNKCtq7c1LC4iIslaKA2vWT5LFIVUt0gbMtAbivy49jVl4-UjUCQTdCAA)
+  [Playground](btn::https://www.typescriptlang.org/play?#code/PTAEBUFEGV2goeBLAtgBwPYCcAuoDeokAjgK4CGANgDREAeaApgMZ4C+oAZlhiqAEQABHBhxUAtDgCeTAM7MsSNDmAALRpSZZZ-ANyJpTUABkMAcwAi5MaAC8BeKFBIAJgC5QAO1IoARoyx9JxRGWVlyM0YPWRxFTzMg0BdrKNAYuITHUFJZAI98LKdXD28-AMSnT3IQ6NikeMS2RLEzWVqMgG0AXX02AxlGE3NILB5tO1BoUi1oWNJWAB5TS2tyWnT6s26APn0QJ1AAPQB+fqNwULx7SAYWHAWSCkol4dHsWQ7+V34u9br47qgAA+2U8LkYnHqjBc2128H2ThOiGYGE8MVAATGbSGZhGWImBScOTyDgOzncoE+eOwoBCYQijB+WT6TUQ+wAwgB5CyQRCMBjYPCGQZTGZzRbgDF0HCMMGyUAAJRY2BcCw28VopE8AGtPBgAO6eba0KxibYTAAK5FwSCoCwKAEh9qFKPUcOIXEhwr5KIxxJ5+e7XQHQMIBvJFMpxC63cA9dGGK7mEh3eRPFJ4A6OhaeFppM5PKBtYwpBhOBAuh5JYHZS55WmMw6HccINncwFpF0pTK5YrlVhVeqzJqdXrDdtM02W6KArMsPN7uA2xg81JfqBTeQJ02HVXl6uuzXewAKeqcAKgACCAEpupOp1fu7X5UqUQO1f9h6DdQajfeHzOWBzguCyXiaqzbjuu4bqs-4eJuk4lIwABu5TwGwcLwPymC4KAwqTNMs7ijgl6jOQUgLNW0rPn2b6Dp+I4-uO4FiLQpFYORm4TFqTFGgSmbOrIwbup63q+v6gbiMGgxhnIChKO6MaeCo8bYUmKbiA2mb7h2UgFkWJZlhWxxVk+vZaQ+S45iuumHtRvaviqH4ZIxY5-ju06EUBxHseRlE6bga4sWsV5kVIm6QdBVntoFdk9nWoCnp455YFet5dP+La+eFqygAAZLRTmlP4WBsWZCWOe+Q6ub+5qeWK86sNloHBWxYURaA8EQXBMFiIhXgoWhTRAA)
   [Source](btn::https://github.com/ciscoheat/sveltekit-superforms/blob/main/src/lib/superStruct.ts)
 </div>
 
 ```ts
-type IsAny<T> = boolean extends (T extends never ? true : false) ? true : false;
-
 export type SuperStruct<T extends Record<string, unknown>, Data> = Partial<{
-	[Property in keyof T]: IsAny<T> extends false
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	[Property in keyof T]: T extends any
 		? NonNullable<T[Property]> extends Record<string, unknown>
 			? SuperStruct<NonNullable<T[Property]>, Data>
 			: NonNullable<T[Property]> extends (infer A)[]
@@ -143,7 +142,8 @@ export type SuperStruct<T extends Record<string, unknown>, Data> = Partial<{
 }>;
 
 export type SuperStructArray<T extends Record<string, unknown>, Data, ArrayData = unknown> = {
-	[Property in keyof T]?: IsAny<T> extends false
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	[Property in keyof T]: T extends any
 		? T[Property] extends Record<string, unknown>
 			? SuperStructArray<T[Property], Data, ArrayData>
 			: T[Property] extends (infer A)[]
