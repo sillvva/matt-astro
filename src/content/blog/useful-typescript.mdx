@@ -118,9 +118,9 @@ You can (ab)use the fact that any is both a subtype and a supertype of almost ev
 type IsAny<T> = boolean extends (T extends never ? true : false) ? true : false;
 ```
 
-## SuperStructArray
+## SuperStruct
 
-The `SuperStructArray` type is a utility type that transforms the properties of an object to an alternative provided type. It is used by [sveltekit-superforms](https://github.com/ciscoheat/sveltekit-superforms) to transform the properties of a form schema to a type used for validation errors.
+The `SuperStruct` type is a utility type that transforms the properties of an object to an alternative provided type. It is used by [sveltekit-superforms](https://github.com/ciscoheat/sveltekit-superforms) to transform the properties of a form schema to a type used for validation errors.
 
 <div class="button-row">
   [Playground](btn::https://www.typescriptlang.org/play?#code/PTAEBUFEGV2goeBLAtgBwPYCcAuoDeokAjgK4CGANgDREAeaApgMZ4C+oAZlhiqAEQABHBhxUAtDgCeTAM7MsSNDmAALRpSZZZ-ANyJpTUABkMAcwAi5MaAC8BeKFBIAJgC5QAO1IoARoyx9JxRGWVlyM0YPWRxFTzMg0BdrKNAYuITHUFJZAI98LKdXD28-AMSnT3IQ6NikeMS2RLEzWVqMgG0AXX02AxlGE3NILB5tO1BoUi1oWNJWAB5TS2tyWnT6s26APn0QJ1AAPQB+fqNwULx7SAYWHAWSCkol4dHsWQ7+V34u9br47qgAA+2U8LkYnHqjBc2128H2ThOiGYGE8MVAATGbSGZhGWImBScOTyDgOzncoE+eOwoBCYQijB+WT6TUQ+wAwgB5CyQRCMBjYPCGQZTGZzRbgDF0HCMMGyUAAJRY2BcCw28VopE8AGtPBgAO6eba0KxibYTAAK5FwSCoCwKAEh9qFKPUcOIXEhwr5KIxxJ5+e7XQHQMIBvJFMpxC63cA9dGGK7mEh3eRPFJ4A6OhaeFppM5PKBtYwpBhOBAuh5JYHZS55WmMw6HccINncwFpF0pTK5YrlVhVeqzJqdXrDdtM02W6KArMsPN7uA2xg81JfqBTeQJ02HVXl6uuzXewAKeqcAKgACCAEpupOp1fu7X5UqUQO1f9h6DdQajfeHzOWBzguCyXiaqzbjuu4bqs-4eJuk4lIwABu5TwGwcLwPymC4KAwqTNMs7ijgl6jOQUgLNW0rPn2b6Dp+I4-uO4FiLQpFYORm4TFqTFGgSmbOrIwbup63q+v6gbiMGgxhnIChKO6MaeCo8bYUmKbiA2mb7h2UgFkWJZlhWxxVk+vZaQ+S45iuumHtRvaviqH4ZIxY5-ju06EUBxHseRlE6bga4sWsV5kVIm6QdBVntoFdk9nWoCnp455YFet5dP+La+eFqygAAZLRTmlP4WBsWZCWOe+Q6ub+5qeWK86sNloHBWxYURaA8EQXBMFiIhXgoWhTRAA)
@@ -169,12 +169,27 @@ type LogData = {
 
 type LogErrors = SuperStruct<LogData, string[]>;
 
+// Converts each property to string[] | undefined
 // LogErrors["id"] => string[] | undefined
-// LogErrors["message"] => string[] | undefined
-// LogErrors["date"] => string[] | undefined
+
+// Converts objects into a partial with each property as string[] | undefined
+// LogErrors["user"] => Partial<{ id: string[], name: string[] }> | undefined
+// Exclude<LogErrors["user"], undefined>["id"] => string[] | undefined
+
+// Converts the tags array itself to string[] | undefined
+// LogErrors["tags"] => string[] | undefined
+
+type LogErrors = SuperStructArray<LogData, string[]>;
+
+// Converts each property to string[] | undefined
+// LogErrors["id"] => string[] | undefined
+
+// Converts objects into an object with the same SuperStructArray type
 // LogErrors["user"] => SuperStructArray<LogData["user"], string[]> | undefined
 // Exclude<LogErrors["user"], undefined>["id"] => string[] | undefined
-// etc.
+
+// Converts each value in the tags array to a string[] type
+// LogErrors["tags"] => Record<number, string[]> | undefined
 ```
 
 ## FormPathLeaves
