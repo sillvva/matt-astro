@@ -62,6 +62,37 @@ declare global {
   [YouTube](embed::https://www.youtube.com/watch?v=q_2irZO4SS8)
 </Collapsible>
 
+### Environment Variables
+
+Environment variables can be declared in the `global` namespace to provide type information for `import.meta.env` and `process.env`. The following example demonstrates how to declare environment variables in TypeScript.
+
+```typescript
+declare global {
+	interface ImportMetaEnv {
+		MY_ENV: string;
+	}
+}
+
+import.meta.env.MY_ENV; // string
+
+declare global {
+	namespace NodeJS {
+		interface ProcessEnv {
+			MY_ENV: string;
+		}
+	}
+}
+
+process.env.MY_ENV; // string
+```
+
+Keep in mind that this is type faith, not type safe. You can also use a schema validation library to parse your environment variables and infer the type from that. If a variable is missing, you can throw an error.
+
+<div class="grid sm:grid-cols-2 gap-4">
+  <Tweet link="https://twitter.com/mattpocockuk/status/1758454430666506589" />
+  <Tweet link="https://twitter.com/mattpocockuk/status/1760991147793449396" />
+</div>
+
 ## Prettify
 
 The `Prettify` type is a simple type which takes an object type with intersections and combines them to make them easier to read.
