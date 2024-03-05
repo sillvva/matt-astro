@@ -2,7 +2,7 @@
 title: Useful TypeScript Helpers
 description: Useful functions and type helpers for TypeScript
 date: 2023-09-07T03:18:13.471Z
-updated: 2024-02-25T20:59:16.964Z
+updated: 2024-03-05T20:23:40.612Z
 image: $/assets/images/typescript.png
 tags:
   - TypeScript
@@ -61,6 +61,37 @@ declare global {
 
   [YouTube](embed::https://www.youtube.com/watch?v=q_2irZO4SS8)
 </Collapsible>
+
+### Environment Variables
+
+Environment variables can be declared in the `global` namespace to provide type information for `import.meta.env` and `process.env`. The following example demonstrates how to declare environment variables in TypeScript.
+
+```typescript
+declare global {
+	interface ImportMetaEnv {
+		MY_ENV: string;
+	}
+}
+
+import.meta.env.MY_ENV; // string
+
+declare global {
+	namespace NodeJS {
+		interface ProcessEnv {
+			MY_ENV: string;
+		}
+	}
+}
+
+process.env.MY_ENV; // string
+```
+
+Keep in mind that this is type faith, not type safe. You can also use a schema validation library to parse your environment variables and infer the type from that. If a variable is missing, you can throw an error.
+
+<div class="grid sm:grid-cols-2 gap-4">
+  <Tweet link="https://twitter.com/mattpocockuk/status/1758454430666506589" />
+  <Tweet link="https://twitter.com/mattpocockuk/status/1760991147793449396" />
+</div>
 
 ## Prettify
 
@@ -151,7 +182,7 @@ SOFTWARE.
 The `SuperStruct` type is a utility type that transforms the properties of an object to an alternative provided type. It is used by [sveltekit-superforms](https://github.com/ciscoheat/sveltekit-superforms) to transform the properties of a form schema to a type used for validation errors.
 
 <div class="button-row">
-  [Playground](btn::https://www.typescriptlang.org/play?#code/PTAEBUFEGV2goeBLAtgBwPYCcAuoDeokAjgK4CGANgDREAeaApgMZ4C+oAZlhiqAEQABHBhxUAtDgCeTAM7MsSNDmAALRpSZZZ-ANyJpTUABkMAcwAi5MaAC8BeKFBIAJgC5QAO1IoARoyx9JxRGWVlyM0YPWRxFTzMg0BdrKNAYuITHUFJZAI98LKdXD28-AMSnT3IQ6NikeMS2RLEzWVqMgG0AXX02AxlGE3NILB5tO1BoUi1oWNJWAB5TS2tyWnT6s26APn0QJ1AAPQB+fqNwULx7SAYWHAWSCkol4dHsWQ7+V34u9br47qgAA+2U8LkYnHqjBc2128H2ThOiGYGE8MVAATGbSGZhGWImBScOTyDgOzncoE+eOwoBCYQijB+WT6TUQ+wAwgB5CyQRCMBjYPCGQZTGZzRbgDF0HCMMGyUAAJRY2BcCw28VopE8AGtPBgAO6eba0KxibYTAAK5FwSCoCwKAEh9qFKPUcOIXEhwr5KIxxJ5+e7XQHQMIBvJFMpxC63cA9dGGK7mEh3eRPFJ4A6OhaeFppM5PKBtYwpBhOBAuh5JYHZS55WmMw6HccINncwFpF0pTK5YrlVhVeqzJqdXrDdtM02W6KArMsPN7uA2xg81JfqBTeQJ02HVXl6uuzXewAKeqcAKgACCAEpupOp1fu7X5UqUQO1f9h6DdQajfeHzOWBzguCyXiaqzbjuu4bqs-4eJuk4lIwABu5TwGwcLwPymC4KAwqTNMs7ijgl6jOQUgLNW0rPn2b6Dp+I4-uO4FiLQpFYORm4TFqTFGgSmbOrIwbup63q+v6gbiMGgxhnIChKO6MaeCo8bYUmKbiA2mb7h2UgFkWJZlhWxxVk+vZaQ+S45iuumHtRvaviqH4ZIxY5-ju06EUBxHseRlE6bga4sWsV5kVIm6QdBVntoFdk9nWoCnp455YFet5dP+La+eFqygAAZLRTmlP4WBsWZCWOe+Q6ub+5qeWK86sNloHBWxYURaA8EQXBMFiIhXgoWhTRAA)
+  [Playground](btn::https://www.typescriptlang.org/play?#code/PTAEBUFEGV2goeBLAtgBwPYCcAuoDeokAjgK4CGANgDREAeaApgMZ4C+oAZlhiqAEQABHBhxUAtDgCeTAM7MsSNDmAALRpSZZZ-ANyJpTUABkMAcwAi5MaAC8BeKFBIAJgC5QAO1IoARoyx9JxRGWVlyM0YPWRxFTzMg0BdrKNAYuITHUFJZAI98LKdXD28-AMSnT3IQ6NikeMS2RLEzWVqMgG0AXX02AxlGE3NILB5tO1BoUi1oWNJWAB5TS2tyWnT6s26APn0QJ1AAPQB+fqNwULx7SAYWHAWSCkol4dHsWQ7+V34u9br47qgAA+2U8LkYnHqjBc2128H2ThOiGYGE8MVAATGbSGZhGWImBScOTyDgOzncoE+eOwoBCYQijB+WT6TUQ+wAwgB5CyQRCMBjYPCGQZTGZzRbgDF0HCMMGyUAAJRY2BcCw28VopE8AGtPBgAO6eba0KxibYTAAK5FwSCoCwKAEh9qFKPUcOIXEhwr5KIxxJ5+e7XQHQMIBvJFMpxC63cA9dGGK7mEh3eRPFJ4A6OhaeFppM5PKBtYwpBhOBAuh5JYHZS55WmMw6HcdQAA5VGt0iUSjkH2MBbgbO5gLSLrmmtyxXKrCq9VmTU6vWG7aZpst0UBWZYeb3dueTvd3u+gdDjB5qRjk2rFdNh0ePcHnt9k85s8ji-j6W1+UACnqnACUAAEEAEpulXNc2w7Lsn2PIDPxlSclRRGc1X+edQV1A0jQgyCNywLcdwWB8YKPft4KvM1cLvUBTXIXCPDo1cSkYAA3cp4DYOF4H5TBcFAYVJmmTdxRwIDRnIKQBylRC6ynFDZ3QhcsOXSi1mAiSpDoiYtRUo0CUzZ1ZGDd1PW9X1-UDcRg0GMM5AUJR3RjTwVHjXikxTcQG0zU9zwLIsSzLCtjirGTv1AbzIJIw9n0HV9zzHMKkOnRSMmUpccNvddhII0TxKwSTiOgmLjzi4dcA-NTaHyyS6JvJt72K2D+zKt8KsSic5L-TwAKwYCwK6XCWxqrTVlAAAyaiHWQlUFimh1Sn8PqQTnah5ui5qFngpK5Jm1DVswjL6tvLKhLFbdWBGor91I58KNo1Zqs0ur5popiTqbY63tWZivDYjimiAA)
   [Source](btn::https://github.com/ciscoheat/sveltekit-superforms/blob/main/src/lib/superStruct.ts)
 </div>
 
@@ -171,11 +202,17 @@ export type SuperStruct<T extends Record<string, unknown>, Data> = Partial<{
 
 export type SuperStructArray<T extends Record<string, unknown>, Data, ArrayData = unknown> = {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	[Property in keyof T]: T extends any
-		? T[Property] extends Record<string, unknown>
-			? SuperStructArray<T[Property], Data, ArrayData>
-			: T[Property] extends (infer A)[]
-				? ArrayData & Record<number, A extends Record<string, unknown> ? SuperStructArray<A, Data, ArrayData> : Data>
+	[Property in keyof T]?: T extends any
+		? NonNullable<T[Property]> extends Record<string, unknown>
+			? SuperStructArray<NonNullable<T[Property]>, Data, ArrayData>
+			: NonNullable<T[Property]> extends (infer A)[]
+				? ArrayData &
+						Record<
+							number | string,
+							NonNullable<A> extends Record<string, unknown>
+								? SuperStructArray<NonNullable<A>, Data, ArrayData>
+								: Data
+						>
 				: Data
 		: never;
 };
