@@ -8,6 +8,7 @@ tags:
   - SvelteKit
   - TypeScript
 ---
+import Shiki from '$lib/components/markdown/shiki.svelte'
 
 ## Table of Contents
 
@@ -25,7 +26,7 @@ Svelte 4 had a simple `writeable` store which allowed you to create a global sha
 	[Playground](btn::/r/svelte5-ref-repl)
 </div>
 
-```ts
+<Shiki code={`
 class Ref<T> {
 	_value: T;
 	constructor(initial: T) {
@@ -40,11 +41,11 @@ class Ref<T> {
 function ref<T>(initial: T) {
 	return new Ref(initial);
 }
-```
+`} lang="ts" />
 
 Getters and setters on classes are more performant than on objects, but if you prefer the object syntax, you can use this version instead.
 
-```ts
+<Shiki code={`
 function ref<T>(initial: T) {
 	let state = $state(initial);
 	return {
@@ -52,7 +53,7 @@ function ref<T>(initial: T) {
 		set value(newState: T) { state = newState }
 	};
 }
-```
+`} lang="ts" />
 
 ## History
 
@@ -62,7 +63,7 @@ This is a simple utility function that can be used to create a history object, w
 	[Playground](btn::/r/svelte5-history-repl)
 </div>
 
-```ts
+<Shiki code={`
 function createHistory<T>(initial: T, maxLength = 50) {
 	let history = $state<T[]>([initial]);
 	let index = $state(0);
@@ -82,7 +83,7 @@ function createHistory<T>(initial: T, maxLength = 50) {
 		redo() { index = Math.min(history.length - 1, index + 1) }
 	};
 }
-```
+`} lang="ts" />
 
 ## Fetch Wrapper
 
@@ -92,7 +93,7 @@ This is a simple utility function that can be used to create a fetcher object. I
 	[Playground](btn::/r/svelte5-fetcher-repl)
 </div>
 
-```ts
+<Shiki code={`
 function createFetcher(url) {
 	let result = $state(null);
 	let loading = $state(false);
@@ -126,13 +127,13 @@ function createFetcher(url) {
 		refetch: runFetch
 	};
 }
-```
+`} lang="ts" />
 
 ## Websocket Wrapper
 
 This is a simple utility function that can be used to create a websocket object. It is a simple wrapper around the `WebSocket` API that provides reactivity for Svelte 5.
 
-```ts
+<Shiki code={`
 export default function createSocket<T>(
 	url: string | URL,
 	options?: {
@@ -151,12 +152,12 @@ export default function createSocket<T>(
 		websocket = new WebSocket(url, options?.protocols)
 
 		websocket.onopen = (event) => {
-			console.log(`${options?.name || "Websocket"} connected!`);
+			console.log(\`\${options?.name || "Websocket"} connected!\`);
 			if (options?.onOpen) options.onOpen(event);
 		};
 
 		websocket.onerror = (error) => {
-			console.log(`${options?.name || "Websocket"} error:`, error);
+			console.log(\`\${options?.name || "Websocket"} error:\`, error);
 			if (options?.onError) options.onError(error);
 		};
 
@@ -184,4 +185,4 @@ export default function createSocket<T>(
 		}
 	};
 }
-```
+`} lang="ts" />

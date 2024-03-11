@@ -11,6 +11,7 @@ tags:
   - UI
 ---
 import Example from '$/components/examples/view-transition-dom-example.astro';
+import Shiki from '$/components/markdown/shiki.astro';
 
 The most common use case for view transitions is to animate the transition between two pages. You can see an example of this in this blog, by navigating to the [Blog](/blog) directory page. However, it is also possible to animate the transition between two DOM states on the same page.
 
@@ -28,7 +29,7 @@ The second example only has one element. When the button is clicked, the element
 
 <Example />
 
-```html
+<Shiki code={`
 <script is:inline>
 	function startTransition() {
 		document.startViewTransition(() => {
@@ -96,4 +97,4 @@ The second example only has one element. When the button is clicked, the element
 		view-transition-name: box2;
 	}
 </style>
-```
+`} language="svelte" />

@@ -9,6 +9,7 @@ tags:
   - Database
   - Redis
 ---
+import Shiki from "$/components/markdown/shiki.astro";
 
 ## Table of Contents
 
@@ -18,7 +19,7 @@ Aside from cold starts, often the slowest part of an application is fetching dat
 
 If the Redis connection is lost or not ready, the functions will use the callback function on each call instead as a fallback to prevent the application from crashing.
 
-```typescript
+<Shiki code={`
 // $lib/server/cache.ts
 import { REDIS_URL } from "$env/static/private";
 import { Redis } from "ioredis";
@@ -169,13 +170,13 @@ export function revalidateKeys(keys: Array<CacheKey | "" | false | null | undefi
 	const cacheKeys = keys.filter((t) => Array.isArray(t) && t.length).map((t) => (t as string[]).join("|"));
 	if (cacheKeys.length) redis.del(...cacheKeys);
 }
-```
+`} lang="ts" />
 
 ### Example
 
 To show how simple these functions are to use, here is an example:
 
-```typescript
+<Shiki code={`
 import { cache, mcache, type CacheKey } from "$/server/cache";
 import { prisma } from "$/server/db";
 
@@ -202,4 +203,4 @@ export async function getModelCaches(ids: string[]) {
 	return await mcache((key) => getModel(key[1]), keys);
 	//           ^? Array<Model | null>
 }
-```
+`} lang="ts" />
