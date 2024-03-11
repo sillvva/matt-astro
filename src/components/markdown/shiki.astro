@@ -45,23 +45,3 @@ const { code, lang="text", wrap = false } = Astro.props;
 	</div>
   <Code code={code.trim()} {lang} theme="aurora-x" {wrap} class="astro-code" />
 </div>
-
-<style>
-  :global(.astro-code) {
-		margin-bottom: 1.5rem;
-		padding: 1rem;
-		border-bottom-left-radius: 0.5rem;
-		border-bottom-right-radius: 0.5rem;
-		max-height: 20rem;
-		overflow-y: auto;
-		font-size: 0.875rem;
-		line-height: 1.25rem;
-		background-color: rgb(23 23 23 / 1) !important;
-	}
-
-	@media (min-width: 768px) {
-		:global(.astro-code) {
-			max-height: 40rem;
-		}
-	}
-</style>
