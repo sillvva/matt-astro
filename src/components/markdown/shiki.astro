@@ -31,10 +31,10 @@ const { code, lang="text", wrap = false } = Astro.props;
 </script>
 
 <div
-	class="pre-block relative mb-4 mt-2 rounded-md border border-base-100 text-base-content group-[.combined-block]:my-0 group-[.combined-block]:min-w-max group-[.combined-block]:overflow-visible group-[.combined-block]:border-0"
+	class="pre-block relative mb-4 mt-2 rounded-md border border-base-100 text-base-content"
 >
 	<div
-		class="flex items-center justify-between rounded-t border-b border-base-100 bg-neutral-800 p-2 text-sm group-[.combined-block]:hidden group-[.combined-block]:border-b-0"
+		class="flex items-center justify-between rounded-t border-b border-base-100 bg-neutral-800 p-2 text-sm"
 	>
 		<div class="flex space-x-1">
 			<div class="h-2 w-2 rounded-full bg-gray-500"></div>
@@ -48,6 +48,20 @@ const { code, lang="text", wrap = false } = Astro.props;
 
 <style>
   .astro-code {
-		@apply mb-6 p-4 rounded-b-lg max-h-[20rem] overflow-y-auto group-[.combined-block]:max-h-none group-[.combined-block]:min-w-fit group-[.combined-block]:overflow-x-hidden md:max-h-[40rem] text-sm !bg-neutral-900;
+		margin: 1.5rem;
+		padding: 1rem;
+		border-bottom-left-radius: 0.5rem;
+		border-bottom-right-radius: 0.5rem;
+		max-height: 20rem;
+		overflow-y: auto;
+		font-size: 0.875rem;
+		line-height: 1.25rem;
+		background-color: rgb(23 23 23 / 1) !important;
+	}
+
+	@media (min-width: 768px) {
+		#app :is(.md\:max-h-\[40rem\]) {
+			max-height: 40rem/* 640px */;
+		}
 	}
 </style>
