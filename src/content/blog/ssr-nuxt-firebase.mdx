@@ -12,6 +12,7 @@ tags:
   - Firebase
   - Nuxt
 ---
+import Shiki from "$/components/markdown/shiki.astro"
 
 ## Table of Contents
 
@@ -29,7 +30,7 @@ Github Actions workflows are stored in the `.github/workflow` directory of your 
 
 ### The Build/Deploy Workflow
 
-```yaml
+<Shiki code={`
 # .github/workflows/deploy.yml
 name: mattdekok.dev CD
 
@@ -66,20 +67,20 @@ jobs:
           # used as restful API endpoints
           args: deploy --only functions,hosting
         env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          FIREBASE_TOKEN: \${{ secrets.FIREBASE_TOKEN }}
 
       - name: Deploy App to Heroku
         uses: akhileshns/heroku-deploy@v3.12.12
         with:
-          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
-          heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
-          heroku_email: ${{ secrets.MY_EMAIL }}
+          heroku_api_key: \${{ secrets.HEROKU_API_KEY }}
+          heroku_app_name: \${{ secrets.HEROKU_APP_NAME }}
+          heroku_email: \${{ secrets.MY_EMAIL }}
           branch: "master"
-```
+`} lang="yaml" />
 
 ### The Updated Posts Workflow
 
-```yaml
+<Shiki code={`
 # .github/workflows/blog.yml
 name: mattdekok.dev BLOG
 
@@ -101,17 +102,17 @@ jobs:
       - name: Login to Heroku
         uses: akhileshns/heroku-deploy@v3.12.12
         with:
-          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
-          heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
-          heroku_email: ${{ secrets.MY_EMAIL }}
+          heroku_api_key: \${{ secrets.HEROKU_API_KEY }}
+          heroku_app_name: \${{ secrets.HEROKU_APP_NAME }}
+          heroku_email: \${{ secrets.MY_EMAIL }}
           justlogin: true
 
       - name: Install Heroku Builds Plugin
         run: heroku plugins:install heroku-builds
       
       - name: Rebuild Heroku App
-        run: heroku builds:create --version "Update blog posts" -a ${{ secrets.HEROKU_APP_NAME }}
-```
+        run: heroku builds:create --version "Update blog posts" -a \${{ secrets.HEROKU_APP_NAME }}
+`} lang="yaml" />
 
 ### Github Secrets
 
@@ -136,9 +137,9 @@ There are a few things you'll need to do before deploying to Heroku. You'll need
 
 The Procfile is the easiest thing to set up. It is one line of code and goes in your repo's root directory. It tells Heroku what to do after your app finishes building.
 
-```yaml
+<Shiki code={`
 web: npm start
-```
+`} lang="yaml" />
 
 That's it!
 
@@ -146,7 +147,7 @@ That's it!
 
 You'll need to add `build` and `start` scripts to the `package.json` folder in your repo's root directory. This is the package file that Heroku will read. In my case, they look like this:
 
-```json
+<Shiki code={`
 // package.json
 {
   ...
@@ -156,11 +157,11 @@ You'll need to add `build` and `start` scripts to the `package.json` folder in y
   },
   ...
 }
-```
+`} lang="json" />
 
 `frontend/` is the directory of my Nuxt app. And the important scripts that I've setup in that `package.json` file look like:
 
-```json
+<Shiki code={`
 // frontend/package.json
 {
   ...
@@ -171,7 +172,7 @@ You'll need to add `build` and `start` scripts to the `package.json` folder in y
   },
   ...
 }
-```
+`} lang="json" />
 
 Heroku will always run the `build` script when an app is deployed. Once the build is finished, it will run the script specified in the `Procfile` file.
 

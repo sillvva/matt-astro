@@ -7,37 +7,38 @@ tags:
   - TypeScript
   - SvelteKit
 ---
+import Shiki from '$/components/markdown/shiki.astro';
 
 ## Why?
 
 In SvelteKit, whenever data is changed in a Set or Map, it will not trigger reactivity unless the Map or Set is reassigned to the variable. Consider the following example:
 
-```typescript
+<Shiki code={`
 let changes = new Set();
 
 function addChanges(change: string) {
   changes.add(change);
 }
-```
+`} lang="ts" />
 
 This will not trigger Svelte's reactivity. However, with this change, it will:
 
-```typescript
+<Shiki code={`
 let changes = new Set();
 
 function addChanges(change: string) {
   changes = changes.add(change);
 }
-```
+`} lang="ts" />
 
 ## The Custom Classes
 
 That's great. However, there are two methods in Sets and Maps which do not return the Set/Map - `delete(): boolean` and `clear(): void`. The following extended classes `SvelteMap` and `SvelteSet` modifies those methods to return the Set/Map.
 
-```typescript
+<Shiki code={`
 /**
- * `SvelteMap` class, a subclass of JavaScript's `Map` class
- * with modified methods for remove and clear operations that return the `Map` itself for chain invocations.
+ * \`SvelteMap\` class, a subclass of JavaScript's \`Map\` class
+ * with modified methods for remove and clear operations that return the \`Map\` itself for chain invocations.
  */
 export class SvelteMap<TKey, TVal> extends Map<TKey, TVal> {
 	constructor(iterable?: Iterable<readonly [TKey, TVal]> | null) {
@@ -45,9 +46,9 @@ export class SvelteMap<TKey, TVal> extends Map<TKey, TVal> {
 	}
 
 	/**
-	 * `remove` method for `SvelteMap`, deletes an element with the specified key from the Map.
+	 * \`remove\` method for \`SvelteMap\`, deletes an element with the specified key from the Map.
 	 * @param key - Key of the element to remove from the Map.
-	 * @returns `this` - Returns the `Map` itself after removal for chain invocations.
+	 * @returns \`this\` - Returns the \`Map\` itself after removal for chain invocations.
 	 */
 	public remove(key: TKey) {
 		super.delete(key);
@@ -55,8 +56,8 @@ export class SvelteMap<TKey, TVal> extends Map<TKey, TVal> {
 	}
 
 	/**
-	 * `clear` method for `SvelteMap`, removes all elements from the Map.
-	 * @returns `this` - Returns the `Map` itself after the operation for chain invocations.
+	 * \`clear\` method for \`SvelteMap\`, removes all elements from the Map.
+	 * @returns \`this\` - Returns the \`Map\` itself after the operation for chain invocations.
 	 */
 	public clear() {
 		super.clear();
@@ -65,8 +66,8 @@ export class SvelteMap<TKey, TVal> extends Map<TKey, TVal> {
 }
 
 /**
- * `SvelteSet` class, a subclass of JavaScript's `Set` class
- * with modified methods for remove and clear operations that return the `Set` itself for chain invocations.
+ * \`SvelteSet\` class, a subclass of JavaScript's \`Set\` class
+ * with modified methods for remove and clear operations that return the \`Set\` itself for chain invocations.
  */
 export class SvelteSet<TVal> extends Set<TVal> {
 	constructor(iterable?: Iterable<TVal> | null) {
@@ -74,9 +75,9 @@ export class SvelteSet<TVal> extends Set<TVal> {
 	}
 
 	/**
-	 * `remove` method for `SvelteSet`, deletes a value from the Set.
+	 * \`remove\` method for \`SvelteSet\`, deletes a value from the Set.
 	 * @param val - Value to remove from the Set.
-	 * @returns `this` - Returns the `Set` itself after removal for chain invocations.
+	 * @returns \`this\` - Returns the \`Set\` itself after removal for chain invocations.
 	 */
 	public remove(val: TVal) {
 		super.delete(val);
@@ -84,12 +85,12 @@ export class SvelteSet<TVal> extends Set<TVal> {
 	}
 
 	/**
-	 * `clear` method for `SvelteSet`, removes all elements from the Set.
-	 * @returns `this` - Returns the `Set` itself after the operation for chain invocations.
+	 * \`clear\` method for \`SvelteSet\`, removes all elements from the Set.
+	 * @returns \`this\` - Returns the \`Set\` itself after the operation for chain invocations.
 	 */
 	public clear() {
 		super.clear();
 		return this;
 	}
 }
-```
+`} lang="ts" />

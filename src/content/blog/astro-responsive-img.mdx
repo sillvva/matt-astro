@@ -10,8 +10,7 @@ tags:
   - TypeScript
   - UI
 ---
-import CombinedBlock from "$/components/markdown/combined.astro";
-import WrappedBlock from "$/components/markdown/wrapped.astro";
+import Shiki from "$/components/markdown/shiki.astro";
 
 ## Table of Contents
 
@@ -25,16 +24,15 @@ For more information on responsive images, see the MDN article.
 [MDN](btn::https://developer.mozilla.org/en-US/docs/Learn/HTML/Multimedia_and_embedding/Responsive_images)
 </div>
 
-<CombinedBlock>
-```ts
+<Shiki code={`
 ---
 import type { ImageOutputFormat } from "astro";
 import { getImage, type ImgAttributes } from "astro:assets";
 
 type Unit = "px" | "em" | "rem";
-type Size = `${number}${Unit}`;
-type MinMediaQuery = `(min-width: ${Size})`;
-type MaxMediaQuery = `(max-width: ${Size})`;
+type Size = \`\${number}\${Unit}\`;
+type MinMediaQuery = \`(min-width: \${Size})\`;
+type MaxMediaQuery = \`(max-width: \${Size})\`;
 type OtherMediaQuery =
 	| "(orientation: portrait)"
 	| "(orientation: landscape)"
@@ -46,7 +44,7 @@ type Props = Omit<ImgAttributes, "sizes"> & {
 	src: ImageMetadata;
 	format?: ImageOutputFormat;
 	srcSet: {
-		media?: `${MediaQueries}` | `(${MinMediaQuery} and ${MaxMediaQuery})` | `(${MaxMediaQuery} or ${MinMediaQuery})`;
+		media?: \`\${MediaQueries}\` | \`(\${MinMediaQuery} and \${MaxMediaQuery})\` | \`(\${MaxMediaQuery} or \${MinMediaQuery})\`;
 		size: number;
 	}[];
 };
@@ -60,20 +58,18 @@ const imgSrc = await getImage({ src, width: Math.min(...srcSet.map((ss) => ss.si
 const srcset = await Promise.all(
 	srcSet.map(async (ss) => {
 		const image = await getImage({ src, width: ss.size, format });
-		return `${image.src} ${ss.size}w`;
+		return \`\${image.src} \${ss.size}w\`;
 	})
 );
-const sizes = srcSet.map((ss) => (ss.media ? `${ss.media} ${ss.size}px` : `${ss.size}px`));
+const sizes = srcSet.map((ss) => (ss.media ? \`\${ss.media} \${ss.size}px\` : \`\${ss.size}px\`));
 ---
-```
-```tsx
+
 <img srcset={srcset.join(", ")} sizes={sizes.join(", ")} {id} {alt} src={imgSrc.src} class={className} loading="lazy" />
-```
-</CombinedBlock>
+`} lang="jsx" />
 
 ### Example
 
-```tsx
+<Shiki code={`
 // Post Cover Image
 <ResponsiveImage
   src={image}
@@ -97,46 +93,56 @@ const sizes = srcSet.map((ss) => (ss.media ? `${ss.media} ${ss.size}px` : `${ss.
   ]}
   class="h-full w-full object-cover object-center"
 />
-```
+`} lang="tsx" />
 
 #### The Result
 
-<WrappedBlock>
-```html
+<Shiki code={`
 <!-- Post Cover Image -->
-<img srcset="/_image?href=[redacted]%3ForigWidth%3D1600%26origHeight%3D840%26origFormat%3Dwebp&amp;w=500&amp;f=webp 500w, /_image?href=[redacted]%3ForigWidth%3D1600%26origHeight%3D840%26origFormat%3Dwebp&amp;w=700&amp;f=webp 700w, /_image?href=[redacted]%3ForigWidth%3D1600%26origHeight%3D840%26origFormat%3Dwebp&amp;w=900&amp;f=webp 900w" sizes="(max-width: 500px) 500px, (max-width: 700px) 700px, 900px" id="post-image" alt="Astro Responsive Image" src="/_image?href=[redacted]%3ForigWidth%3D1600%26origHeight%3D840%26origFormat%3Dwebp&amp;w=500&amp;f=webp" class="h-full w-full object-cover object-center shadow shadow-black/50" loading="lazy">
+<img 
+	srcset="/_image?href=[redacted]%3ForigWidth%3D1600%26origHeight%3D840%26origFormat%3Dwebp&amp;w=500&amp;f=webp 500w, /_image?href=[redacted]%3ForigWidth%3D1600%26origHeight%3D840%26origFormat%3Dwebp&amp;w=700&amp;f=webp 700w, /_image?href=[redacted]%3ForigWidth%3D1600%26origHeight%3D840%26origFormat%3Dwebp&amp;w=900&amp;f=webp 900w"
+	src="/_image?href=[redacted]%3ForigWidth%3D1600%26origHeight%3D840%26origFormat%3Dwebp&amp;w=500&amp;f=webp"
+	sizes="(max-width: 500px) 500px, (max-width: 700px) 700px, 900px"
+	id="post-image"
+	alt="Astro Responsive Image"
+	class="h-full w-full object-cover object-center shadow shadow-black/50"
+	loading="lazy">
 
 <!-- Post Card Image -->
-<img srcset="/_image?href=[redacted]%3ForigWidth%3D1600%26origHeight%3D840%26origFormat%3Dwebp&amp;w=424&amp;f=webp 424w, /_image?href=[redacted]%3ForigWidth%3D1600%26origHeight%3D840%26origFormat%3Dwebp&amp;w=640&amp;f=webp 640w" sizes="(min-width: 564px) 424px, 640px" alt="Astro Responsive Image" src="/_image?href=[redacted]%3ForigWidth%3D1600%26origHeight%3D840%26origFormat%3Dwebp&amp;w=424&amp;f=webp" class="h-full w-full object-cover object-center" loading="lazy">
-```
-</WrappedBlock>
+<img 
+	srcset="/_image?href=[redacted]%3ForigWidth%3D1600%26origHeight%3D840%26origFormat%3Dwebp&amp;w=424&amp;f=webp 424w, /_image?href=[redacted]%3ForigWidth%3D1600%26origHeight%3D840%26origFormat%3Dwebp&amp;w=640&amp;f=webp 640w"
+	src="/_image?href=[redacted]%3ForigWidth%3D1600%26origHeight%3D840%26origFormat%3Dwebp&amp;w=424&amp;f=webp"
+	sizes="(min-width: 564px) 424px, 640px"
+	alt="Astro Responsive Image"
+	class="h-full w-full object-cover object-center"
+	loading="lazy">
+`} lang="html" />
 
 ## Using `<picture>` and `<source>`
 
 The following is a custom component for Astro that generates a responsive image using the `<picture>` element and `<source>` elements. It also uses the `getImage` function from the `astro:assets` module to generate the image URLs. The function uses the same compression as the built-in `<Image />` component from Astro.
 
-<CombinedBlock>
-```ts
+<Shiki code={`
 ---
 import { cn } from "$/util";
 import type { ImageOutputFormat } from "astro";
 import { getImage, type ImgAttributes } from "astro:assets";
 
 type Unit = "px" | "em" | "rem";
-type Size = `${number}${Unit}`;
-type MinMediaQuery = `(min-width: ${Size})`;
-type MaxMediaQuery = `(max-width: ${Size})`;
+type Size = \`\${number}\${Unit}\`;
+type MinMediaQuery = \`(min-width: \${Size})\`;
+type MaxMediaQuery = \`(max-width: \${Size})\`;
 type MinMaxMediaQuery =
 	| MinMediaQuery
 	| MaxMediaQuery
-	| `${MinMediaQuery} and ${MaxMediaQuery}`
-	| `(${MaxMediaQuery} or ${MinMediaQuery})`;
+	| \`\${MinMediaQuery} and \${MaxMediaQuery}\`
+	| \`(\${MaxMediaQuery} or \${MinMediaQuery})\`;
 type OtherMediaQuery =
 	| "(orientation: portrait)"
 	| "(orientation: landscape)"
 	| "(prefers-color-scheme: dark)"
 	| "(prefers-color-scheme: light)";
-type OMMMediaQuery = `${OtherMediaQuery} and ${MinMaxMediaQuery}`;
+type OMMMediaQuery = \`\${OtherMediaQuery} and \${MinMaxMediaQuery}\`;
 
 type Props = ImgAttributes & {
 	src: ImageMetadata;
@@ -162,22 +168,22 @@ const srcset = (
 			const images: string[] = [];
 
 			const image = await getImage({ src: url, width: size, format });
-			images.push(`${image.src}`);
+			images.push(\`\${image.src}\`);
 
 			if (include2x) {
 				const image2x = await getImage({ src: url, width: size * 2, format });
-				images.push(`${image2x.src} 2x`);
+				images.push(\`\${image2x.src} 2x\`);
 			}
 
 			if (include3x) {
 				const image3x = await getImage({ src: url, width: size * 3, format });
-				images.push(`${image3x.src} 3x`);
+				images.push(\`\${image3x.src} 3x\`);
 			}
 
 			return {
 				src: images.join(", "),
 				media,
-				type: format && `image/${format}`,
+				type: format && \`image/\${format}\`,
 				size
 			};
 		})
@@ -188,18 +194,16 @@ const maxSize = srcset.reduce((acc, curr) => (curr.size > acc ? curr.size : acc)
 const imgSrc = srcset.find((ss) => ss.size === maxSize);
 if (!imgSrc) throw new Error("No image source found");
 ---
-```
-```tsx
+
 <picture class={cn("h-full w-full", pictureClass)}>
 	{srcset.map((ss) => <source srcset={ss.src} media={ss.media} type={ss.type} />)}
 	<img src={imgSrc.src.split(", ")[0]} loading={loading} class={className} {...rest} />
 </picture>
-```
-</CombinedBlock>
+`} lang="tsx" />
 
 ### Example
 
-```tsx
+<Shiki code={`
 // Post Cover Image
 <ResponsiveImage
   src={image}
@@ -223,12 +227,11 @@ if (!imgSrc) throw new Error("No image source found");
   ]}
   class="h-full w-full object-cover object-center"
 />
-```
+`} lang="tsx" />
 
 #### The Result
 
-<WrappedBlock>
-```html
+<Shiki code={`
 <!-- Post Cover Image -->
 <picture class="h-full w-full">
 	<source srcset="/_astro/astro.b134230a_1zSOD8.webp" media="(max-width: 500px)">
@@ -243,5 +246,4 @@ if (!imgSrc) throw new Error("No image source found");
 	<source srcset="/_astro/astro.b134230a_Z24VRyK.webp" media="(max-width: 564px)">
 	<img src="/_astro/astro.b134230a_Z24VRyK.webp" loading="lazy" class="h-full w-full object-cover object-center" alt="Astro Responsive Image">
 </picture>
-```
-</WrappedBlock>
+`} lang="html" />

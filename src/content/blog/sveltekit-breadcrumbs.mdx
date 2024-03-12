@@ -8,7 +8,7 @@ tags:
   - SvelteKit
   - UI
 ---
-import CombinedBlock from "$/components/markdown/combined.astro";
+import Shiki from "$/components/markdown/shiki.astro";
 
 ## Table of Contents
 
@@ -22,18 +22,18 @@ Here is an example used on my [Adventurers League Log Sheet](https://ddal.dekok.
 
 #### Root layout
 
-```ts
+<Shiki code={`
 // src/routes/+layout.server.ts
 export const load = async (event) => {
     return {
         breadcrumbs: [] as { name: string; href: string }[],
     };
 };
-```
+`} lang="ts" />
 
 #### First breadcrumb segment
 
-```ts
+<Shiki code={`
 // src/routes/characters/+layout.server.ts
 export const load = async (event) => {
     const parent = await event.parent();
@@ -42,16 +42,16 @@ export const load = async (event) => {
         breadcrumbs: parent.breadcrumbs.concat(
             {
                 name: "Characters",
-                href: `/characters`
+                href: "/characters"
             }
         )
     };
 };
-```
+`} lang="ts" />
 
 #### Next breadcrumb segment with param
 
-```ts
+<Shiki code={`
 // src/routes/characters/[characterId]/+layout.server.ts
 import { getCharacter } from "$/server/data/characters";
 import { error, redirect } from "@sveltejs/kit";
@@ -67,59 +67,56 @@ export const load = async (event) => {
         breadcrumbs: parent.breadcrumbs.concat(
             {
                 name: character.name,
-                href: `/characters/${character.id}`
+                href: \`/characters/\${character.id}\`
             }
         )
     };
 };
-```
+`} lang="ts" />
 
 Now the resulting array in `data.breadcrumbs` for `/characters/[characterId]` is:
 
-```js
+<Shiki code={`
 [
   { name: 'Characters', href: '/characters' },
   { name: 'Rimurus', href: '/characters/cl7gfkggq002009mluw41peqd' }
 ]
-```
+`} lang="js" />
 
 ## The Breadcrumbs Component
 
 From there, you can create a breadcrumbs component like this:
 
-<CombinedBlock>
-    ```html
-    <!-- src/lib/components/Breadcrumbs.svelte -->
-    <script lang="ts">
-        import { page } from "$app/stores";
-        import Icon from "./Icon.svelte";
+<Shiki code={`
+<!-- src/lib/components/Breadcrumbs.svelte -->
+<script lang="ts">
+    import { page } from "$app/stores";
+    import Icon from "./Icon.svelte";
 
-        let breadcrumbs = ($page.data.breadcrumbs as { name: string, href?: string }[]).map((bc, i) => ({
-            name: bc.name,
-            href: !bc.href || i === $page.data.breadcrumbs.length - 1 ? null : bc.href,
-        }));
-    </script>
-    ```
-    ```tsx
-    <div class="breadcrumbs mb-4 hidden flex-1 text-sm sm:flex">
-        <ul>
-            <li>
-                <Icon src="home" class="w-4" />
-            </li>
-            {#each breadcrumbs as bc}
-                {#if bc.href}
-                    <li>
-                        <a href={bc.href} class="text-secondary">
-                            {bc.name}
-                        </a>
-                    </li>
-                {:else}
-                    <li class="overflow-hidden text-ellipsis whitespace-nowrap dark:drop-shadow-md">
+    let breadcrumbs = ($page.data.breadcrumbs as { name: string, href?: string }[]).map((bc, i) => ({
+        name: bc.name,
+        href: !bc.href || i === $page.data.breadcrumbs.length - 1 ? null : bc.href,
+    }));
+</script>
+
+<div class="breadcrumbs mb-4 hidden flex-1 text-sm sm:flex">
+    <ul>
+        <li>
+            <Icon src="home" class="w-4" />
+        </li>
+        {#each breadcrumbs as bc}
+            {#if bc.href}
+                <li>
+                    <a href={bc.href} class="text-secondary">
                         {bc.name}
-                    </li>
-                {/if}
-            {/each}
-        </ul>
-    </div>
-    ```
-</CombinedBlock>
+                    </a>
+                </li>
+            {:else}
+                <li class="overflow-hidden text-ellipsis whitespace-nowrap dark:drop-shadow-md">
+                    {bc.name}
+                </li>
+            {/if}
+        {/each}
+    </ul>
+</div>
+`} lang="svelte" />
