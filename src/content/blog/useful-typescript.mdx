@@ -2,7 +2,7 @@
 title: Useful TypeScript Helpers
 description: Useful functions and type helpers for TypeScript
 date: 2023-09-07T03:18:13.471Z
-updated: 2024-03-05T20:23:40.612Z
+updated: 2024-03-12T22:23:39.398Z
 image: $/assets/images/typescript.png
 tags:
   - TypeScript
@@ -93,46 +93,27 @@ Keep in mind that this is type faith, not type safe. You can also use a schema v
   <Tweet link="https://twitter.com/mattpocockuk/status/1760991147793449396" />
 </div>
 
-## Prettify
+## Utility Types
 
-The `Prettify` type is a simple type which takes an object type with intersections and combines them to make them easier to read.
+### Combine/Prettify Two Object Types
 
-<Shiki code={`
-type Prettify<T> = {
-    [K in keyof T]: T[K];
-} & {};
-`} lang="ts" />
+The `Prettify` type is a simple type which takes an object type with intersections and combines them to make them easier to read. The `Combine` type is a simple type which takes 2 object types and combines them into one.
+
+<Shiki id="CombinePrettify.md" />
 
 <div class="grid sm:grid-cols-2 gap-4">
   <Tweet link="https://twitter.com/mattpocockuk/status/1622730173446557697" />
   <Tweet link="https://twitter.com/mattpocockuk/status/1622730175266926592" />
   <Tweet link="https://twitter.com/mattpocockuk/status/1622730176931983360" />
   <Tweet link="https://twitter.com/mattpocockuk/status/1622730179289251840" />
-</div>
-
-## Combine Two Object Types
-
-The `Combine` type is a simple type which takes 2 object types and combines them into one.
-
-<div class="button-row">
-  [Playground](btn::https://www.typescriptlang.org/play?#code/PTAEGEHkBEFECh4BcCeAHApqACgJw0kgJYBmKAPACoB8oAvKAN7yigDaA0qEQHagDWGFAHsSoSgF0AXOM4SA3PAC+oAGRMli5OizhhAWwBGvDFQCMAGnEAmWgzwFiZciyavWnbn0EixACkozUAAfGwBKaXEzORCbOUVWFXVsAENcYhSAG3M1G2p4ai0QcVgAZUpSxCJ9NGF0plBYAEcAVyyrWAAPTABjJFAVElwDUAAiAAEkYSQsgFpUTABnHtwiNCRgAAsMTMxcRdGtBaxKHQBBejdWfBSAE2EeTJRQHhT9DBlFpFWeAHME0A3e6PZ53W74RaLT7fXj-ZRHHTiHQAIUujEBGDuDyeLzeH1AXx+-1AaE2D3xhNhAwRmFAACUMIsWpl+gw9EYTFRzlZTphkYVEMdGt0MH0MLc0a4gdjnq93tCiQDpSDQGCIYsAPwK2EA0nkrUEmF-RSaQWIpCM1nC3pIcjNNrZBlMlkdEVi27UAVAA)
-</div>
-
-<Shiki code={`
-type Prettify<T> = {
-  [K in keyof T]: T[K];
-} & {};
-
-type Combine<T1, T2> = Prettify<
-  {
-    [K in keyof (T1 | T2)]: T1[K] | T2[K];
-  } & Partial<T1 & T2>
->;
-`} lang="ts" />
-
-<div class="grid sm:grid-cols-2 gap-4">
   <Tweet link="https://twitter.com/mattpocockuk/status/1712391832573718721" />
 </div>
+
+### Merge Union Types
+
+The `MergeUnion` type is a utility type that does as its name suggests. It takes multiple union types and merges them into one.
+
+<Shiki id="MergeUnion.md" />
 
 ## Type Guards
 
