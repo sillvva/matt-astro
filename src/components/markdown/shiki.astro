@@ -55,18 +55,20 @@ if ("code" in rest) {
 	});
 </script>
 
-<div class="button-row">
-	{playground &&
-		<AnimatedButton link={playground} target="_blank" itemClasses={["button3 border border-dotted border-secondary text-secondary"]}>
-			Playground
-		</AnimatedButton>
-	}
-  {source &&
-		<AnimatedButton link={source} target="_blank" itemClasses={["button3 border border-dotted border-secondary text-secondary"]}>
-			Source
-		</AnimatedButton>
-	}
-</div>
+{(playground || source) &&
+	<div class="button-row">
+		{playground &&
+			<AnimatedButton link={playground} target="_blank" itemClasses={["button3 border border-dotted border-secondary text-secondary"]}>
+				Playground
+			</AnimatedButton>
+		}
+		{source &&
+			<AnimatedButton link={source} target="_blank" itemClasses={["button3 border border-dotted border-secondary text-secondary"]}>
+				Source
+			</AnimatedButton>
+		}
+	</div>
+}
 
 <div
 	class="pre-block relative mb-4 mt-2 rounded-md border border-base-100 text-base-content"
