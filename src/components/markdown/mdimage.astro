@@ -5,7 +5,7 @@ const alt = Astro.props.alt || "";
 const noAspect = false;
 ---
 
-<figure class="mb-6 mt-6 flex flex-col">
+<figure class="flex flex-col [&_picture]:m-0 my-16">
 	<a
 		href={Astro.props.src.src}
 		target="_blank"

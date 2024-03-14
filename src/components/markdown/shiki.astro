@@ -1,13 +1,38 @@
 ---
 import { Code } from "astro:components";
+import { getLanguage, languages, getCodeCollection } from "$/util";
+import AnimatedButton from "../animated-button.astro";
 
-interface Props {
-  code: string;
-  lang?: 'js' | 'ts' | 'jsx' | 'tsx' | 'svelte' | 'html' | 'css' | 'scss' | 'json' | 'diff' | 'bash' | 'powershell' | 'mdx' | 'text' | 'plaintext' | 'sql' | 'yaml';
+const codeCollection = await getCodeCollection();
+
+type Props = {
 	wrap?: boolean;
-}
+} & ({
+	type: "code";
+  code: string;
+	lang: (typeof languages)[number];
+} | {
+	type: "collection";
+	id: keyof typeof codeCollection;
+})
 
-const { code, lang="text", wrap = false } = Astro.props;
+const { wrap = false, ...rest } = Astro.props;
+
+let code = "";
+let lang: (typeof languages)[number] = "plaintext";
+let playground = "";
+let source = "";
+
+if ("code" in rest) {
+	code = rest.code;
+	lang = rest.lang || "plaintext";
+} else {
+	code = codeCollection[rest.id].body.trim();
+	lang = getLanguage(code.match(/\`\`\`(.*?)\n/)?.[1]);
+	code = code.replace(/^\`\`\`(.*?)\n/, "").replace(/\`\`\`$/g, "");
+	playground = codeCollection[rest.id].playground || "";
+	source = codeCollection[rest.id].source || ""
+}
 ---
 
 <script>
@@ -30,6 +55,21 @@ const { code, lang="text", wrap = false } = Astro.props;
 	});
 </script>
 
+{(playground || source) &&
+	<div class="button-row">
+		{playground &&
+			<AnimatedButton link={playground} target="_blank" itemClasses={["button3 border border-dotted border-secondary text-secondary"]}>
+				Playground
+			</AnimatedButton>
+		}
+		{source &&
+			<AnimatedButton link={source} target="_blank" itemClasses={["button3 border border-dotted border-secondary text-secondary"]}>
+				Source
+			</AnimatedButton>
+		}
+	</div>
+}
+
 <div
 	class="pre-block relative mb-4 mt-2 rounded-md border border-base-100 text-base-content"
 >
@@ -43,5 +83,5 @@ const { code, lang="text", wrap = false } = Astro.props;
 		</div>
 		<button class="copy rounded-md bg-gray-700 px-2 py-1 text-sm text-white" type="button">Copy</button>
 	</div>
-  <Code code={code.trim()} {lang} theme="aurora-x" {wrap} />
+  <Code code={code.trim()} {lang} theme="aurora-x" {wrap} class="mt-0 rounded-t-none" />
 </div>
