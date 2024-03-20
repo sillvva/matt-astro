@@ -8,7 +8,6 @@ tags:
   - SvelteKit
   - UI
 ---
-import Shiki from "$/components/markdown/shiki.astro";
 
 ## Table of Contents
 
@@ -22,18 +21,18 @@ Here is an example used on my [Adventurers League Log Sheet](https://ddal.dekok.
 
 #### Root layout
 
-<Shiki code={`
+```ts
 // src/routes/+layout.server.ts
 export const load = async (event) => {
     return {
         breadcrumbs: [] as { name: string; href: string }[],
     };
 };
-`} lang="ts" />
+```
 
 #### First breadcrumb segment
 
-<Shiki code={`
+```ts
 // src/routes/characters/+layout.server.ts
 export const load = async (event) => {
     const parent = await event.parent();
@@ -47,11 +46,11 @@ export const load = async (event) => {
         )
     };
 };
-`} lang="ts" />
+```
 
 #### Next breadcrumb segment with param
 
-<Shiki code={`
+```ts
 // src/routes/characters/[characterId]/+layout.server.ts
 import { getCharacter } from "$/server/data/characters";
 import { error, redirect } from "@sveltejs/kit";
@@ -67,27 +66,27 @@ export const load = async (event) => {
         breadcrumbs: parent.breadcrumbs.concat(
             {
                 name: character.name,
-                href: \`/characters/\${character.id}\`
+                href: `/characters/${character.id}`
             }
         )
     };
 };
-`} lang="ts" />
+```
 
 Now the resulting array in `data.breadcrumbs` for `/characters/[characterId]` is:
 
-<Shiki code={`
+```js
 [
   { name: 'Characters', href: '/characters' },
   { name: 'Rimurus', href: '/characters/cl7gfkggq002009mluw41peqd' }
 ]
-`} lang="js" />
+```
 
 ## The Breadcrumbs Component
 
 From there, you can create a breadcrumbs component like this:
 
-<Shiki code={`
+```svelte
 <!-- src/lib/components/Breadcrumbs.svelte -->
 <script lang="ts">
     import { page } from "$app/stores";
@@ -119,4 +118,4 @@ From there, you can create a breadcrumbs component like this:
         {/each}
     </ul>
 </div>
-`} lang="svelte" />
+```

@@ -17,7 +17,9 @@ export default defineConfig({
 	}),
 	integrations: [tailwind(), mdx()],
 	markdown: {
-		syntaxHighlight: "prism",
+		shikiConfig: {
+			theme: "aurora-x"
+		},
 		remarkPlugins: [[remarkToc, { tight: true, maxDepth: 3 }]]
 	},
 	image: {

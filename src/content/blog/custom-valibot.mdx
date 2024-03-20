@@ -8,7 +8,7 @@ tags:
   - TypeScript
   - RegEx
 ---
-import Shiki from "$/components/markdown/shiki.astro"
+import Shiki from "$/components/markdown/shiki.astro";
 
 ## Table of Contents
 
@@ -29,7 +29,7 @@ guarantee type safety of unknown data.
 - Time zone is optional, and accepts `Z` or a UTC offset (ex. `+/-hh:mm`)
 
 
-<Shiki code={`
+```ts
 import type { PipeResult } from "valibot";
 
 /**
@@ -69,11 +69,11 @@ export function iso<TInput extends string>(options?: {
 		} = options || {};
 
 		const dateRegex = "((\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-((0[13578]|1[02])-(0[1-9]|[12]\\d|3[01])|(0[469]|11)-(0[1-9]|[12]\\d|30)|(02)-(0[1-9]|1\\d|2[0-8])))";
-		const millisecondsRegex = milliseconds ? \`(\\.\\d{3})\${milliseconds === "optional" ? "?" : ""}\` : "";
-		const secondsRegex = seconds ? \`(:[0-5]\\d\${millisecondsRegex})\${seconds === "optional" ? "?" : ""}\` : "";
-		const timezoneRegex = timezone ? \`([+-]([01]\\d|2[0-3]):[0-5]\\d|Z)\${timezone === "optional" ? "?" : ""}\` : "";
-		const timeRegex = \`([01]\\d|2[0-3]):[0-5]\\d\${secondsRegex}\${timezoneRegex}\`;
-		const regex = new RegExp(\`^\${date ? dateRegex : ""}\${date && time ? "T" : time ? "T?" : ""}\${time ? timeRegex : ""}$\`);
+		const millisecondsRegex = milliseconds ? `(\\.\\d{3})${milliseconds === "optional" ? "?" : ""}` : "";
+		const secondsRegex = seconds ? `(:[0-5]\\d${millisecondsRegex})${seconds === "optional" ? "?" : ""}` : "";
+		const timezoneRegex = timezone ? `([+-]([01]\\d|2[0-3]):[0-5]\\d|Z)${timezone === "optional" ? "?" : ""}` : "";
+		const timeRegex = `([01]\\d|2[0-3]):[0-5]\\d${secondsRegex}${timezoneRegex}`;
+		const regex = new RegExp(`^${date ? dateRegex : ""}${date && time ? "T" : time ? "T?" : ""}${time ? timeRegex : ""}$`);
 
 		if (!regex.test(input)) {
 			return {
@@ -89,25 +89,25 @@ export function iso<TInput extends string>(options?: {
 		return { output: input };
 	};
 }
-`} lang="ts" />
+```
 
 ### Valid Examples
 
-<Shiki code={`
-"2023-08-05T12:24:59.000Z";			// options undefined
-"2023-08-05T12:24:59.000-05:00";	// options undefined
-"2023-08-05T12:24-05:00";			// options undefined
+```ts
+"2023-08-05T12:24:59.000Z";       // options undefined
+"2023-08-05T12:24:59.000-05:00";  // options undefined
+"2023-08-05T12:24-05:00";         // options undefined
 
 // seconds, milliseconds, and timezone are optional by default, or you can explicitly exclude them
-"2023-08-05T12:24";		// { seconds: false, timezone: false }
+"2023-08-05T12:24";  // { seconds: false, timezone: false }
 
 // date and time are required by default, but you can exclude them
-"2023-08-05";		// { time: false }
-"T12:24:59.000Z";	// { date: false }
+"2023-08-05";     // { time: false }
+"T12:24:59.000Z"; // { date: false }
 
 // If date is excluded, the T is optional
-"12:24";	// { date: false, seconds: false, timezone: false }
-`} lang="ts" />
+"12:24";  // { date: false, seconds: false, timezone: false }
+```
 
 The number of days in a month are also validated, including leap year.
 
@@ -119,7 +119,7 @@ The number of days in a month are also validated, including leap year.
 Here is an example using the `iso()` validator. This date schema will validate the Date constructor 
 input and output a valid Date object.
 
-<Shiki code={`
+```ts
 // Transforms a Date, string, or number into a Date
 export const dateSchema = transform(
 	// Input types: Date, string, number
@@ -130,7 +130,7 @@ export const dateSchema = transform(
 	// Output type: Date
 	(input) => new Date(input)
 );
-`} lang="ts" />
+```
 
 ### The Entire RegEx (Uncut)
 
@@ -146,14 +146,14 @@ The built-in validator only uses the default value if the input is undefined. Th
 value if the input is an empty string (trimmed), NaN, or falsy. I believe this fits more use cases 
 for a default value.
 
-<Shiki code={`
+```ts
 export function withDefault<TSchema extends BaseSchema>(schema: TSchema, value: Input<TSchema>) {
 	return coerce(schema, (input) =>
 		typeof value === "string" 
-			? \`\${input}\`.trim() || value 
+			? `${input}`.trim() || value 
 			: !input || (typeof value == "number" && isNaN(Number(input))) 
 			? value 
 			: input
 	);
 }
-`} lang="ts" />
+```

@@ -9,7 +9,6 @@ tags:
   - Supabase
   - TypeScript
 ---
-import Shiki from "$/components/markdown/shiki.astro";
 
 ## Table of Contents
 
@@ -17,12 +16,12 @@ In my [previous post](/blog/supabase-auth-in-sveltekit) I walked through how to 
 
 ## Installation
 
-<Shiki code={`
+```bash
 # Supabase Auth Helpers
 npm install @supabase/auth-helpers-sveltekit @supabase/auth-helpers-svelte
 # TRPC
 npm install @trpc/server @trpc/client trpc/sveltekit
-`} lang="bash" />
+```
 
 The following version of Node is required:
 
@@ -34,17 +33,17 @@ The following version of Node is required:
 
 Set up the fillowing env vars. For local development you can set them in a `.env` file. See an example [here](https://github.com/supabase-community/auth-helpers/blob/main/examples/sveltekit/example.env).
 
-<Shiki code={`
+```bash
 # Find these in your Supabase project settings > API
 VITE_SUPABASE_URL=https://your-project.supabase.co
 VITE_SUPABASE_ANON_KEY=your-anon-key
-`} lang="bash" />
+```
 
 ### SupabaseClient and SupaAuthHelper component setup
 
 Start off by creating a `db.ts` file inside of your `src/lib` directory. Then instantiate your `supabaseClient` by using the `createSupabaseClient` function from the `@supabase/auth-helpers-sveltekit` library. The `supabaseClient` is safe to be imported to the client-side code, because it only uses the anon key. RLS (row-level security) policies will ensure that the user is authenticated before accessing data they would otherwise not be supposed to.
 
-<Shiki code={`
+```ts
 // $lib/supabase/db.ts
 import { createSupabaseClient } from '@supabase/auth-helpers-sveltekit';
 
@@ -54,11 +53,11 @@ const { supabaseClient } = createSupabaseClient(
 );
 
 export { supabaseClient };
-`} lang="ts" />
+```
 
 Edit your `__layout.svelte` file and add import the `SupaAuthHelper` component, the `supabaseClient` we just instantiated and the `session` store. In addition, add the `QueryClientProvider` provided by the `@sveltestack/svelte-query` library.
 
-<Shiki code={`
+```svelte
 <!-- @/routes/__layout.svelte -->
 <script>
 import { session } from '$app/stores';
@@ -69,13 +68,13 @@ import { SupaAuthHelper } from '@supabase/auth-helpers-svelte';
 <SupaAuthHelper supabaseClient={supabaseClient} session={session}>
   <slot />
 </SupaAuthHelper>
-`} lang="svelte" />
+```
 
 ### Typings
 
 In order to get the most out of TypeScript and its intellisense, you should import our types into the `app.d.ts` type definition file that comes with your SvelteKit project.
 
-<Shiki code={`
+```ts
 // @/app.d.ts
 
 /// <reference types="@sveltejs/kit" />
@@ -97,13 +96,13 @@ declare namespace App {
   // interface Platform {}
   // interface Stuff {}
 }
-`} lang="ts" />
+```
 
 ### tRPC Setup
 
 The `index.ts` file is where you'll create the tRPC context and router.
 
-<Shiki code={`
+```ts
 // $lib/trpc/index.ts
 import * as trpc from "@trpc/server";
 import type { RequestEvent } from "@sveltejs/kit";
@@ -118,11 +117,11 @@ export const createContext = async ({ request, locals }: RequestEvent) => {
 export type Context = trpc.inferAsyncReturnType<typeof createContext>;
 
 export const createRouter = () => trpc.router<Context>();
-`} lang="ts" />
+```
 
 The `server.ts` file is where you'll merge the individual routers that handle your API endpoints. The example router will be explained later in the tutorial.
 
-<Shiki code={`
+```ts
 // $lib/trpc/server.ts
 import { createRouter } from "./context";
 import { exampleRouter } from "./routers/example"; 
@@ -132,13 +131,13 @@ export const router = createRouter()
 
 // export type definition of API
 export type Router = typeof router;
-`} lang="ts" />
+```
 
 The `client.ts` file is where you'll create the client-side tRPC client. This is the only code you'll import to your client-side code. 
 
 There are some additional helper types that can be used to assign types to variables prior to calling the query. You'll see an example of these types used in the server-side fetching example below.
 
-<Shiki code={`
+```ts
 // $lib/trpc/client.ts
 import { createTRPCClient } from "@trpc/client";
 import type { Router } from "./server"; // 👈 only the types are imported from the server
@@ -157,13 +156,13 @@ export type InferMutationOutput<RouteKey extends Mutation> = inferProcedureOutpu
   Router['_def']['mutations'][RouteKey]
 >;
 export type InferMutationInput<RouteKey extends Mutation> = inferProcedureInput<Router['_def']['mutations'][RouteKey]>;
-`} lang="ts" />
+```
 
 So far, so good. The last piece of the puzzle is a tRPC middleware for verifying that the user is authenticated. As we defined in the `app.d.ts` declaration file, the `App.Locals` includes the user information if the user is authenticated.
 
 The `MiddlewareFunction` type takes 3 properties: the `InputContext` type, the tRPC `Context` type, and the tRPC `ResponseMeta` type. For more information about the `ResponseMeta` type, see the `trpc-sveltekit` package documentation. It is not required for this tutorial.
 
-<Shiki code={`
+```ts
 // $lib/trpc/middlewares.ts
 import type { MiddlewareFunction } from "@trpc/server/dist/declarations/src/internals/middlewares";
 import { TRPCError } from "@trpc/server";
@@ -176,7 +175,7 @@ export const authMiddleware: MiddlewareFunction<{ req: Request; locals: App.Loca
   if (!locals.user) throw new TRPCError({ message: "Unauthorized", code: "UNAUTHORIZED" });
   return next();
 };
-`} lang="ts" />
+```
 
 ### Hooks setup
 
@@ -186,7 +185,7 @@ After the hooks are imported, you can set up a custom hook for implementing the 
 
 The `supabaseServerClient` is assigned to the app locals, which are only accessed on the server. You will see an example of this in use in the example router later in the tutorial. For [RLS](https://supabase.com/docs/learn/auth-deep-dive/auth-row-level-security) to work in a server environment, you need to inject the user's access token into the server client.
 
-<Shiki code={`
+```ts
 // @/hooks.ts
 import type { Handle, GetSession } from "@sveltejs/kit";
 import { sequence } from "@sveltejs/kit/hooks";
@@ -215,7 +214,7 @@ export const handle: Handle = sequence(
   }
 );
 
-// The session information returned here will be available to the client via the \`session\` store.
+// The session information returned here will be available to the client via the `session` store.
 export const getSession: GetSession = async event => {
   const { user, accessToken, error } = event.locals;
   return {
@@ -224,7 +223,7 @@ export const getSession: GetSession = async event => {
     error
   };
 };
-`} lang="ts" />
+```
 
 These will create the handlers under the hood that perform different parts of the authentication flow:
 
@@ -235,7 +234,7 @@ These will create the handlers under the hood that perform different parts of th
 
 ### Signing in
 
-<Shiki code={`
+```svelte
 <script lang="ts">
 import { supabase } from "$lib/supabase/client";
 import { page, session } from "$app/stores";
@@ -249,13 +248,13 @@ async function signin() {
         provider: "github"
       },
       {
-        redirectTo: \`\${$page.url.origin}/redirect?to=\${encodeURIComponent($page.url.pathname)}\`
+        redirectTo: `${$page.url.origin}/redirect?to=${encodeURIComponent($page.url.pathname)}`
       }
     );
   }
 };
 </script>
-`} lang="svelte" />
+```
 
 ### Signing out
 
@@ -263,15 +262,15 @@ This library has provided a dedicated endpoint for you to use to sign a user out
 
 The logout handler endpoint is `/api/auth/logout`, this will take a `GET` request which means it can be used as the href for a normal `a` tag in your html.
 
-<Shiki code={`
+```html
 <a href="/api/auth/logout">Sign out</a>
-`} lang="html" />
+```
 
 ### Basic Setup
 
 You can now determine if a user is authenticated on the client-side by checking that the `user` object returned by the `$session` store is defined.
 
-<Shiki code={`
+```svelte
 <script>
 import { session } from '$app/stores';
 </script>
@@ -282,7 +281,7 @@ import { session } from '$app/stores';
   <h1>Welcome {$session.user.email}</h1>
   <p>I am logged in!</p>
 {/if}
-`} lang="svelte" />
+```
 
 ## Data Fetching
 
@@ -290,7 +289,7 @@ import { session } from '$app/stores';
 
 For [RLS](https://supabase.com/docs/learn/auth-deep-dive/auth-row-level-security) to work properly when fetching data client-side, you need to make sure to import the `{ supabaseClient }` from `@supabase/auth-helpers-sveltekit` and only run your query once the user is defined client-side in the `$session`:
 
-<Shiki code={`
+```svelte
 <script>
 import Auth from 'supabase-ui-svelte';
 import { error, isLoading } from '@supabase/auth-helpers-svelte';
@@ -323,13 +322,13 @@ $: {
   <p>client-side data fetching with RLS</p>
   <pre>{JSON.stringify(loadedData, null, 2)}</pre>
 {/if}
-`} lang="svelte" />
+```
 
 ### Server-side data fetching with RLS and tRPC
 
 This is the same as the client-side example above, but this time we are using tRPC to fetch the data from supabase on the server.
 
-<Shiki code={`
+```ts
 // src/trpc/routers/example.ts
 import Auth from 'supabase-ui-svelte';
 import { authMiddleware, createRouter } from "$lib/trpc";
@@ -346,7 +345,7 @@ export const exampleRouter = createRouter()
       text: z.string().nullish(),
     }).nullish(),
     async resolve({ input: { text } }) {
-      return \`Hello \${text || 'world'}!\`;
+      return `Hello ${text || 'world'}!`;
     }
   });
   // anything after this line is a protected endpoint and should use the Supabase server client
@@ -363,9 +362,9 @@ export const exampleRouter = createRouter()
       return result;
     }
   });
-`} lang="ts" />
+```
 
-<Shiki code={`
+```svelte
 <script lang="ts">
 import { session } from "$app/stores";
 import { browser } from "$app/env";
@@ -403,4 +402,4 @@ $: { if ($error) errorMessage = $error.message; }
   <p>client-side data fetching with RLS</p>
   <pre>{JSON.stringify(exampleData, null, 2)}</pre>
 {/if}
-`} lang="svelte" />
+```

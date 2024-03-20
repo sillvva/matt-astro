@@ -9,7 +9,6 @@ tags:
   - SvelteKit
   - TypeScript
 ---
-import Shiki from '$/components/markdown/shiki.astro'
 
 ## Table of Contents
 
@@ -19,7 +18,7 @@ This store tracks this history of its value and provides undo and redo functions
 
 Credit for this code goes to [/u/Graineon and /u/Mustard_kat on Reddit](https://www.reddit.com/r/sveltejs/comments/vx86oo/comment/ifupe23/?utm_source=reddit&utm_medium=web2x&context=3).
 
-<Shiki code={`
+```ts
 import { writable } from "svelte/store";
 
 export function history<T>(initial: T) {
@@ -48,13 +47,13 @@ export function history<T>(initial: T) {
     }
   };
 }
-`} />
+```
 
 ## WebSockets
 
 This is a read-only store I wrote to track the state of a WebSocket connection. It is a very basic example.
 
-<Shiki code={`
+```ts
 import { writable } from "svelte/store";
 
 export default function createSocket<T>(initial?: T) {
@@ -90,11 +89,11 @@ export default function createSocket<T>(initial?: T) {
     }
   };
 }
-`} />
+```
 
 Then in your Svelte component:
 
-<Shiki code={`
+```svelte
 <script lang="ts">
   import { onMount } from 'svelte';
   import createSocket from "$lib/stores/websocket"
@@ -108,13 +107,13 @@ Then in your Svelte component:
 
   $: console.log($store)
 </script>
-`} lang="svelte" />
+```
 
 ## Toasts
 
 This is another store I had written to manage toast messages.
 
-<Shiki code={`
+```ts
 import { writable } from "svelte/store";
 
 export type ToastType = "success" | "error" | "warning" | "info";
@@ -150,4 +149,4 @@ export const toasts = (() => {
     reset
   };
 })();
-`} lang="ts" />
+```
