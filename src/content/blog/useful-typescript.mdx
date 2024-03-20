@@ -244,30 +244,25 @@ Below is a `setValue` function which takes an object, a path, and a value. It is
 The path is a string of dot-separated keys. The function should set the value at the given path. The path parameter will have autocomplete and the value parameter will be required to be of the same type as the property at that path. See the playground for examples. This function works very similarly to [lodash.set](https://lodash.com/docs/4.17.15#set), but with stronger type safety.
 
 <Shiki code={`
-function setValue<
-	T extends Record<string, unknown>,
-	P extends FormPathLeaves<T>,
-	V extends FormPathType<T, P>
->(obj: T, path: P, value: V) {
-	if (typeof path === "string") {
-		const pList = path
-			.split(/[[\\].]+/)
-			.filter(Boolean);
-		const lastKey = pList.pop();
-		const pointer = pList.reduce(
-			(accumulator: { [x: string]: any }, currentValue: string | number) => {
-				if (accumulator[currentValue] === undefined)
-					accumulator[currentValue] = {};
-				return accumulator[currentValue];
-			},
-			obj
-		);
-		if (typeof lastKey !== "undefined") {
-			if (pointer[lastKey] && typeof pointer[lastKey] !== typeof value) 
-				throw new Error("Invalid value type");
-			pointer[lastKey] = value;
-			return obj;
-		}
+export function setValue<T extends Record<string | number, unknown>, P extends FormPathLeaves<T>, V extends FormPathType<T, P>>(
+	obj: T,
+	path: P,
+	value: V
+) {
+	const pList = path
+		.split(/[[\].]+/)
+		.filter((i) => typeof i !== "undefined" && i !== "")
+		.map((i) => (isNaN(Number(i)) ? i : Number(i)));
+	const lastKey = pList.pop();
+	const pointer = pList.reduce((accumulator: Record<string | number, unknown>, currentValue: string | number) => {
+		if (accumulator[currentValue] === undefined) accumulator[currentValue] = {};
+		return accumulator[currentValue] as Record<string | number, unknown>;
+	}, obj);
+	if (typeof lastKey !== "undefined") {
+		if (!(lastKey in pointer)) throw new Error("Invalid path. This is likely due to a missing array index.");
+		if (pointer[lastKey] && typeof pointer[lastKey] !== typeof value) throw new Error("Invalid value type");
+		pointer[lastKey] = value;
+		return obj;
 	}
 	return obj;
 }
