@@ -1,0 +1,114 @@
+.hex-menu-wrapper {
+	display: inline-block;
+	.hex-menu-row {
+		height: calc(108px * var(--scale));
+		position: relative;
+		&.shift {
+			margin-left: calc(125px / 2 * var(--scale));
+		}
+	}
+	&.rotated {
+		.hex-menu-row {
+			height: calc(125px * var(--scale));
+		}
+	}
+}
+
+.hex-menu-item-container {
+	--baseMargin: -37.5px;
+	display: inline-block;
+	position: relative;
+	top: 50%;
+	translate: 0 -50%;
+	width: calc(200px * var(--scale));
+	height: calc(200px * var(--scale));
+	margin-left: calc(var(--baseMargin) * var(--scale));
+	margin-right: calc(var(--baseMargin) * var(--scale));
+	z-index: 1;
+	pointer-events: none;
+	&:hover {
+		z-index: 2;
+		.hex-menu-item:not(.empty) {
+			.hex {
+				fill: var(--hoverColor);
+			}
+		}
+	}
+	&.rotated {
+		--baseMargin: -46px;
+		&:nth-child(2n) {
+			top: calc(50% + 125px / 2 * var(--scale));
+		}
+	}
+	.hex-menu-item {
+		width: 100%;
+		height: 100%;
+		pointer-events: none;
+		&.active,
+		&.empty {
+			cursor: default;
+		}
+		&.empty {
+			.hex {
+				fill: transparent;
+				pointer-events: none;
+			}
+		}
+		&.active {
+			.hex {
+				fill: var(--activeColor);
+			}
+		}
+		.hex {
+			fill: var(--itemColor);
+			z-index: -1;
+			backface-visibility: hidden;
+			transition:
+				fill 500ms ease,
+				-webkit-transform 1s ease-in-out;
+			pointer-events: auto;
+			&:hover {
+				fill: var(--hoverColor);
+			}
+		}
+	}
+	.label {
+		color: var(--labelColor);
+		text-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+		font-family: sans-serif;
+		white-space: nowrap;
+		font-size: 1em;
+		font-weight: 600;
+		letter-spacing: 1px;
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		translate: -50% -50%;
+		scale: var(--scale);
+	}
+}
+
+.bounce:hover:not(.active):not(.empty) {
+	animation: bounce 500ms ease-in-out forwards;
+	stroke: rgb(0, 0, 0);
+	stroke-width: 0;
+	.backface {
+		box-shadow: none;
+	}
+}
+@keyframes bounce {
+	40% {
+		scale: 1.2;
+		stroke-width: 2;
+	}
+	60% {
+		scale: 1;
+	}
+	80% {
+		scale: 1.05;
+		stroke-width: 2;
+	}
+	100% {
+		scale: 1;
+	}
+}
