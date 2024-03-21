@@ -7,6 +7,7 @@ const codeCollection = await getCodeCollection();
 
 type Props = {
 	wrap?: boolean;
+	filename?: string;
 } & ({
 	type: "code";
   code: string;
@@ -38,7 +39,7 @@ if ("code" in rest) {
 <script>
 	function copyBlock(el: Element) {
 		navigator.clipboard.writeText(el.parentNode?.parentNode?.querySelector("pre")?.innerText || "");
-		document.querySelectorAll(".copy, .combined-copy").forEach((btn) => {
+		document.querySelectorAll(".copy").forEach((btn) => {
 			btn.innerHTML = "Copy";
 			btn.classList.add("bg-gray-700");
 			btn.classList.remove("bg-green-700");
@@ -49,7 +50,7 @@ if ("code" in rest) {
 	}
 
 	document.addEventListener("astro:page-load", () => {
-		document.querySelectorAll("article > section > .pre-block .copy").forEach((btn) => {
+		document.querySelectorAll("article .pre-block .copy").forEach((btn) => {
 			btn.addEventListener("click", () => copyBlock(btn));
 		});
 	});
@@ -70,18 +71,21 @@ if ("code" in rest) {
 	</div>
 }
 
-<div
-	class="pre-block relative mb-4 mt-2 rounded-md border border-base-100 text-base-content"
->
+<div class="pre-block relative mt-2 mb-4 rounded-md border border-base-100 bg-neutral-900 text-base-content">
 	<div
-		class="flex items-center justify-between rounded-t border-b border-base-100 bg-neutral-800 p-2 text-sm"
-	>
+		class="flex items-center justify-between rounded-t border-b border-base-100 bg-neutral-800 p-2 text-sm group-[.tabbed-code]:py-0">
 		<div class="flex space-x-1">
 			<div class="h-2 w-2 rounded-full bg-gray-500"></div>
 			<div class="h-2 w-2 rounded-full bg-gray-500"></div>
 			<div class="h-2 w-2 rounded-full bg-gray-500"></div>
 		</div>
+		{Astro.props.filename &&
+			<div class="code-tab ml-3 hidden border-t-2 border-primary bg-neutral-900 p-3 text-xs md:text-sm group-[.tabbed-code]:block">
+				{Astro.props.filename}
+			</div>
+		}
+		<div class="flex-1"></div>
 		<button class="copy rounded-md bg-gray-700 px-2 py-1 text-sm text-white" type="button">Copy</button>
 	</div>
-  <Code code={code.trim()} {lang} theme="aurora-x" {wrap} class="mt-0 rounded-t-none text-xs [tab-size:2]" />
+  <Code code={code.trim()} {lang} theme="aurora-x" {wrap} class="my-0 rounded-t-none text-xs [tab-size:2]" />
 </div>

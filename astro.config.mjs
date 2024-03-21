@@ -1,6 +1,13 @@
 import mdx from "@astrojs/mdx";
 import tailwind from "@astrojs/tailwind";
 import vercel from "@astrojs/vercel/serverless";
+import {
+	transformerNotationDiff,
+	transformerNotationFocus,
+	transformerNotationHighlight,
+	transformerNotationWordHighlight,
+	transformerRenderWhitespace
+} from "@shikijs/transformers";
 import { defineConfig } from "astro/config";
 import remarkToc from "remark-toc";
 
@@ -18,7 +25,23 @@ export default defineConfig({
 	integrations: [tailwind(), mdx()],
 	markdown: {
 		shikiConfig: {
-			theme: "aurora-x"
+			theme: "aurora-x",
+			transformers: [
+				transformerNotationDiff(),
+				transformerNotationHighlight(),
+				transformerNotationWordHighlight(),
+				transformerNotationFocus(),
+				transformerRenderWhitespace(),
+				{
+					preprocess(text, config) {
+						config.transformers.push({
+							pre(node) {
+								this.addClassToHast(node, `language-${config.lang}`);
+							}
+						});
+					}
+				}
+			]
 		},
 		remarkPlugins: [[remarkToc, { tight: true, maxDepth: 3 }]]
 	},

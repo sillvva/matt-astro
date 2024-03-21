@@ -23,7 +23,7 @@ For more information on responsive images, see the MDN article.
 [MDN](btn::https://developer.mozilla.org/en-US/docs/Learn/HTML/Multimedia_and_embedding/Responsive_images)
 </div>
 
-```jsx
+```astro
 ---
 import type { ImageOutputFormat } from "astro";
 import { getImage, type ImgAttributes } from "astro:assets";
@@ -68,7 +68,7 @@ const sizes = srcSet.map((ss) => (ss.media ? `${ss.media} ${ss.size}px` : `${ss.
 
 ### Example
 
-```jsx
+```astro
 // Post Cover Image
 <ResponsiveImage
   src={image}
@@ -121,7 +121,7 @@ const sizes = srcSet.map((ss) => (ss.media ? `${ss.media} ${ss.size}px` : `${ss.
 
 The following is a custom component for Astro that generates a responsive image using the `<picture>` element and `<source>` elements. It also uses the `getImage` function from the `astro:assets` module to generate the image URLs. The function uses the same compression as the built-in `<Image />` component from Astro.
 
-```tsx
+```astro
 ---
 import { cn } from "$/util";
 import type { ImageOutputFormat } from "astro";
@@ -202,7 +202,7 @@ if (!imgSrc) throw new Error("No image source found");
 
 ### Example
 
-```tsx
+```astro
 // Post Cover Image
 <ResponsiveImage
   src={image}

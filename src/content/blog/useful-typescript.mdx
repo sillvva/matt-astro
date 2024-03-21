@@ -9,6 +9,7 @@ tags:
 ---
 import Collapsible from "$/components/markdown/collapsible.astro";
 import Shiki from "$/components/markdown/shiki.astro";
+import TabbedCode from "$/components/markdown/tabbed-code.astro";
 import Tweet from "$/components/markdown/tweet.astro";
 import TweetBox from "$/components/markdown/tweetbox.astro";
 
@@ -29,6 +30,7 @@ The `startViewTransition` function is a method on the `document` object which en
   [MDN](btn::https://developer.mozilla.org/en-US/docs/Web/API/Document/startViewTransition)
 </div>
 
+<TabbedCode filename="app.d.ts">
 ```ts
 declare global {
 	interface ViewTransition {
@@ -61,6 +63,7 @@ declare global {
 	}
 }
 ```
+</TabbedCode>
 
 <Collapsible title="Using in SvelteKit">
   In SvelteKit, you can add the above type declaration to a file in the `src` directory, such as `src/types.d.ts`. Then you can add view transitions to your SvelteKit app by following the video below, ignoring the `@ts-ignore` comments.
