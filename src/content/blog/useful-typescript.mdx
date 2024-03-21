@@ -250,21 +250,29 @@ export function setValue<T extends Record<string | number, unknown>, P extends F
 	path: P,
 	value: V
 ) {
+	// Split the path into an array of keys and convert any numeric strings to numbers.
 	const pList = path
 		.split(/[[\].]+/)
 		.filter((i) => typeof i !== "undefined" && i !== "")
 		.map((i) => (isNaN(Number(i)) ? i : Number(i)));
+		
+	// Remove the last key from the array and store it in a variable.
 	const lastKey = pList.pop();
+	if (!lastKey) throw new Error("Invalid path.");
+
+	// Create a pointer object that traverses the nested properties of the `obj` object based on the `path` provided.
+	// If a property does not exist, it will be created as an empty object.
 	const pointer = pList.reduce((accumulator: Record<string | number, unknown>, currentValue: string | number) => {
 		if (accumulator[currentValue] === undefined) accumulator[currentValue] = {};
 		return accumulator[currentValue] as Record<string | number, unknown>;
 	}, obj);
-	if (typeof lastKey !== "undefined") {
-		if (!(lastKey in pointer)) throw new Error("Invalid path. This is likely due to a missing array index.");
-		if (pointer[lastKey] && typeof pointer[lastKey] !== typeof value) throw new Error("Invalid value type");
-		pointer[lastKey] = value;
-		return obj;
-	}
+
+	if (!(lastKey in pointer)) throw new Error("Invalid path. This is likely due to a missing array index.");
+	if (pointer[lastKey] && typeof pointer[lastKey] !== typeof value)
+		throw new Error(`Invalid value type. Expected ${typeof pointer[lastKey]} but got ${typeof value}.`);
+
+	// Set the value of the last key in the pointer object.
+	pointer[lastKey] = value;
 	return obj;
 }
 ```
