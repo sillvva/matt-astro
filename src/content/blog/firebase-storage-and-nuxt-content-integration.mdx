@@ -13,7 +13,6 @@ tags:
 ---
 import secrets from "$/assets/images/github-secrets-firebase.webp";
 import MDImage from "$/components/markdown/mdimage.astro";
-import Shiki from "$/components/markdown/shiki.astro";
 
 ## Table of Contents
 
@@ -27,7 +26,7 @@ This project started because I wanted to keep my markdown files separate from my
 
 I had already set up a CI/CD process for building and deploying pull requests into my master branch on Github to Firebase Hosting. Github Actions use workflow .yml files to create build, testing, and deployment jobs. They are stored in the `.github/workflows` directory. Here is my up-to-date workflow file for build and deploy:
 
-<Shiki code={`
+```yaml
 # .github/workflows/deploy.yml
 name: mattdekok.dev CD
 
@@ -58,8 +57,8 @@ jobs:
       
       - name: Generate Frontend
         env:
-          FIREBASE_ADMIN_CREDENTIAL: \${{ secrets.FIREBASE_ADMIN_CREDENTIAL }}
-          FIREBASE_STORAGE_BUCKET: \${{ secrets.FIREBASE_STORAGE_BUCKET }}
+          FIREBASE_ADMIN_CREDENTIAL: ${{ secrets.FIREBASE_ADMIN_CREDENTIAL }}
+          FIREBASE_STORAGE_BUCKET: ${{ secrets.FIREBASE_STORAGE_BUCKET }}
         run: cd frontend && npm ci && npm run update-blog && npm run generate
       
       - name: Build Functions
@@ -70,8 +69,8 @@ jobs:
         with:
           args: deploy --only functions,hosting
         env:
-          FIREBASE_TOKEN: \${{ secrets.FIREBASE_TOKEN }}
-`} lang="yaml" />
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+```
 
 The important parts to consider for generating the content directory dynamically are the `workflow_dispatch` trigger and the `npm run update-blog` command and two environment variables in the Generate Frontend step. Github provides an API that, when called, can manually trigger a workflow that contains the `workflow_dispatch` trigger.
 
@@ -91,7 +90,7 @@ The `npm run update-blog` command runs the following Node.js script. The script 
 
 After that, it proceeds to run the `npm run generate` command as normal.
 
-<Shiki code={`
+```js
 // frontend/updateBlog.js
 const admin = require("firebase-admin");
 const path = require("path");
@@ -146,7 +145,7 @@ const storageDir = "blog/articles"; // The directory where your markdown files a
         const filePath = file.name || "";
         const fileExtension = path.extname(filePath);
         const baseFileName = path.basename(filePath, fileExtension);
-        const createPath = \`\${articleDir}/\${baseFileName}\${fileExtension}\`;
+        const createPath = `${articleDir}/${baseFileName}${fileExtension}`;
 
         let fileContent = "";
         file
@@ -156,7 +155,7 @@ const storageDir = "blog/articles"; // The directory where your markdown files a
           })
           .on("end", async () => {
             fs.appendFileSync(createPath, fileContent);
-            console.log(\`Created: \${createPath}\`);
+            console.log(`Created: ${createPath}`);
             resolve(true);
           });
       } catch (err) {
@@ -167,13 +166,13 @@ const storageDir = "blog/articles"; // The directory where your markdown files a
     });
   }
 })();
-`} lang="js" />
+```
 
 ### Add the script to your package.json
 
 In order for the Github Actions workflow to run the script, you need to add it to your `package.json` file.
 
-<Shiki code={`
+```json
 // functions/package.json
 {
   ...
@@ -186,7 +185,7 @@ In order for the Github Actions workflow to run the script, you need to add it t
   },
   ...
 }
-`} lang="json" />
+```
 
 ## Step 2: Trigger the Workflow Automatically
 
@@ -196,15 +195,15 @@ So now your markdown files will be fetched whenever your Github workflow runs. T
 
 Go to https://github.com/settings/tokens and click `Generate new token`. Then copy your token into your Firebase Functions config with the following command-line script:
 
-<Shiki code={`
+```bash
 firebase functions:config:set github.personal_access_token=YOUR_TOKEN
-`} lang="bash" />
+```
 
 ### Create a Handler Function
 
 This is the handler function that will be used by functions to handle sending the `workflow_dispatch` call to Github's API.
 
-<Shiki code={`
+```ts
 // functions/src/handlers/workflowDispatch.ts
 import * as functions from "firebase-functions";
 import * as path from "path";
@@ -216,7 +215,7 @@ export default async (object: functions.storage.ObjectMetadata, context: functio
   const fileDir = path.dirname(filePath);
 
   if (fileDir === "blog/articles" && fileExtension == ".md") {
-    functions.logger.log(\`Storage Trigger: \${context.eventType.replace("google.storage.object.", "")}: \${filePath}\`);
+    functions.logger.log(`Storage Trigger: ${context.eventType.replace("google.storage.object.", "")}: ${filePath}`);
 
     const octokit = new Octokit({ auth: functions.config().github.personal_access_token });
     try {
@@ -235,7 +234,7 @@ export default async (object: functions.storage.ObjectMetadata, context: functio
 
   return true;
 };
-`} lang="ts" />
+```
 
 ### Create The Functions
 
@@ -243,7 +242,7 @@ The following Firebase Functions will trigger whenever a file is created or dele
 
 **Known Issue:** One thing I haven't been able to figure out is how to prevent both of these functions from triggering when a file is updated. In Firebase Storage, when a file with the same name as an existing file is uploaded, it triggers both a create and delete. This creates two workflow events on Github. However, this isn't a big issue. One will fail at the deploy step, and the other will succeed.
 
-<Shiki code={`
+```ts
 // functions/src/blog/reactive/onPostCreated.function.ts
 import * as functions from "firebase-functions";
 import workflowDispatchHandler from "../../handlers/workflowDispatch";
@@ -252,9 +251,9 @@ exports.onPostCreated = functions.storage
   .bucket(functions.config().fb.storage_bucket)
   .object()
   .onFinalize(workflowDispatchHandler);
-`} lang="ts" />
+```
 
-<Shiki code={`
+```ts
 // functions/src/blog/reactive/onPostDeleted.function.ts
 import * as functions from "firebase-functions";
 import workflowDispatchHandler from "../../handlers/workflowDispatch";
@@ -263,7 +262,7 @@ exports.onPostDeleted = functions.storage
   .bucket(functions.config().fb.storage_bucket)
   .object()
   .onDelete(workflowDispatchHandler);
-`} lang="ts" />
+```
 
 ## Conclusion
 
@@ -273,30 +272,30 @@ Now that you have your Github workflow and Firebase Functions setup, the magic s
 
 Running the `update-blog` script requires environment variables. To run the script locally, you'll need to install the `dotenv` package in your Nuxt source directory.
 
-<Shiki code={`
+```bash
 cd frontend
 npm install -D dotenv
-`} lang="bash" />
+```
 
 Then you'll need to create a `.env` file containing the environment variables. The credential should be the same JSON string you entered as a secret on Github. Make sure to add the .env file to your `.gitignore` file.
 
-<Shiki code={`
+```bash
 # frontend/.env
 FIREBASE_ADMIN_CREDENTIAL="YOUR CREDENTIAL HERE"
 FIREBASE_STORAGE_BUCKET="YOUR BUCKET HERE"
-`} lang="bash" />
+```
 
 Create a script to load the environment variables and call the `updateBlog.js` script.
 
-<Shiki code={`
+```js
 // frontend/updateBlogDev.js
 require('dotenv').config({ path: './.env' });
 require('./updateBlog.js');
-`} lang="js" />
+```
 
 Finally, add a script to your package.json to call this script.
 
-<Shiki code={`
+```json
 // frontend/package.json
 {
   ...
@@ -310,4 +309,4 @@ Finally, add a script to your package.json to call this script.
   },
   ...
 }
-`} lang="json" />
+```

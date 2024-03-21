@@ -26,16 +26,6 @@ const blogCollection = defineCollection({
 		})
 });
 
-const codeCollection = defineCollection({
-	type: "content",
-	schema: () =>
-		z.object({
-			name: z.string(),
-			playground: z.string().url().optional(),
-			source: z.string().url().optional()
-		})
-});
-
 const projectCollection = defineCollection({
 	type: "data",
 	schema: ({ image }) =>
@@ -92,7 +82,6 @@ const linkCollection = defineCollection({
 
 export const collections = {
 	blog: blogCollection,
-	code: codeCollection,
 	projects: projectCollection,
 	links: linkCollection,
 	experience: experienceCollection
