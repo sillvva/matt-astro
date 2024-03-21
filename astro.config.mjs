@@ -42,6 +42,15 @@ export default defineConfig({
 								this.addClassToHast(node, `language-${config.lang}`);
 							}
 						});
+					},
+					tokens(tokens) {
+						tokens = tokens.map((line) => {
+							return line.map((token) => {
+								if (token.color === "#546E7A") token.color = "#A7ADBA";
+								if (token.color === "#F07178") token.color = "#50d1b8";
+								if (token.color === "#F78C6C") token.color = "#ffffff";
+							});
+						});
 					}
 				}
 			]
