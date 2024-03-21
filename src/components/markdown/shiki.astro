@@ -50,8 +50,9 @@ if ("code" in rest) {
 	}
 
 	document.addEventListener("astro:page-load", () => {
-		document.querySelectorAll("article .pre-block .copy").forEach((btn) => {
-			btn.addEventListener("click", () => copyBlock(btn));
+		document.querySelectorAll("article .pre-block:is(.shiki)").forEach((block) => {
+			const btn = block.querySelector(".copy");
+			if (btn) btn.addEventListener("click", () => copyBlock(btn));
 		});
 	});
 </script>
@@ -71,7 +72,7 @@ if ("code" in rest) {
 	</div>
 }
 
-<div class="pre-block relative mt-2 mb-4 rounded-md border border-base-100 bg-neutral-900 text-base-content">
+<div class="pre-block shiki relative mt-2 mb-4 rounded-md border border-base-100 bg-neutral-900 text-base-content">
 	<div
 		class="flex items-center justify-between rounded-t border-b border-base-100 bg-neutral-800 p-2 text-sm group-[.tabbed-code]:py-0">
 		<div class="flex space-x-1">
@@ -80,18 +81,18 @@ if ("code" in rest) {
 			<div class="h-2 w-2 rounded-full bg-gray-500"></div>
 		</div>
 		{Astro.props.filename &&
-			<div class="code-tab ml-3 hidden border-t-2 border-primary bg-neutral-900 p-3 text-xs md:text-sm group-[.tabbed-code]:block">
+			<div class="code-tab ml-3 hidden border-t border-primary bg-neutral-900 h-[44px] p-3 text-xs md:text-sm group-[.tabbed-code]:block">
 				{Astro.props.filename}
 			</div>
 		}
 		<div class="flex-1"></div>
-		<button class="copy rounded-md bg-gray-700 px-2 py-1 text-sm text-white" type="button">Copy</button>
+		<button class="copy rounded-md bg-gray-700 px-2 py-1 text-sm text-white" type="button">
+			Copy
+		</button>
 	</div>
+	<span class="lang">{lang}</span>
   <Code 
-		{lang}
-		code={code.trim()} 
-		theme="aurora-x"
-		{wrap} 
-		class={cn("my-0 rounded-t-none text-xs [tab-size:2]", `language-${lang}`)} 
-		/>
+		{lang} code={code.trim()} theme="aurora-x" {wrap} 
+		class={cn("my-0 rounded-t-none text-xs [tab-size:2] px-4 py-5", `language-${lang}`)} 
+	/>
 </div>

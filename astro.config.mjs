@@ -38,6 +38,7 @@ export default defineConfig({
 					preprocess(text, config) {
 						config.transformers.push({
 							pre(node) {
+								node.properties.lang = config.lang;
 								this.addClassToHast(node, `language-${config.lang}`);
 							}
 						});

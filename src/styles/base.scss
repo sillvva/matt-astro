@@ -82,6 +82,22 @@
 		}
 	}
 
+	.pre-block {
+		--lang: attr(data-lang);
+		.lang {
+			text-transform: uppercase;
+			display: inline-block;
+			position: absolute;
+			top: 45px;
+			right: 0rem;
+			z-index: 1;
+			background-color: #171717;
+			padding: 0.1rem 0.4rem;
+			font-size: x-small;
+			color: rgba(255, 255, 255, 0.5);
+		}
+	}
+
 	.tabbed-code {
 		.code-tab {
 			max-width: calc(100vw - 160px);
@@ -96,53 +112,6 @@
 
 	.astro-code {
 		position: relative;
-		&.language-ts {
-			--lang: "TS";
-		}
-		&.language-js {
-			--lang: "JS";
-		}
-		&.language-html {
-			--lang: "HTML";
-		}
-		&.language-css {
-			--lang: "CSS";
-		}
-		&.language-scss {
-			--lang: "SCSS";
-		}
-		&.language-md {
-			--lang: "MD";
-		}
-		&.language-json {
-			--lang: "JSON";
-		}
-		&.language-yaml {
-			--lang: "YAML";
-		}
-		&.language-tsx {
-			--lang: "TSX";
-		}
-		&.language-jsx {
-			--lang: "JSX";
-		}
-		&.language-bash {
-			--lang: "BASH";
-		}
-		&.language-astro {
-			--lang: "ASTRO";
-		}
-		&.language-svelte {
-			--lang: "SVELTE";
-		}
-		&::before {
-			content: var(--lang);
-			display: block;
-			position: absolute;
-			top: 0.5rem;
-			right: 0.5rem;
-			color: rgba(255, 255, 255, 0.5);
-		}
 		code {
 			&:has(.line.diff) {
 				.line:not(.diff) {
@@ -158,6 +127,9 @@
 			.line {
 				display: inline-block;
 				width: 100%;
+				&:empty {
+					display: none;
+				}
 				&.highlighted {
 					background-color: rgba(255, 255, 255, 0.1);
 					&.error {
