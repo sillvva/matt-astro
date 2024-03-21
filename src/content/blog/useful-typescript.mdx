@@ -294,7 +294,8 @@ export function setValue<T extends Record<string | number, unknown>, P extends F
 Using the object from the previous example, we can set the value of the `date` property to a `Date` object, and the value of the `tags[0]` property to a string. We can also see that trying to set the `date` property to a string will result in a type error.
 
 ```ts
-setValue(logData, "date", new Date("2023-02-01")); // good
-setValue(logData, "tags[0]", "test");              // good
-setValue(logData, "date", "2024-01-01");           // error
+setValue(logData, "date", new Date("2023-02-01"));
+setValue(logData, "tags[0]", "test");
+// [!code word:2024-01-01:1]
+setValue(logData, "date", "2024-01-01"); // expected Date, received string // [!code error]
 ```

@@ -3,6 +3,7 @@ import tailwind from "@astrojs/tailwind";
 import vercel from "@astrojs/vercel/serverless";
 import {
 	transformerNotationDiff,
+	transformerNotationErrorLevel,
 	transformerNotationFocus,
 	transformerNotationHighlight,
 	transformerNotationWordHighlight,
@@ -32,6 +33,7 @@ export default defineConfig({
 				transformerNotationWordHighlight(),
 				transformerNotationFocus(),
 				transformerRenderWhitespace(),
+				transformerNotationErrorLevel(),
 				{
 					preprocess(text, config) {
 						config.transformers.push({
