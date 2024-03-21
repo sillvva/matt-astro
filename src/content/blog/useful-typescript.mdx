@@ -10,6 +10,7 @@ tags:
 import Collapsible from "$/components/markdown/collapsible.astro";
 import Shiki from "$/components/markdown/shiki.astro";
 import Tweet from "$/components/markdown/tweet.astro";
+import TweetBox from "$/components/markdown/tweetbox.astro";
 
 ## Table of Contents
 
@@ -93,10 +94,10 @@ process.env.MY_ENV; // string
 
 Keep in mind that this is type faith, not type safe. You can also use a schema validation library to parse your environment variables and infer the type from that. If a variable is missing, you can throw an error.
 
-<div class="grid sm:grid-cols-2 gap-4">
+<TweetBox>
   <Tweet link="https://twitter.com/mattpocockuk/status/1758454430666506589" />
   <Tweet link="https://twitter.com/mattpocockuk/status/1760991147793449396" />
-</div>
+</TweetBox>
 
 ## Utility Types
 
@@ -106,13 +107,13 @@ The `Prettify` type is a simple type which takes an object type with intersectio
 
 <Shiki id="CombinePrettify.md" />
 
-<div class="grid sm:grid-cols-2 gap-4">
+<TweetBox>
   <Tweet link="https://twitter.com/mattpocockuk/status/1622730173446557697" />
   <Tweet link="https://twitter.com/mattpocockuk/status/1622730175266926592" />
   <Tweet link="https://twitter.com/mattpocockuk/status/1622730176931983360" />
   <Tweet link="https://twitter.com/mattpocockuk/status/1622730179289251840" />
   <Tweet link="https://twitter.com/mattpocockuk/status/1712391832573718721" />
-</div>
+</TweetBox>
 
 ### Merge Union Types
 
@@ -124,9 +125,9 @@ The `MergeUnion` type is a utility type that does as its name suggests. It takes
 
 The `Satisfies` type is a utility type that checks if a type satisfies an expected type and returns the actual type.
 
-<div class="grid sm:grid-cols-2 gap-4">
+<TweetBox>
   <Tweet link="https://twitter.com/buildsghost/status/1770530554028675254" />
-</div>
+</TweetBox>
 
 ## Type Guards
 
