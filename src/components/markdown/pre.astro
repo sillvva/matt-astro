@@ -5,7 +5,7 @@ import { cn } from "$/util";
 <script>
 	function copyBlock(el: Element) {
 		navigator.clipboard.writeText(el.parentNode?.parentNode?.querySelector("pre")?.innerText || "");
-		document.querySelectorAll(".copy, .combined-copy").forEach((btn) => {
+		document.querySelectorAll(".copy").forEach((btn) => {
 			btn.innerHTML = "Copy";
 			btn.classList.add("bg-gray-700");
 			btn.classList.remove("bg-green-700");
@@ -15,36 +15,32 @@ import { cn } from "$/util";
 		el.classList.add("bg-green-700");
 	}
 
-	document.addEventListener("astro:page-load", () => {
-		document.querySelectorAll("article > section > .pre-block .copy").forEach((btn) => {
-			btn.addEventListener("click", () => copyBlock(btn));
-		});
+document.addEventListener("astro:page-load", () => {
+	document.querySelectorAll("article .pre-block:not(.shiki)").forEach((block) => {
+		const btn = block.querySelector(".copy");
+		if (btn) btn.addEventListener("click", () => copyBlock(btn));
 	});
+});
 </script>
 
-<div
-	class="pre-block relative mb-4 mt-2 rounded-md border border-base-100 bg-neutral-900 text-base-content group-[.combined-block]:my-0 group-[.combined-block]:min-w-max group-[.combined-block]:overflow-visible group-[.combined-block]:border-0"
->
+<div class="pre-block relative mt-2 mb-4 rounded-md border border-base-100 bg-neutral-900 text-base-content">
 	<div
-		class="flex items-center justify-between rounded-t border-b border-base-100 bg-neutral-800 p-2 text-sm group-[.combined-block]:hidden group-[.combined-block]:border-b-0"
-	>
+		class="flex items-center justify-between rounded-t border-b border-base-100 bg-neutral-800 p-2 text-sm group-[.tabbed-code]:py-0">
 		<div class="flex space-x-1">
 			<div class="h-2 w-2 rounded-full bg-gray-500"></div>
 			<div class="h-2 w-2 rounded-full bg-gray-500"></div>
 			<div class="h-2 w-2 rounded-full bg-gray-500"></div>
 		</div>
+		<div class="code-tab ml-3 hidden border-t border-primary bg-neutral-900 h-[44px] p-3 text-xs md:text-sm group-[.tabbed-code]:block"></div>
+		<div class="flex-1"></div>
 		<button class="copy rounded-md bg-gray-700 px-2 py-1 text-sm text-white" type="button">Copy</button>
 	</div>
-	<div
-		class="max-h-[20rem] overflow-y-auto group-[.combined-block]:max-h-none group-[.combined-block]:min-w-fit group-[.combined-block]:overflow-x-hidden md:max-h-[40rem]"
-	>
+	<span class="lang">{Astro.props.lang}</span>
+	<div class="max-h-[20rem] overflow-y-auto md:max-h-[40rem]">
 		<pre
-			class={cn(
-				"code-block group",
-				Astro.props.class,
-				"max-w-portfolio m-0 rounded-lg bg-neutral-900 text-sm text-base-content md:p-4",
-				"group-[.combined-block]:bg-transparent group-[.combined-block]:my-0 group-[.combined-block]:p-0 group-[.combined-block]:overflow-hidden group-[.combined-block]:min-w-max",
-				"group-[.wrapped-block]:overflow-hidden group-[.wrapped-block]:[&>code]:whitespace-pre-wrap"
-			)}><slot /></pre>
+		class={cn(
+			Astro.props.class,
+			"group [tab-size:2] max-w-portfolio m-0 rounded-lg bg-neutral-900 text-sm text-base-content px-4 py-5"
+		)}><slot /></pre>
 	</div>
 </div>

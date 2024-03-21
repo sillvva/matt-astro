@@ -8,6 +8,7 @@ tags:
   - SvelteKit
   - UI
 ---
+import TabbedCode from "$/components/markdown/tabbed-code.astro";
 
 ## Table of Contents
 
@@ -21,19 +22,20 @@ Here is an example used on my [Adventurers League Log Sheet](https://ddal.dekok.
 
 #### Root layout
 
+<TabbedCode filename=".../+layout.server.ts">
 ```ts
-// src/routes/+layout.server.ts
 export const load = async (event) => {
     return {
         breadcrumbs: [] as { name: string; href: string }[],
     };
 };
 ```
+</TabbedCode>
 
 #### First breadcrumb segment
 
+<TabbedCode filename=".../characters/+layout.server.ts">
 ```ts
-// src/routes/characters/+layout.server.ts
 export const load = async (event) => {
     const parent = await event.parent();
 
@@ -47,11 +49,12 @@ export const load = async (event) => {
     };
 };
 ```
+</TabbedCode>
 
 #### Next breadcrumb segment with param
 
+<TabbedCode filename=".../characters/[characterId]/+layout.server.ts">
 ```ts
-// src/routes/characters/[characterId]/+layout.server.ts
 import { getCharacter } from "$/server/data/characters";
 import { error, redirect } from "@sveltejs/kit";
 
@@ -72,6 +75,7 @@ export const load = async (event) => {
     };
 };
 ```
+</TabbedCode>
 
 Now the resulting array in `data.breadcrumbs` for `/characters/[characterId]` is:
 
@@ -86,8 +90,8 @@ Now the resulting array in `data.breadcrumbs` for `/characters/[characterId]` is
 
 From there, you can create a breadcrumbs component like this:
 
+<TabbedCode filename="Breadcrumbs.svelte">
 ```svelte
-<!-- src/lib/components/Breadcrumbs.svelte -->
 <script lang="ts">
     import { page } from "$app/stores";
     import Icon from "./Icon.svelte";
@@ -119,3 +123,4 @@ From there, you can create a breadcrumbs component like this:
     </ul>
 </div>
 ```
+</TabbedCode>

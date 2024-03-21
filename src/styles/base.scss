@@ -81,6 +81,100 @@
 			filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.75));
 		}
 	}
+
+	.pre-block {
+		--lang: attr(data-lang);
+		.lang {
+			text-transform: uppercase;
+			display: inline-block;
+			position: absolute;
+			top: 45px;
+			right: 0rem;
+			z-index: 1;
+			background-color: #171717;
+			padding: 0.1rem 0.4rem;
+			font-size: x-small;
+			color: rgba(255, 255, 255, 0.5);
+		}
+	}
+
+	.tabbed-code {
+		.code-tab {
+			max-width: calc(100vw - 160px);
+			&::before {
+				content: var(--filename);
+				display: block;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+		}
+	}
+
+	.astro-code {
+		position: relative;
+		code {
+			&:has(.line.diff) {
+				.line:not(.diff) {
+					padding-left: 1rem;
+				}
+			}
+			&:has(.line.focused) {
+				.line:not(.focused) {
+					opacity: 0.5;
+					filter: blur(0.095rem);
+				}
+			}
+			.line {
+				display: inline-block;
+				width: 100%;
+				line-height: 1.5;
+				&:empty {
+					display: none;
+				}
+				&.highlighted {
+					background-color: rgba(255, 255, 255, 0.1);
+					&.error {
+						background-color: rgba(244, 63, 94, 0.16);
+					}
+				}
+				&.diff {
+					&::before {
+						display: inline-block;
+						width: 1rem;
+						text-align: center;
+					}
+					&.add {
+						background-color: rgba(159, 122, 234, 0.16);
+						&:before {
+							content: "+";
+							color: green;
+						}
+					}
+					&.remove {
+						background-color: rgba(244, 63, 94, 0.16);
+						&:before {
+							content: "-";
+							color: red;
+						}
+					}
+				}
+				.highlighted-word {
+					background-color: rgba(255, 255, 255, 0.1);
+					border: 1px solid rgba(255, 255, 255, 0.2);
+					padding: 1px 3px;
+					margin: -1px -3px;
+					border-radius: 4px;
+				}
+				&.error .highlighted-word {
+					background-color: rgba(255, 0, 0, 0.3);
+					border: 0;
+					margin: 0;
+					padding: 0;
+					border-radius: 0;
+				}
+			}
+		}
+	}
 }
 
 @layer utilities {

@@ -9,7 +9,9 @@ tags:
 ---
 import Collapsible from "$/components/markdown/collapsible.astro";
 import Shiki from "$/components/markdown/shiki.astro";
+import TabbedCode from "$/components/markdown/tabbed-code.astro";
 import Tweet from "$/components/markdown/tweet.astro";
+import TweetBox from "$/components/markdown/tweetbox.astro";
 
 ## Table of Contents
 
@@ -28,6 +30,7 @@ The `startViewTransition` function is a method on the `document` object which en
   [MDN](btn::https://developer.mozilla.org/en-US/docs/Web/API/Document/startViewTransition)
 </div>
 
+<TabbedCode filename="app.d.ts">
 ```ts
 declare global {
 	interface ViewTransition {
@@ -60,6 +63,7 @@ declare global {
 	}
 }
 ```
+</TabbedCode>
 
 <Collapsible title="Using in SvelteKit">
   In SvelteKit, you can add the above type declaration to a file in the `src` directory, such as `src/types.d.ts`. Then you can add view transitions to your SvelteKit app by following the video below, ignoring the `@ts-ignore` comments.
@@ -93,10 +97,10 @@ process.env.MY_ENV; // string
 
 Keep in mind that this is type faith, not type safe. You can also use a schema validation library to parse your environment variables and infer the type from that. If a variable is missing, you can throw an error.
 
-<div class="grid sm:grid-cols-2 gap-4">
+<TweetBox>
   <Tweet link="https://twitter.com/mattpocockuk/status/1758454430666506589" />
   <Tweet link="https://twitter.com/mattpocockuk/status/1760991147793449396" />
-</div>
+</TweetBox>
 
 ## Utility Types
 
@@ -106,19 +110,27 @@ The `Prettify` type is a simple type which takes an object type with intersectio
 
 <Shiki id="CombinePrettify.md" />
 
-<div class="grid sm:grid-cols-2 gap-4">
+<TweetBox>
   <Tweet link="https://twitter.com/mattpocockuk/status/1622730173446557697" />
   <Tweet link="https://twitter.com/mattpocockuk/status/1622730175266926592" />
   <Tweet link="https://twitter.com/mattpocockuk/status/1622730176931983360" />
   <Tweet link="https://twitter.com/mattpocockuk/status/1622730179289251840" />
   <Tweet link="https://twitter.com/mattpocockuk/status/1712391832573718721" />
-</div>
+</TweetBox>
 
 ### Merge Union Types
 
 The `MergeUnion` type is a utility type that does as its name suggests. It takes multiple union types and merges them into one.
 
 <Shiki id="MergeUnion.md" />
+
+### Satisfies
+
+The `Satisfies` type is a utility type that checks if a type satisfies an expected type and returns the actual type.
+
+<TweetBox>
+  <Tweet link="https://twitter.com/buildsghost/status/1770530554028675254" />
+</TweetBox>
 
 ## Type Guards
 
@@ -282,7 +294,8 @@ export function setValue<T extends Record<string | number, unknown>, P extends F
 Using the object from the previous example, we can set the value of the `date` property to a `Date` object, and the value of the `tags[0]` property to a string. We can also see that trying to set the `date` property to a string will result in a type error.
 
 ```ts
-setValue(logData, "date", new Date("2023-02-01")); // good
-setValue(logData, "tags[0]", "test");              // good
-setValue(logData, "date", "2024-01-01");           // error
+setValue(logData, "date", new Date("2023-02-01"));
+setValue(logData, "tags[0]", "test");
+// [!code word:"2024-01-01":1]
+setValue(logData, "date", "2024-01-01"); // expected Date, received string // [!code error]
 ```
