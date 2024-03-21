@@ -7,35 +7,34 @@ tags:
   - TypeScript
   - SvelteKit
 ---
-import Shiki from '$/components/markdown/shiki.astro';
 
 ## Why?
 
 In SvelteKit, whenever data is changed in a Set or Map, it will not trigger reactivity unless the Map or Set is reassigned to the variable. Consider the following example:
 
-<Shiki code={`
+```ts
 let changes = new Set();
 
 function addChanges(change: string) {
   changes.add(change);
 }
-`} lang="ts" />
+```
 
 This will not trigger Svelte's reactivity. However, with this change, it will:
 
-<Shiki code={`
+```ts
 let changes = new Set();
 
 function addChanges(change: string) {
   changes = changes.add(change);
 }
-`} lang="ts" />
+```
 
 ## The Custom Classes
 
 That's great. However, there are two methods in Sets and Maps which do not return the Set/Map - `delete(): boolean` and `clear(): void`. The following extended classes `SvelteMap` and `SvelteSet` modifies those methods to return the Set/Map.
 
-<Shiki code={`
+```ts
 /**
  * \`SvelteMap\` class, a subclass of JavaScript's \`Map\` class
  * with modified methods for remove and clear operations that return the \`Map\` itself for chain invocations.
@@ -93,4 +92,4 @@ export class SvelteSet<TVal> extends Set<TVal> {
 		return this;
 	}
 }
-`} lang="ts" />
+```

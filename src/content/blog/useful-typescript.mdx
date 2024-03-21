@@ -28,7 +28,7 @@ The `startViewTransition` function is a method on the `document` object which en
   [MDN](btn::https://developer.mozilla.org/en-US/docs/Web/API/Document/startViewTransition)
 </div>
 
-<Shiki code={`
+```ts
 declare global {
 	interface ViewTransition {
 		/**
@@ -58,7 +58,8 @@ declare global {
 	interface Document {
 		startViewTransition: (callback: ViewTransitionCallback) => ViewTransition;
 	}
-}`} lang="ts" />
+}
+```
 
 <Collapsible title="Using in SvelteKit">
   In SvelteKit, you can add the above type declaration to a file in the `src` directory, such as `src/types.d.ts`. Then you can add view transitions to your SvelteKit app by following the video below, ignoring the `@ts-ignore` comments.
@@ -70,7 +71,7 @@ declare global {
 
 Environment variables can be declared in the `global` namespace to provide type information for `import.meta.env` and `process.env`. The following example demonstrates how to declare environment variables in TypeScript.
 
-<Shiki code={`
+```ts
 declare global {
 	interface ImportMetaEnv {
 		MY_ENV: string;
@@ -88,7 +89,7 @@ declare global {
 }
 
 process.env.MY_ENV; // string
-`} lang="ts" />
+```
 
 Keep in mind that this is type faith, not type safe. You can also use a schema validation library to parse your environment variables and infer the type from that. If a variable is missing, you can throw an error.
 
@@ -130,9 +131,9 @@ You can (ab)use the fact that any is both a subtype and a supertype of almost ev
   [Source](btn::https://stackoverflow.com/a/77451367/70894)
 </div>
 
-<Shiki code={`
+```ts
 type IsAny<T> = boolean extends (T extends never ? true : false) ? true : false;
-`} lang="ts" />
+```
 
 ## Superforms Types
 
@@ -168,7 +169,7 @@ The `SuperStruct` type is a utility type that transforms the properties of an ob
 
 #### Example
 
-<Shiki code={`
+```ts
 type LogData = {
   id: number;
   message: string;
@@ -203,7 +204,7 @@ type LogErrors = SuperStructArray<LogData, string[]>;
 
 // Converts each value in the tags array to a string[] type
 // LogErrors["tags"] => Record<number, string[]> | undefined
-`} lang="ts" />
+```
 
 ### FormPathLeaves
 
@@ -215,7 +216,7 @@ The `FormPathLeaves` type is a utility type that takes an object type and return
 
 Given the following object type, we can see the different types of paths that can be generated.
 
-<Shiki code={`
+```ts
 type LogData = {
   id: number;
   message: string;
@@ -228,14 +229,14 @@ type LogData = {
 }
 
 type LogLeaves = FormPathLeaves<LogData>;
-//   ^? "id" | "message" | "date" | "user.id" | "user.name" | \`tags[\${number}]\`
+//   ^? "id" | "message" | "date" | "user.id" | "user.name" | `tags[${number}]`
 type LogStringLeaves = FormPathLeaves<LogData, string>;
-//   ^? "message" | "user.name" | \`tags[\${number}]\`
+//   ^? "message" | "user.name" | `tags[${number}]`
 type LogNumberLeaves = FormPathLeaves<LogData, number>;
 //   ^? "id" | "user.id"
 type LogDateLeaves = FormPathLeaves<LogData, Date>;
 //   ^? "date"
-`} lang="ts" />
+```
 
 ### Set Nested Value
 
@@ -243,37 +244,45 @@ Below is a `setValue` function which takes an object, a path, and a value. It is
 
 The path is a string of dot-separated keys. The function should set the value at the given path. The path parameter will have autocomplete and the value parameter will be required to be of the same type as the property at that path. See the playground for examples. This function works very similarly to [lodash.set](https://lodash.com/docs/4.17.15#set), but with stronger type safety.
 
-<Shiki code={`
+```ts
 export function setValue<T extends Record<string | number, unknown>, P extends FormPathLeaves<T>, V extends FormPathType<T, P>>(
 	obj: T,
 	path: P,
 	value: V
 ) {
+	// Split the path into an array of keys and convert any numeric strings to numbers.
 	const pList = path
 		.split(/[[\].]+/)
 		.filter((i) => typeof i !== "undefined" && i !== "")
 		.map((i) => (isNaN(Number(i)) ? i : Number(i)));
+		
+	// Remove the last key from the array and store it in a variable.
 	const lastKey = pList.pop();
+	if (!lastKey) throw new Error("Invalid path.");
+
+	// Create a pointer object that traverses the nested properties of the `obj` object based on the `path` provided.
+	// If a property does not exist, it will be created as an empty object.
 	const pointer = pList.reduce((accumulator: Record<string | number, unknown>, currentValue: string | number) => {
 		if (accumulator[currentValue] === undefined) accumulator[currentValue] = {};
 		return accumulator[currentValue] as Record<string | number, unknown>;
 	}, obj);
-	if (typeof lastKey !== "undefined") {
-		if (!(lastKey in pointer)) throw new Error("Invalid path. This is likely due to a missing array index.");
-		if (pointer[lastKey] && typeof pointer[lastKey] !== typeof value) throw new Error("Invalid value type");
-		pointer[lastKey] = value;
-		return obj;
-	}
+
+	if (!(lastKey in pointer)) throw new Error("Invalid path. This is likely due to a missing array index.");
+	if (pointer[lastKey] && typeof pointer[lastKey] !== typeof value)
+		throw new Error(`Invalid value type. Expected ${typeof pointer[lastKey]} but got ${typeof value}.`);
+
+	// Set the value of the last key in the pointer object.
+	pointer[lastKey] = value;
 	return obj;
 }
-`} lang="ts" />
+```
 
 #### Example
 
 Using the object from the previous example, we can set the value of the `date` property to a `Date` object, and the value of the `tags[0]` property to a string. We can also see that trying to set the `date` property to a string will result in a type error.
 
-<Shiki code={`
+```ts
 setValue(logData, "date", new Date("2023-02-01")); // good
 setValue(logData, "tags[0]", "test");              // good
 setValue(logData, "date", "2024-01-01");           // error
-`} lang="ts" />
+```

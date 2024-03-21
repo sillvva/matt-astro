@@ -9,7 +9,6 @@ tags:
   - TypeScript
   - SvelteKit
 ---
-import Shiki from "$/components/markdown/shiki.astro";
 
 ## Table of Contents
 
@@ -21,15 +20,15 @@ You will need to have a schema validation library installed. This component work
 
 In addition, you will need to install the [decode-formdata](https://github.com/fabian-hiller/decode-formdata) library to parse the `FormData` on the server side and [@decs/typeschema](https://github.com/decs/typeschema) to handle the schema validation. You can install these with the following command:
 
-<Shiki code={`
+```bash
 pnpm add decode-formdata @decs/typeschema
-`} lang="bash" />
+```
 
 ### The Types
 
 The following types are used by the component. They are all self-contained in a single file, so you can copy and paste them into your project.
 
-<Shiki code={`
+```ts
 // @/types/utils.ts
 
 /**
@@ -48,7 +47,7 @@ export type DeepStringify<T> = {
 };
 
 // Helper types for Paths
-type Join<K, P> = K extends string | number ? (P extends string | number ? \`\${K}\${"" extends P ? "" : "."}\${P}\` : never) : never;
+type Join<K, P> = K extends string | number ? (P extends string | number ? `${K}${"" extends P ? "" : "."}${P}` : never) : never;
 type Prev = [never, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, ...0[]];
 
 /**
@@ -62,15 +61,15 @@ export type Paths<T, D extends number = 10> = [D] extends [never]
 	? {
 			[K in keyof T]-?: K extends string | number
 				? DeepStringify<T>[K] extends string
-					? \`\${K}\` | Join<K, Paths<T[K], Prev[D]>>
+					? `${K}` | Join<K, Paths<T[K], Prev[D]>>
 					: Join<K, Paths<T[K], Prev[D]>>
 				: never;
 	  }[keyof T]
 	: "";
 
 /**
- * \`SvelteMap\` class, a subclass of JavaScript's \`Map\` class with modified methods for 
- * remove and clear operations that return the \`Map\` itself for chain invocations.
+ * `SvelteMap` class, a subclass of JavaScript's `Map` class with modified methods for 
+ * remove and clear operations that return the `Map` itself for chain invocations.
  * 
  * @author Matt DeKok
  */
@@ -80,9 +79,9 @@ export class SvelteMap<TKey, TVal> extends Map<TKey, TVal> {
 	}
 
 	/**
-	 * \`remove\` method for \`SvelteMap\`, deletes an element with the specified key from the Map.
+	 * `remove` method for `SvelteMap`, deletes an element with the specified key from the Map.
 	 * @param key - Key of the element to remove from the Map.
-	 * @returns \`this\` - Returns the \`Map\` itself after removal for chain invocations.
+	 * @returns `this` - Returns the `Map` itself after removal for chain invocations.
 	 */
 	public remove(key: TKey) {
 		super.delete(key);
@@ -90,21 +89,21 @@ export class SvelteMap<TKey, TVal> extends Map<TKey, TVal> {
 	}
 
 	/**
-	 * \`clear\` method for \`SvelteMap\`, removes all elements from the Map.
-	 * @returns \`this\` - Returns the \`Map\` itself after the operation for chain invocations.
+	 * `clear` method for `SvelteMap`, removes all elements from the Map.
+	 * @returns `this` - Returns the `Map` itself after the operation for chain invocations.
 	 */
 	public clear() {
 		super.clear();
 		return this;
 	}
 }
-`} lang="ts" />
+```
 
 ### The Component
 
 The following is a self-contained SvelteKit component which extends SvelteKit forms with schema validation. With the use of `@decs/typeschema` as the only dependency, it accepts almost every schema validation library, including zod, valibot, etc.
 
-<Shiki code={`
+```svelte
 <!-- @/components/SchemaForm.svelte -->
 <script lang="ts" context="module">
 	import type { Infer, InferIn, Schema } from "@decs/typeschema";
@@ -299,7 +298,7 @@ The following is a self-contained SvelteKit component which extends SvelteKit fo
 
 		// Change dates to ISO format in client to prevent timezone issues
 		f.formData.forEach((value, key) => {
-			const inputType = document.querySelector(\`[name="\${key}"]\`)?.getAttribute("type");
+			const inputType = document.querySelector(`[name="${key}"]`)?.getAttribute("type");
 			if (inputType?.includes("date") && typeof value === "string") {
 				const d = new Date(value);
 				if (!isNaN(d.getTime())) f.formData.set(key, d.toISOString());
@@ -320,7 +319,7 @@ The following is a self-contained SvelteKit component which extends SvelteKit fo
 >
 	<slot {errors} {saving} />
 </form>
-`} lang="svelte" />
+```
 
 ## Examples
 
@@ -328,7 +327,7 @@ The following is a self-contained SvelteKit component which extends SvelteKit fo
 
 Using this component is very simple. In your `+page.svelte`, simply add it like you would another form and pass it an object schema and a data object. It also returns a `saving` boolean and `errors` map. Both `data` and `errors` are typesafe based on the the structure of your object schema.
 
-<Shiki code={`
+```ts
 // $libs/types/schemas
 import { object, string, email, number, boolean, minValue } from "valibot";
 
@@ -338,9 +337,9 @@ export const subscribeSchema = object({
 	email: string([email("Must be a valid email")]),
 	subscribe: boolean()
 });
-`} lang="ts" />
+```
 
-<Shiki code={`
+```svelte
 <!-- +page.svelte -->
 <script lang="ts">
 	import SchemaForm from "$lib/components/SchemaForm.svelte";
@@ -379,13 +378,13 @@ export const subscribeSchema = object({
 		<button aria-disabled="{saving}">Subscribe</button>
 	</div>
 </SchemaForm>
-`} lang="svelte" />
+```
 
 Then in your server action, you can use the `parseFormData` method from the component to parse the form data on the server and get a validated data object. 
 
 As you can see, the third argument is an object with arrays of field names that should be parsed as arrays, booleans, dates, files or numbers. This is necessary because the `FormData` object only returns strings. For nested object data, the field names should be the data object path that corresponds to that field. See the [Field Names](#field-names-for-nested-data) section for more information.
 
-<Shiki code={`
+```ts
 // +page.server.ts
 import { parseFormData } from "$lib/components/SchemaForm.svelte";
 import { subscribeSchema } from "$lib/types/schemas";
@@ -404,24 +403,24 @@ export const actions = {
 		}
 	}
 };
-`} lang="ts" />
+```
 
 ### Extending the Error Checking
 
 The component also returns a `validate` event that you can use to extend the error checking. It returns the following:
 
-<Shiki code={`
+```yaml
 data: The validated data object
 changes: The names of the fields that have changed as an array of strings
 errors: The errors map
 setError: A function to set an error
-`} lang="yaml" />
+```
 
 The `setError` function is also type-safe. It takes two arguments: the `path` to the error as a string, and the value to set at that path. The `path` parameter will have autocomplete based on a dot-separated string that corresponds to the data object path. See the [Field Names](#field-names-for-nested-data) section for more information.
 
 You can use this event to add custom error checking to your form. For example, if you have a password field and a confirm password field, you can use the `validate` event to check that they match.
 
-<Shiki code={`
+```svelte
 <!-- +page.svelte -->
 <script lang="ts">
 	import SchemaForm from "$lib/components/SchemaForm.svelte";
@@ -466,7 +465,7 @@ You can use this event to add custom error checking to your form. For example, i
 	</div>
 	<button disabled={saving}>Subscribe</button>
 </SchemaForm>
-`} lang="svelte" />
+```
 
 ## Some Things to Note
 
@@ -474,12 +473,12 @@ You can use this event to add custom error checking to your form. For example, i
 
 Both error checking and server-side data parsing require field names to be the data object path that corresponds to that field. For example, if your data is:
 
-<Shiki code={`
+```js
 {
 	a: {
 		b: [{ c: 1 }];
 	}
 }
-`} lang="ts" />
+```
 
 Then the field name for `c` should be `name="a.b.{index}.c"`.

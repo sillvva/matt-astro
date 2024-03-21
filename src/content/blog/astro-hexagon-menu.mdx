@@ -11,7 +11,6 @@ tags:
   - UI
 ---
 import HexMenu from "$/components/hex-menu.astro";
-import Shiki from "$/components/markdown/shiki.astro";
 
 ## Table of Contents
 
@@ -19,7 +18,7 @@ import Shiki from "$/components/markdown/shiki.astro";
 
 This component creates a menu of hexagon-shaped buttons. It is compatible with TailwindCSS (not required), can be rotated, and can include empty slots.
 
-<Shiki code={`
+```astro
 ---
 import { cn } from "$/util";
 
@@ -32,25 +31,25 @@ export interface Item {
 	hexagonClasses?: string | string[];
 	labelClasses?: string | string[];
 	itemColor?:
-		| \`fill-\${string}\`
-		| \`rgb(\${number}, \${number}, \${number})\`
-		| \`rgba(\${number}, \${number}, \${number}, \${number})\`
-		| \`#\${string}\`;
+		| `fill-${string}`
+		| `rgb(${number}, ${number}, ${number})`
+		| `rgba(${number}, ${number}, ${number}, ${number})`
+		| `#${string}`;
 	hoverColor?:
-		| \`hover:fill-\${string}\`
-		| \`rgb(\${number}, \${number}, \${number})\`
-		| \`rgba(\${number}, \${number}, \${number}, \${number})\`
-		| \`#\${string}\`;
+		| `hover:fill-${string}`
+		| `rgb(${number}, ${number}, ${number})`
+		| `rgba(${number}, ${number}, ${number}, ${number})`
+		| `#${string}`;
 	activeColor?:
-		| \`[.active]:fill-\${string}\`
-		| \`rgb(\${number}, \${number}, \${number})\`
-		| \`rgba(\${number}, \${number}, \${number}, \${number})\`
-		| \`#\${string}\`;
+		| `[.active]:fill-${string}`
+		| `rgb(${number}, ${number}, ${number})`
+		| `rgba(${number}, ${number}, ${number}, ${number})`
+		| `#${string}`;
 	labelColor?:
-		| \`text-\${string}\`
-		| \`rgb(\${number}, \${number}, \${number})\`
-		| \`rgba(\${number}, \${number}, \${number}, \${number})\`
-		| \`#\${string}\`;
+		| `text-${string}`
+		| `rgb(${number}, ${number}, ${number})`
+		| `rgba(${number}, ${number}, ${number}, ${number})`
+		| `#${string}`;
 }
 
 interface Props {
@@ -64,30 +63,30 @@ interface Props {
 	hexagonClasses?: string | string[];
 	labelClasses?: string | string[];
 	bgColor?:
-		| \`fill-\${string}\`
-		| \`rgb(\${number}, \${number}, \${number})\`
-		| \`rgba(\${number}, \${number}, \${number}, \${number})\`
-		| \`#\${string}\`;
+		| `fill-${string}`
+		| `rgb(${number}, ${number}, ${number})`
+		| `rgba(${number}, ${number}, ${number}, ${number})`
+		| `#${string}`;
 	itemColor?:
-		| \`fill-\${string}\`
-		| \`rgb(\${number}, \${number}, \${number})\`
-		| \`rgba(\${number}, \${number}, \${number}, \${number})\`
-		| \`#\${string}\`;
+		| `fill-${string}`
+		| `rgb(${number}, ${number}, ${number})`
+		| `rgba(${number}, ${number}, ${number}, ${number})`
+		| `#${string}`;
 	hoverColor?:
-		| \`hover:fill-\${string}\`
-		| \`rgb(\${number}, \${number}, \${number})\`
-		| \`rgba(\${number}, \${number}, \${number}, \${number})\`
-		| \`#\${string}\`;
+		| `hover:fill-${string}`
+		| `rgb(${number}, ${number}, ${number})`
+		| `rgba(${number}, ${number}, ${number}, ${number})`
+		| `#${string}`;
 	activeColor?:
-		| \`[.active]:fill-\${string}\`
-		| \`rgb(\${number}, \${number}, \${number})\`
-		| \`rgba(\${number}, \${number}, \${number}, \${number})\`
-		| \`#\${string}\`;
+		| `[.active]:fill-${string}`
+		| `rgb(${number}, ${number}, ${number})`
+		| `rgba(${number}, ${number}, ${number}, ${number})`
+		| `#${string}`;
 	labelColor?:
-		| \`text-\${string}\`
-		| \`rgb(\${number}, \${number}, \${number})\`
-		| \`rgba(\${number}, \${number}, \${number}, \${number})\`
-		| \`#\${string}\`;
+		| `text-${string}`
+		| `rgb(${number}, ${number}, ${number})`
+		| `rgba(${number}, ${number}, ${number}, ${number})`
+		| `#${string}`;
 }
 
 type CSSVars = {
@@ -354,11 +353,11 @@ items.forEach((item, i) => {
 		}
 	}
 </style>
-`} lang="tsx" />
+```
 
 ### Usage
 
-<Shiki code={`
+```jsx
 <HexMenu
   items={[
     { link: "/about", label: "About Me" },
@@ -394,7 +393,7 @@ items.forEach((item, i) => {
   activeColor="[.active]:fill-accent"
   rotated
 />
-`} lang="tsx" />
+```
 
 <div class="flex flex-wrap my-8 gap-12">
   <div class="flex flex-col gap-8 items-center min-w-fit flex-1">
