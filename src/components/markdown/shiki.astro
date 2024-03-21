@@ -1,6 +1,6 @@
 ---
 import { Code } from "astro:components";
-import { getLanguage, languages, getCodeCollection } from "$/util";
+import { getLanguage, languages, getCodeCollection, cn } from "$/util";
 import AnimatedButton from "../animated-button.astro";
 
 const codeCollection = await getCodeCollection();
@@ -87,5 +87,11 @@ if ("code" in rest) {
 		<div class="flex-1"></div>
 		<button class="copy rounded-md bg-gray-700 px-2 py-1 text-sm text-white" type="button">Copy</button>
 	</div>
-  <Code code={code.trim()} {lang} theme="aurora-x" {wrap} class="my-0 rounded-t-none text-xs [tab-size:2]" />
+  <Code 
+		{lang}
+		code={code.trim()} 
+		theme="aurora-x"
+		{wrap} 
+		class={cn("my-0 rounded-t-none text-xs [tab-size:2]", `language-${lang}`)} 
+		/>
 </div>
