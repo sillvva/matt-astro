@@ -258,27 +258,28 @@
 			mask-size: 100% 100%;
 		}
 
-		@supports (color: color-mix(in srgb, red 0%, white)) {
-			& {
-				border-color: color-mix(in srgb, var(--color) 5%, oklch(100% 0 0 / 15%));
-				background: color-mix(in srgb, var(--color) 50%, oklch(0% 0 0 / 50%));
-				--fg: color-mix(in srgb, var(--color) 50%, oklch(100% 0 0));
-			}
-			::selection {
-				background: color-mix(in srgb, var(--color) 90%, oklch(100% 0 0));
-				--fg: color-mix(in srgb, var(--color) 10%, oklch(100% 0 0));
-			}
-		}
-
 		@supports (color: rgb(from white r g b)) {
 			& {
-				border-color: oklch(from var(--color) max(0.5, l) c h / 0.25);
-				background: oklch(from var(--color) calc(max(0.5, l) * 0.75) c h / 0.5);
+				border-color: oklch(from var(--color) max(0.5, calc(l * 0.25)) c h);
+				background: oklch(from var(--color) calc(max(0.5, l) * 0.75 * 0.5) c h);
 				--fg: oklch(from var(--color) calc(max(0.5, l) * 1.5) c h);
 			}
 			::selection {
-				background: oklch(from var(--color) min(1, calc(l * 1.1)) c h / 50%);
+				background: oklch(from var(--color) min(1, calc(l * 1.1 * 0.5)) c h);
 				--fg: oklch(from var(--color) 1 c h);
+			}
+		}
+
+		@supports (color: color-mix(in srgb, red 0%, white)) {
+			& {
+				border-color: color-mix(in srgb, var(--color) 5%, oklch(100% 0 0 / 15%));
+				background: color-mix(in srgb, var(--color) calc(50% * 0.75), oklch(0% 0 0));
+				--fg: color-mix(in srgb, var(--color) 30%, oklch(100% 0 0));
+			}
+			::selection {
+				background: color-mix(in srgb, var(--color) 50%, oklch(0% 0 0 / 0.5));
+				--fg: color-mix(in srgb, var(--color) 10%, oklch(100% 0 0));
+				color: var(--fg);
 			}
 		}
 
