@@ -3,6 +3,8 @@
 		document.startViewTransition(() => {
 			const box1 = document.getElementById("box1");
 			const box2 = document.getElementById("box2");
+			if (!box1) return;
+			if (!box2) return;
 			if (box1.classList.contains("hidden")) {
 				box1.classList.add("flex");
 				box1.classList.remove("hidden");
@@ -20,6 +22,7 @@
 	function startTransition2() {
 		document.startViewTransition(() => {
 			const box3 = document.getElementById("box3");
+			if (!box3) return;
 			if (box3.classList.contains("bg-red-500")) {
 				box3.classList.remove("bg-red-500");
 				box3.classList.remove("left-0");
@@ -35,7 +38,7 @@
 	}
 </script>
 
-<div class="flex flex-col gap-4">
+<div class="flex flex-col gap-4" data-eiuhgoe>
 	<div class="flex gap-4">
 		<button class="btn btn-primary capitalize" onclick="startTransition();">Run Transition 1</button>
 		<button class="btn btn-primary capitalize" onclick="startTransition2();">Run Transition 2</button>
@@ -57,11 +60,11 @@
 	</div>
 </div>
 
-<style>
-	.box1 {
+<style is:inline>
+	[data-eiuhgoe] .box1 {
 		view-transition-name: box1;
 	}
-	.box2 {
+	[data-eiuhgoe] .box2 {
 		view-transition-name: box2;
 	}
 </style>
