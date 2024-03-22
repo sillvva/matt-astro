@@ -267,6 +267,7 @@ type LogData = {
 
 type LogErrors = SuperStruct<LogData, string[]>;
 
+// [!code word:string\[\]:9]
 // Converts each property to string[] | undefined
 // LogErrors["id"] => string[] | undefined
 
@@ -279,6 +280,7 @@ type LogErrors = SuperStruct<LogData, string[]>;
 
 type LogErrors = SuperStructArray<LogData, string[]>;
 
+// [!code word:string\[\]:9]
 // Converts each property to string[] | undefined
 // LogErrors["id"] => string[] | undefined
 
