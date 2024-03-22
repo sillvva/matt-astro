@@ -178,6 +178,10 @@
 			}
 		}
 	}
+	astro-embed-tweet div {
+		overflow: hidden;
+		border-radius: 0.8rem;
+	}
 }
 
 @layer utilities {
