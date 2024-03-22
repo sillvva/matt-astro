@@ -229,7 +229,7 @@
 	}
 	.alert-box {
 		@apply relative mb-4 rounded border border-solid p-4 pl-14;
-		:not(a),
+		p,
 		&::before {
 			color: var(--fg) !important;
 		}
