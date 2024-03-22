@@ -1,5 +1,4 @@
 ---
-import styles from "$/styles/hex-menu.module.scss";
 import { cn } from "$/util";
 
 export interface Item {
@@ -166,21 +165,21 @@ items.forEach((item, i) => {
 ---
 
 <nav
-	class={cn(styles["hex-menu-wrapper"], rotated && styles["rotated"], ...baseClasses)}
+	class={cn("hex-menu-wrapper", rotated && "rotated", ...baseClasses)}
 	style={Object.keys(cssvars).length ? cssvars : undefined}
 >
 	{
 		menuRows.map((row, r) => (
-			<div class={cn(styles["hex-menu-row"], r % 2 === 1 && !rotated && styles["shift"])}>
+			<div class={cn("hex-menu-row", r % 2 === 1 && !rotated && "shift")}>
 				{row.map((item, i) => {
 					const BtnEl = item.link ? "a" : "div";
 					return (
 						<BtnEl
 							href={item.link || undefined}
 							class={cn(
-								styles["hex-menu-item-container"],
-								rotated && styles["rotated"],
-								item.active && styles["active"],
+								"hex-menu-item-container",
+								rotated && "rotated",
+								item.active && "active",
 								item.label && itemClasses,
 								item.itemClasses
 							)}
@@ -190,10 +189,10 @@ items.forEach((item, i) => {
 							<svg
 								viewBox="0 0 800 800"
 								class={cn(
-									styles["hex-menu-item"],
-									rotated && styles["rotated"],
-									!item.label && styles["empty"],
-									item.active && styles["active"],
+									"hex-menu-item",
+									rotated && "rotated",
+									!item.label && "empty",
+									item.active && "active",
 									item.label && svgClasses,
 									item.svgClasses
 								)}
@@ -201,19 +200,12 @@ items.forEach((item, i) => {
 							>
 								<g transform={rotated ? "matrix(-6.92 0 0 -6.92 400.24 400.24)" : "matrix(0 6.92 -6.92 0 400.17 400.33)"}>
 									<polygon
-										class={cn(
-											styles["hex"],
-											item.active && styles["active"],
-											item.label && baseHexagonClasses,
-											item.hexagonClasses
-										)}
+										class={cn("hex", item.active && "active", item.label && baseHexagonClasses, item.hexagonClasses)}
 										points="-19.9,34.5 -39.8,0 -19.9,-34.5 19.9,-34.5 39.8,0 19.9,34.5 "
 									/>
 								</g>
 							</svg>
-							<span
-								class={cn(styles["label"], item.active && styles["active"], item.label && baseLabelClasses, item.labelClasses)}
-							>
+							<span class={cn("label", item.active && "active", item.label && baseLabelClasses, item.labelClasses)}>
 								{item.label}
 							</span>
 						</BtnEl>
