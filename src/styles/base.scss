@@ -240,6 +240,7 @@
 			margin: 0;
 		}
 
+		--color: black;
 		--svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' d='M11 7v2h2V7zm3 10v-2h-1v-4h-3v2h1v2h-1v2zm8-5c0 5.5-4.5 10-10 10S2 17.5 2 12S6.5 2 12 2s10 4.5 10 10m-2 0c0-4.42-3.58-8-8-8s-8 3.58-8 8s3.58 8 8 8s8-3.58 8-8'/%3E%3C/svg%3E");
 		&::before {
 			content: "";
@@ -263,12 +264,7 @@
 				background: color-mix(in srgb, var(--color) 50%, oklch(0% 0 0 / 50%));
 				--fg: color-mix(in srgb, var(--color) 50%, oklch(100% 0 0));
 			}
-			[data-theme="light"] & {
-				border-color: color-mix(in srgb, var(--color) 50%, oklch(100% 0 0 / 15%));
-				background: color-mix(in srgb, var(--color) 25%, oklch(100% 0 0 / 50%));
-				--fg: color-mix(in srgb, var(--color) 100%, oklch(100% 0 0));
-			}
-			&::selection {
+			::selection {
 				background: color-mix(in srgb, var(--color) 90%, oklch(100% 0 0));
 				--fg: color-mix(in srgb, var(--color) 10%, oklch(100% 0 0));
 			}
@@ -276,17 +272,12 @@
 
 		@supports (color: rgb(from white r g b)) {
 			& {
-				border-color: oklch(from var(--color) l c h / 0.25);
-				background: oklch(from var(--color) calc(l * 0.75) c h / 0.5);
-				--fg: oklch(from var(--color) calc(l * 1.5) c h);
+				border-color: oklch(from var(--color) max(0.5, l) c h / 0.25);
+				background: oklch(from var(--color) calc(max(0.5, l) * 0.75) c h / 0.5);
+				--fg: oklch(from var(--color) calc(max(0.5, l) * 1.5) c h);
 			}
-			[data-theme="light"] & {
-				border-color: oklch(from var(--color) l c h / 25%);
-				background: oklch(from var(--color) calc(l * 1) c h / 20%);
-				--fg: oklch(from var(--color) calc(l * 1) c h);
-			}
-			&::selection {
-				background: oklch(from var(--color) calc(l * 1.1) c h);
+			::selection {
+				background: oklch(from var(--color) min(1, calc(l * 1.1)) c h / 50%);
 				--fg: oklch(from var(--color) 1 c h);
 			}
 		}
