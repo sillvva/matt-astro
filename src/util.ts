@@ -1,4 +1,3 @@
-import { getCollection } from "astro:content";
 import type { ClassValue } from "clsx";
 import clsx from "clsx";
 import { twMerge } from "tailwind-merge";
@@ -55,17 +54,4 @@ export const languages = [
 export function getLanguage(lang?: string) {
 	if (languages.includes(lang as any)) return lang as (typeof languages)[number];
 	return "plaintext";
-}
-
-export async function getCodeCollection() {
-	const allCode = await getCollection("code");
-	type Node = (typeof allCode)[number];
-	type Result = Record<Node["id"], Prettify<Node["data"] & { body: string }>>;
-	return allCode.reduce<Result>((acc, code) => {
-		acc[code.id] = {
-			...code.data,
-			body: code.body
-		};
-		return acc;
-	}, {} as any);
 }
