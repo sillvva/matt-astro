@@ -235,8 +235,11 @@
 		background: oklch(from var(--c) l c h / 0.4);
 		border-color: oklch(from var(--c) calc(l * var(--bcl)) calc(c * var(--ch)) h);
 		&,
-		* {
+		:not(a) {
 			color: oklch(from var(--c) calc(l * var(--fgcl)) calc(c * var(--ch)) h) !important;
+		}
+		a {
+			color: white !important;
 		}
 		p {
 			margin: 0;
