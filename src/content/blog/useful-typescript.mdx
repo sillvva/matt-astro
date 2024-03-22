@@ -127,9 +127,9 @@ type Combine<T1, T2> = Prettify<
 
 <TweetBox>
   <Tweet link="https://twitter.com/mattpocockuk/status/1622730173446557697" />
-  <Tweet link="https://twitter.com/mattpocockuk/status/1622730175266926592" />
-  <Tweet link="https://twitter.com/mattpocockuk/status/1622730176931983360" />
-  <Tweet link="https://twitter.com/mattpocockuk/status/1622730179289251840" />
+  {/* <Tweet link="https://twitter.com/mattpocockuk/status/1622730175266926592" /> */}
+  {/* <Tweet link="https://twitter.com/mattpocockuk/status/1622730176931983360" /> */}
+  {/* <Tweet link="https://twitter.com/mattpocockuk/status/1622730179289251840" /> */}
   <Tweet link="https://twitter.com/mattpocockuk/status/1712391832573718721" />
 </TweetBox>
 
@@ -155,9 +155,35 @@ export type MergeUnion<T> = {
 
 The `Satisfies` type is a utility type that checks if a type satisfies an expected type and returns the actual type.
 
-<TweetBox>
-  <Tweet link="https://twitter.com/buildsghost/status/1770530554028675254" />
-</TweetBox>
+<div class="button-row">
+	[Playground](btn::https://www.typescriptlang.org/play?#code/C4TwDgpgBACgTgSwLYOAgbtAvFArgOwBMIAzBfCQqAHyn1wBsGaoAjAe3YYgEN8X6SVhDgtWCAOblgLAM7BE+CQG4AUKEixEKNJgDyrAFYQAxjJwAlU+ziEAPPMUSANFuSoMEAHxr14aADKPGiyZBCydgCiAB6QZpSuAIJmuDzMENHAEESyUDFxWYReUDjJwKkMvhrQAMLsSGDc0QbGZiVQAN6qUD1QJJwAXFCO5BLdvaw8cENWJjb2I0quixJeqgC+qn6aAciNEC2m5lBBIWER4z3w7roHRkfOl7AIJgDWdnUNTYdmrgBE-XYfzWa220AAQjxCLsvndWsdTghQghwnYntcdJ4fsBHr1nm8PvV9s17r8oADOH8WH9JnBgao1kA)
+	[Source](btn::https://twitter.com/buildsghost/status/1770530554028675254)
+</div>
+
+```ts
+type Primitive = undefined | null | boolean | number | bigint | string;
+type PrimitiveObject = Record<string, Primitive>;
+
+type Satisfies<Expected, Actual extends Expected> = Actual;
+
+type ComplexObject = {
+    foo: string
+    bar: Record<string, string>
+}
+
+type SimpleObject = Satisfies<
+    PrimitiveObject,
+    Pick<ComplexObject, "foo">
+>;
+
+// [!code word:Pick\<]
+// [!code word:ComplexObject\,]
+// [!code word:\ "foo"\ |\ "bar"\>]
+type BadSimpleObject = Satisfies<
+    PrimitiveObject,
+    Pick<ComplexObject, "foo" | "bar"> // Property 'bar' is incompatible with index signature. // [!code error]
+>;
+```
 
 ## Type Guards
 
