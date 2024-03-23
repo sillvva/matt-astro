@@ -173,7 +173,10 @@
 					border-radius: 0;
 					text-decoration: underline;
 					text-decoration-style: wavy;
-					text-decoration-color: red;
+					text-decoration-color: rgb(205, 0, 0);
+					@supports (color: color-mix(in srgb, red 80%, black)) {
+						text-decoration-color: color-mix(in srgb, red 80%, black);
+					}
 				}
 			}
 		}
@@ -217,23 +220,7 @@
 			max-width: calc(100vw - 24rem);
 		}
 	}
-	.button-row {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 1rem;
-		padding-bottom: 1rem;
-		> p {
-			display: contents;
-		}
-		:is(h3, h4) + & {
-			margin-top: 0.5rem;
-		}
-		@media (max-width: 640px) {
-			a {
-				flex: 1;
-			}
-		}
-	}
+
 	.alert-box {
 		@apply relative mb-4 rounded border border-solid p-4 pl-14;
 		p,
@@ -429,6 +416,55 @@
 		}
 		100% {
 			scale: 1;
+		}
+	}
+
+	/**
+	 * Tweet Block
+	 */
+
+	.tweet-block {
+		display: flex;
+		gap: 1rem;
+		> :first-child {
+			flex: 1;
+			min-width: 0;
+			.button-row:not(:has(a[data-istweet])) {
+				@apply md:hidden;
+			}
+			.button-row a[data-istweet] {
+				@apply md:hidden;
+			}
+		}
+		> :last-child {
+			@apply hidden md:flex;
+			width: 300px;
+			> * {
+				flex: 1;
+			}
+		}
+	}
+
+	.button-row {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1rem;
+		padding-bottom: 1rem;
+		> p {
+			display: contents;
+		}
+		:is(h3, h4) + & {
+			margin-top: 0.5rem;
+		}
+		@media (max-width: 640px) {
+			a {
+				flex: 1;
+			}
+			&:has(a[data-istweet]) {
+				a:not([data-istweet]) {
+					flex-basis: 100%;
+				}
+			}
 		}
 	}
 }

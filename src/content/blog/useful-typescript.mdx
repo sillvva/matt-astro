@@ -10,7 +10,6 @@ tags:
 import Collapsible from "$/components/markdown/collapsible.astro";
 import TabbedCode from "$/components/markdown/tabbed-code.astro";
 import Tweet from "$/components/markdown/tweet.astro";
-import TweetBox from "$/components/markdown/tweetbox.astro";
 
 ## Table of Contents
 
@@ -27,7 +26,7 @@ import TweetBox from "$/components/markdown/tweetbox.astro";
 The `startViewTransition` function is a method on the `document` object which enables view transitions. The following types are based on the documentation at MDN. Since the API is currently experimental, you may need to add the following type to your type declaration file to avoid errors. 
 
 <div class="button-row">
-  [Google Article](btn::https://developer.chrome.com/docs/web-platform/view-transitions/)
+  [Google](btn::https://developer.chrome.com/docs/web-platform/view-transitions/)
   [MDN](btn::https://developer.mozilla.org/en-US/docs/Web/API/Document/startViewTransition)
 </div>
 
@@ -74,64 +73,73 @@ declare global {
 
 ### Environment Variables
 
-Environment variables can be declared in the `global` namespace to provide type information for `import.meta.env` and `process.env`. The following example demonstrates how to declare environment variables in TypeScript.
+<div class="tweet-block">
+	<div>
+		Environment variables can be declared in the `global` namespace to provide type information for `import.meta.env` and `process.env`. The following example demonstrates how to declare environment variables in TypeScript.
 
-```ts
-declare global {
-	interface ImportMetaEnv {
-		MY_ENV: string;
-	}
-}
+		<div class="button-row">
+			[Source](btn::https://twitter.com/mattpocockuk/status/1758454430666506589)
+		</div>
 
-import.meta.env.MY_ENV; // string
-
-declare global {
-	namespace NodeJS {
-		interface ProcessEnv {
-			MY_ENV: string;
+		```ts
+		declare global {
+			interface ImportMetaEnv {
+				MY_ENV: string;
+			}
 		}
-	}
-}
 
-process.env.MY_ENV; // string
-```
+		import.meta.env.MY_ENV; // string
 
-Keep in mind that this is type faith, not type safe. You can also use a schema validation library to parse your environment variables and infer the type from that. If a variable is missing, you can throw an error.
+		declare global {
+			namespace NodeJS {
+				interface ProcessEnv {
+					MY_ENV: string;
+				}
+			}
+		}
 
-<TweetBox>
-  <Tweet link="https://twitter.com/mattpocockuk/status/1758454430666506589" />
-  <Tweet link="https://twitter.com/mattpocockuk/status/1760991147793449396" />
-</TweetBox>
+		process.env.MY_ENV; // string
+		```
+	</div>
+	<aside>
+		<Tweet link="https://twitter.com/mattpocockuk/status/1758454430666506589" />
+	</aside>
+</div>
+
+Keep in mind that this is type faith, not type safe. You can also [use a schema validation library](https://twitter.com/mattpocockuk/status/1760991147793449396) to parse your environment variables and infer the type from that. If a variable is missing, you can throw an error.
+
 
 ## Utility Types
 
 ### Combine/Prettify Two Object Types
 
-The `Prettify` type is a simple type which takes an object type with intersections and combines them to make them easier to read. The `Combine` type is a simple type which takes 2 object types and combines them into one.
+<div class="tweet-block">
+	<div>
+		The `Prettify` type is a simple type which takes an object type with intersections and combines them to make them easier to read. The `Combine` type is a simple type which takes 2 object types and combines them into one.
 
-<div class="button-row">
-  [Playground](btn::https://www.typescriptlang.org/play?#code/PTAEGEHkBEFECh4BcCeAHApqACgJw0kgJYBmKAPACoB8oAvKAN7yigDaA0qEQHagDWGFAHsSoSgF0AXOM4SA3PAC+oAGRMli5OizhhAWwBGvDFQCMAGnEAmWgzwFiZciyavWnbn0EixACkozUAAfGwBKaXEzORCbOUVWFXVsAENcYhSAG3M1G2p4ai0QcVgAZUpSxCJ9NGF0plBYAEcAVyyrWAAPTABjJFAVElwDUAAiAAEkYSQsgFpUTABnHtwiNCRgAAsMTMxcRdGtBaxKHQBBejdWfBSAE2EeTJRQHhT9DBlFpFWeAHME0A3e6PZ53W74RaLT7fXj-ZRHHTiHQAIUujEBGDuDyeLzeH1AXx+-1AaE2D3xhNhAwRmFAACUMIsWpl+gw9EYTFRzlZTphkYVEMdGt0MH0MLc0a4gdjnq93tCiQDpSDQGCIYsAPwK2EA0nkrUEmF-RSaQWIpCM1nC3pIcjNNrZBlMlkdEVi27UAVAA)
+		<div class="button-row">
+			[Playground](btn::https://www.typescriptlang.org/play?#code/PTAEGEHkBEFECh4BcCeAHApqACgJw0kgJYBmKAPACoB8oAvKAN7yigDaA0qEQHagDWGFAHsSoSgF0AXOM4SA3PAC+oAGRMli5OizhhAWwBGvDFQCMAGnEAmWgzwFiZciyavWnbn0EixACkozUAAfGwBKaXEzORCbOUVWFXVsAENcYhSAG3M1G2p4ai0QcVgAZUpSxCJ9NGF0plBYAEcAVyyrWAAPTABjJFAVElwDUAAiAAEkYSQsgFpUTABnHtwiNCRgAAsMTMxcRdGtBaxKHQBBejdWfBSAE2EeTJRQHhT9DBlFpFWeAHME0A3e6PZ53W74RaLT7fXj-ZRHHTiHQAIUujEBGDuDyeLzeH1AXx+-1AaE2D3xhNhAwRmFAACUMIsWpl+gw9EYTFRzlZTphkYVEMdGt0MH0MLc0a4gdjnq93tCiQDpSDQGCIYsAPwK2EA0nkrUEmF-RSaQWIpCM1nC3pIcjNNrZBlMlkdEVi27UAVAA)
+			[Prettify Source](btn::https://twitter.com/mattpocockuk/status/1622730173446557697)
+			[Combine Source](btn::https://twitter.com/mattpocockuk/status/1712391832573718721)
+		</div>
+
+		```ts
+		type Prettify<T> = {
+			[K in keyof T]: T[K];
+		} & {};
+
+		type Combine<T1, T2> = Prettify<
+			{
+				[K in keyof (T1 | T2)]: T1[K] | T2[K];
+			} & Partial<T1 & T2>
+		>;
+		```
+	</div>
+	<aside>
+		<Tweet link="https://twitter.com/mattpocockuk/status/1712391832573718721" />
+	</aside>
 </div>
 
-```ts
-type Prettify<T> = {
-	[K in keyof T]: T[K];
-} & {};
-
-type Combine<T1, T2> = Prettify<
-	{
-		[K in keyof (T1 | T2)]: T1[K] | T2[K];
-	} & Partial<T1 & T2>
->;
-```
-
-<TweetBox>
-  <Tweet link="https://twitter.com/mattpocockuk/status/1622730173446557697" />
-  {/* <Tweet link="https://twitter.com/mattpocockuk/status/1622730175266926592" /> */}
-  {/* <Tweet link="https://twitter.com/mattpocockuk/status/1622730176931983360" /> */}
-  {/* <Tweet link="https://twitter.com/mattpocockuk/status/1622730179289251840" /> */}
-  <Tweet link="https://twitter.com/mattpocockuk/status/1712391832573718721" />
-</TweetBox>
 
 ### Merge Union Types
 
@@ -167,21 +175,21 @@ type PrimitiveObject = Record<string, Primitive>;
 type Satisfies<Expected, Actual extends Expected> = Actual;
 
 type ComplexObject = {
-    foo: string
-    bar: Record<string, string>
+		foo: string
+		bar: Record<string, string>
 }
 
 type SimpleObject = Satisfies<
-    PrimitiveObject,
-    Pick<ComplexObject, "foo">
+		PrimitiveObject,
+		Pick<ComplexObject, "foo">
 >;
 
 // [!code word:Pick\<]
 // [!code word:ComplexObject\,]
 // [!code word:\ "foo"\ |\ "bar"\>]
 type BadSimpleObject = Satisfies<
-    PrimitiveObject,
-    Pick<ComplexObject, "foo" | "bar"> // Property 'bar' is incompatible with index signature. // [!code error]
+		PrimitiveObject,
+		Pick<ComplexObject, "foo" | "bar"> // Property 'bar' is incompatible with index signature. // [!code error]
 >;
 ```
 
