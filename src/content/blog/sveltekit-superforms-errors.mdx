@@ -19,6 +19,7 @@ The static `from` method can be used to handle other types of errors that occur 
 The `toForm` method can be returned from the form action to display the error message to the user. 
 
 ```ts
+import { dev } from "$app/environment";
 import { type NumericRange } from "@sveltejs/kit";
 import { message, setError, type FormPathLeavesWithErrors, type SuperValidated } from "sveltekit-superforms";
 
