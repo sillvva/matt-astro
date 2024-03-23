@@ -152,7 +152,7 @@ The `MergeUnion` type is a utility type that does as its name suggests. It takes
 ```ts
 export type AllKeys<T> = T extends T ? keyof T : never;
 
-export type PickType<T, K extends AllKeys<T>> = T extends { [k in K]: any } ? T[K] : never;
+export type PickType<T, K extends AllKeys<T>> = T extends { [k in K]: infer Item } ? Item : never;
 
 export type MergeUnion<T> = {
 	[K in AllKeys<T>]: PickType<T, K>;
@@ -246,8 +246,7 @@ The `SuperStruct` type is a utility type that transforms the properties of an ob
 ```ts
 export type AllKeys<T> = T extends T ? keyof T : never;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type PickType<T, K extends AllKeys<T>> = T extends { [k in K]: any } ? T[K] : never;
+type PickType<T, K extends AllKeys<T>> = T extends { [k in K]: infer Item } ? Item : never;
 
 // Thanks to https://dev.to/lucianbc/union-type-merging-in-typescript-9al
 export type MergeUnion<T> = {
@@ -341,8 +340,7 @@ type IsAny<T> = boolean extends (T extends never ? true : false) ? true : false;
 
 export type AllKeys<T> = T extends T ? keyof T : never;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type PickType<T, K extends AllKeys<T>> = T extends { [k in K]: any } ? T[K] : never;
+type PickType<T, K extends AllKeys<T>> = T extends { [k in K]: infer Item } ? Item : never;
 
 // Thanks to https://dev.to/lucianbc/union-type-merging-in-typescript-9al
 export type MergeUnion<T> = {
