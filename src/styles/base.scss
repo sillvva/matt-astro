@@ -429,7 +429,7 @@
 		> :first-child {
 			flex: 1;
 			min-width: 0;
-			.button-row:not(:has(a[data-istweet])) {
+			.button-row:not(:has(a:not([data-istweet]))) {
 				@apply md:hidden;
 			}
 			.button-row a[data-istweet] {
