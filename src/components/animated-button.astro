@@ -8,9 +8,10 @@ interface Props {
 	activeClick?: boolean;
 	itemClasses: string[];
 	target?: string;
+	data?: Record<string, string | undefined>;
 }
 
-const { active = false, itemClasses = ["button5"], activeClick = false, link = "", label, target } = Astro.props;
+const { active = false, itemClasses = ["button5"], activeClick = false, link = "", label, target, data } = Astro.props;
 
 const buttons = {
 	button1: "button1",
@@ -32,7 +33,8 @@ const props = {
 	class: cn(...classes),
 	...(Object.keys(style).length && { style }),
 	...(link.startsWith("http") && { target: "_blank", rel: "noopener noreferrer" }),
-	...(target && { target, rel: "noopener noreferrer" })
+	...(target && { target, rel: "noopener noreferrer" }),
+	...Object.entries(data ?? {}).reduce((acc, [key, value]) => ({ ...acc, [`data-${key}`]: value }), {})
 };
 ---
 
