@@ -71,11 +71,10 @@ export class SaveError<TOut extends Record<string, unknown>, TIn extends Record<
 The following code demonstrates how to use the `SaveResult` type and the `SaveError` class in a function that saves a log entry for a character. The function returns an object that matches the defined return type in `SaveResult` (the first type argument) or a `SaveError` object with the defined schema (the second type argument).
 
 ```ts
-import { SaveError, handleSaveError, type SaveResult } from "$lib/util";
+import { SaveError, type SaveResult } from "$lib/util";
 
 // [!code word:LogError]
 // [!code word:SaveResult]
-// [!code word:handleSaveError]
 class LogError extends SaveError<LogSchema> {}
 
 export type SaveLogResult = ReturnType<typeof saveLog>;
