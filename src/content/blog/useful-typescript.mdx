@@ -159,6 +159,21 @@ export type MergeUnion<T> = {
 };
 ```
 
+## Type Guards
+
+### IsAny
+
+You can (ab)use the fact that any is both a subtype and a supertype of almost everything (except for never). So the inner [(Distributive) Conditional Type](https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types) resolves to a Union of `true | false (=boolean)` instead of either of them.
+
+<div class="button-row">
+	[Playground](btn::https://www.typescriptlang.org/play?#code/C4TwDgpgBAkgzgQQHYgDwBUB8UC8UBGA9oQDYQCGSUEAHsBEgCZxQAU61dDzUSEAbhABOUAPxRgQgK7QAXFABm5EnAgBKMROlzFy1QG4AsACgToSFAS5YiFKkohMJgPTOo7gHqiz4aACFreGQ0JCkAW3xhJ2NXdygvHwsAYUDbNCkkAGskQgB3JGjYz29jc2gAEVTg1D5BIUK3YsToAFEqu35CAEtGBriE0t8oADF2tABvAF8+psGLAHEx1EJ8ACsIAGNgGfiSsqgACSWMxggFLr5el0bd5tgl0JISHa8gA)
+  [Source](btn::https://stackoverflow.com/a/77451367/70894)
+</div>
+
+```ts
+type IsAny<T> = boolean extends (T extends never ? true : false) ? true : false;
+```
+
 ### Satisfies
 
 The `Satisfies` type is a utility type that checks if a type satisfies an expected type and returns the actual type.
@@ -191,21 +206,6 @@ type BadSimpleObject = Satisfies<
 		PrimitiveObject,
 		Pick<ComplexObject, "foo" | "bar"> // Property 'bar' is incompatible with index signature. // [!code error]
 >;
-```
-
-## Type Guards
-
-### IsAny
-
-You can (ab)use the fact that any is both a subtype and a supertype of almost everything (except for never). So the inner [(Distributive) Conditional Type](https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types) resolves to a Union of `true | false (=boolean)` instead of either of them.
-
-<div class="button-row">
-	[Playground](btn::https://www.typescriptlang.org/play?#code/C4TwDgpgBAkgzgQQHYgDwBUB8UC8UBGA9oQDYQCGSUEAHsBEgCZxQAU61dDzUSEAbhABOUAPxRgQgK7QAXFABm5EnAgBKMROlzFy1QG4AsACgToSFAS5YiFKkohMJgPTOo7gHqiz4aACFreGQ0JCkAW3xhJ2NXdygvHwsAYUDbNCkkAGskQgB3JGjYz29jc2gAEVTg1D5BIUK3YsToAFEqu35CAEtGBriE0t8oADF2tABvAF8+psGLAHEx1EJ8ACsIAGNgGfiSsqgACSWMxggFLr5el0bd5tgl0JISHa8gA)
-  [Source](btn::https://stackoverflow.com/a/77451367/70894)
-</div>
-
-```ts
-type IsAny<T> = boolean extends (T extends never ? true : false) ? true : false;
 ```
 
 ## Superforms Types
