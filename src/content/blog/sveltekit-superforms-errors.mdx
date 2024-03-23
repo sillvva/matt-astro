@@ -8,6 +8,7 @@ tags:
   - TypeScript
   - SvelteKit
 ---
+import TabbedCode from "$/components/markdown/tabbed-code.astro";
 
 ## Table of Contents
 
@@ -19,6 +20,7 @@ The static `from` method can be used to handle other types of errors that occur 
 
 The `toForm` method can be returned from the form action to display the error message to the user. 
 
+<TabbedCode filename="src/lib/util.ts">
 ```ts
 import { dev } from "$app/environment";
 import { type NumericRange } from "@sveltejs/kit";
@@ -66,11 +68,13 @@ export class SaveError<TOut extends Record<string, unknown>, TIn extends Record<
 	}
 }
 ```
+</TabbedCode>
 
 ## Using `SaveResult` and `SaveError`
 
 The following code demonstrates how to use the `SaveResult` type and the `SaveError` class in a function that saves a log entry for a character. The function returns an object that matches the defined return type in `SaveResult` (the first type argument) or a `SaveError` object with the defined schema (the second type argument).
 
+<TabbedCode filename="src/server/actions/logs.ts">
 ```ts
 import { SaveError, type SaveResult } from "$lib/util";
 
@@ -104,11 +108,13 @@ export async function saveLog(input: LogSchema, user?: Session["user"]): SaveRes
 	}
 }
 ```
+</TabbedCode>
 
 ## Returning the Error to Superforms
 
 The following code demonstrates how to use the `SaveError` class in a form action. The `saveLog` action saves a log entry for a character. If the save is successful, the user is redirected to the character page. If there is an error, a SaveError object's `toForm` method is called to return the error message to the user.
 
+<TabbedCode filename=".../[logId]/+page.server.ts">
 ```ts
 export const actions = { // [!code focus]
 	saveLog: async (event) => { // [!code focus]
@@ -131,9 +137,13 @@ export const actions = { // [!code focus]
 	} // [!code focus]
 }; // [!code focus]
 ```
+</TabbedCode>
+
+## Using Without Superforms
 
 You can also use the `SaveError` class to handle errors in forms that do not use Superforms. The following code demonstrates how to use the `SaveError` class in a form action that deletes a dungeon master. If an error occurs, SvelteKit's `fail` function is called to return the error message to the form.
 
+<TabbedCode filename=".../[dmId]/+page.server.ts">
 ```ts
 export const actions = { // [!code focus]
 	deleteDM: async (event) => { // [!code focus]
@@ -146,10 +156,40 @@ export const actions = { // [!code focus]
 
 		if (dm.logs.length) return fail(400, { error: "Cannot delete a DM with logs" });
 
-		const result = await deleteDM(event.params.dmId, session.user); // [!code focus]
-		if ("error" in result) return fail(result.status, { error: result.error }); // [!code focus]
+		const result = await deleteDM(event.params.dmId, session.user); // [!code focus] // [!code highlight]
+		if ("error" in result) return fail(result.status, { error: result.error }); // [!code focus] // [!code highlight]
 
 		redirect(302, `/dms`); // [!code focus]
 	} // [!code focus]
 }; // [!code focus]
 ```
+</TabbedCode>
+
+<TabbedCode filename=".../[dmId]/+page.svelte">
+```svelte
+<form
+	method="POST"
+	action={`?/deleteDM`}
+	class="flex flex-col items-center gap-4 py-20"
+	use:enhance={({ cancel }) => {
+		if (!confirm(`Are you sure you want to delete ${data.name}? This action cannot be reversed.`)) return cancel();
+		$pageLoader = true;
+		return async ({ result }) => {
+			await applyAction(result);
+			if (form?.error) { // The error returned in the fail function // [!code highlight]
+				errorToast(form.error); // [!code highlight]
+				$pageLoader = false;
+			} else {
+				successToast(`${data.name} deleted`);
+				$searchData = [];
+			}
+		};
+	}}
+>
+	<p>This DM has no logs.</p>
+	<button type="submit" class="btn btn-error btn-sm hover:font-bold hover:text-white" aria-label="Delete DM">
+		Delete DM
+	</button>
+</form>
+```
+</TabbedCode>
