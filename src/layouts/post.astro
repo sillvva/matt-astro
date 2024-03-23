@@ -1,7 +1,7 @@
 ---
 import type { Props as HeadProps } from "$/components/head.astro";
 import ResponsiveImage from "$/components/responsive-image.astro";
-import { formatDate, slugify, sorter } from "$/util";
+import { cn, formatDate, slugify, sorter } from "$/util";
 import PortfolioLayout from "./portfolio.astro";
 import CodePen from "$/components/markdown/codepen.astro";
 import type { CollectionEntry } from "astro:content";
@@ -27,6 +27,7 @@ const youTubeId = typeof image === "string" && image.match(/v=([^&]+)/)?.[1];
 		published_date: date.toISOString(),
 		...(updated && { modified_date: updated.toISOString() })
 	}}
+	isPost
 	backTo={{
 		href: "/blog",
 		text: "Blog"
@@ -35,12 +36,18 @@ const youTubeId = typeof image === "string" && image.match(/v=([^&]+)/)?.[1];
 >
 	<div class="post mx-auto flex min-w-0 justify-center gap-8">
 		<article class="min-w-0 max-w-screen-md flex-1 2xl:mx-0">
-			<section class="mb-8 flex flex-col gap-4" transition:name={slugify(`image ${slug}`)}>
-				<p class="text-center text-sm text-theme-faded md:text-left" aria-label="Date published">
-					Published: <span class="underline decoration-dotted underline-offset-2">{formatDate(date)}</span>
+			<section class="mb-8 flex flex-col gap-2 md:gap-4" transition:name={slugify(`image ${slug}`)}>
+				<p
+					class={cn(
+						"flex text-sm text-theme-faded md:text-left",
+						updated ? "justify-between md:justify-normal gap-8" : "justify-center"
+					)}
+					aria-label="Date published"
+				>
+					<span class="underline decoration-dotted underline-offset-2">{formatDate(date)}</span>
 					{
 						updated && (
-							<span class="block 2xs:inline 2xs:pl-4">
+							<span class="inline 2xs:inline">
 								Updated: <span class="underline decoration-dotted underline-offset-2">{formatDate(updated)}</span>
 							</span>
 						)

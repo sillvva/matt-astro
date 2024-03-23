@@ -10,9 +10,10 @@ interface Props extends HeadProps {
 		text: string;
 	};
 	noBg?: boolean;
+	isPost?: true;
 }
 
-const { title, description, image, articleMeta, stylesheets, backTo, noBg } = Astro.props;
+const { title, description, image, articleMeta, stylesheets, backTo, noBg, isPost } = Astro.props;
 ---
 
 <html id="app" lang="en">
@@ -21,8 +22,13 @@ const { title, description, image, articleMeta, stylesheets, backTo, noBg } = As
 	</head>
 	<body data-theme="black" class={cn("min-h-screen bg-cover bg-left-bottom bg-no-repeat", noBg ? "bg-base-100" : "bg-img")}>
 		<Drawer>
-			<header class="flex h-20 w-full items-center justify-center gap-4">
-				<div class="flex w-16 justify-center">
+			<header
+				class={cn(
+					"flex h-20 w-full items-center justify-center gap-4",
+					isPost && "xl:pr-[calc(250px+(2*2rem)+1px)]" // ToC Size + padding + border
+				)}
+			>
+				<div class="flex w-16 justify-center lg:w-0">
 					<label for="my-drawer" class="btn btn-ghost drawer-button w-full lg:hidden">
 						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
 							><path fill="currentColor" d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"></path></svg
@@ -32,13 +38,13 @@ const { title, description, image, articleMeta, stylesheets, backTo, noBg } = As
 				<h1
 					class={cn(
 						"flex-1 font-sans md:font-montserrat font-medium text-base-content",
-						"text-center text-2xl md:text-2xl lg:text-3xl",
+						"text-center text-2xl md:text-2xl lg:text-3xl wrap-balance",
 						(title?.length || 0) > 24 && "text-sm 3xs:text-base"
 					)}
 				>
 					{title}
 				</h1>
-				<div class="flex w-16 justify-center">
+				<div class="flex w-16 justify-center lg:w-0">
 					{
 						backTo && (
 							<a href={backTo.href} class="btn btn-ghost flex-1 px-0 font-bold uppercase lg:hidden">
@@ -48,7 +54,7 @@ const { title, description, image, articleMeta, stylesheets, backTo, noBg } = As
 					}
 				</div>
 			</header>
-			<main class="w-full flex-1 flex px-4 pb-8 lg:px-8">
+			<main class="flex w-full flex-1 px-4 pb-8 lg:px-8">
 				<slot />
 			</main>
 		</Drawer>
