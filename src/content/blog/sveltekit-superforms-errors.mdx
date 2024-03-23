@@ -1,0 +1,130 @@
+---
+title: SaveError Class for SvelteKit Superforms
+description: A helper class for streamlined error handling with Superforms.
+date: 2024-03-23T03:23:00.344Z
+image: $/assets/images/forms.webp
+tags:
+  - TypeScript
+  - SvelteKit
+---
+
+## Table of Contents
+
+## The Code
+
+The following code is a class that can be used to streamline error handling with Superforms. It is designed to be used with the `SaveResult` type, which is a promise that resolves to either the saved object or a `SaveError` object. The `SaveError` object can be used to provide a more detailed error message to the user, including the field that caused the error and the HTTP status code.
+
+The `toForm` method of the `SaveError` class can be returned from the form action to display the error message to the user. 
+
+The `handleSaveError` function can be used to handle other types of errors that occur during the save process and convert them to `SaveError` objects.
+
+```ts
+import { type NumericRange } from "@sveltejs/kit";
+import { message, setError, type FormPathLeavesWithErrors, type SuperValidated } from "sveltekit-superforms";
+
+export type SaveResult<T extends object | null, S extends Record<string, unknown>> = Promise<T | SaveError<S>>;
+
+export class SaveError<TOut extends Record<string, unknown>, TIn extends Record<string, unknown> = TOut> {
+	public status: NumericRange<400, 599> = 500;
+
+	constructor(
+		public error: string,
+		protected options?: Partial<{
+			field: FormPathLeavesWithErrors<TOut>;
+			status: NumericRange<400, 599>;
+		}>
+	) {
+		if (options?.status) this.status = options.status;
+	}
+
+	toForm(form: SuperValidated<TOut, App.Superforms.Message, TIn>) {
+		return this.options?.field
+			? setError(form, this.options.field, this.error, {
+					status: this.status
+				})
+			: message(
+					form,
+					{
+						type: "error",
+						text: this.error
+					},
+					{
+						status: this.status
+					}
+				);
+	}
+}
+
+export function handleSaveError<TObj extends Record<string, unknown>>(err: SaveError<TObj> | Error | unknown) {
+	if (dev) console.error(err);
+	if (err instanceof SaveError) return err;
+	if (err instanceof Error) return new SaveError<TObj>(err.message);
+	return new SaveError<TObj>("An unknown error has occurred.");
+}
+```
+
+## Using the `SaveResult` Type and the `SaveError` Class
+
+The following code demonstrates how to use the `SaveResult` type and the `SaveError` class in a function that saves a log entry for a character. The function returns an object that matches the defined return type in `SaveResult` (the first type argument) or a `SaveError` object with the defined schema (the second type argument).
+
+```ts
+import { SaveError, handleSaveError, type SaveResult } from "$lib/util";
+
+// [!code word:LogError]
+// [!code word:SaveResult]
+// [!code word:handleSaveError]
+class LogError extends SaveError<LogSchema> {}
+
+export type SaveLogResult = ReturnType<typeof saveLog>;
+export async function saveLog(input: LogSchema, user?: Session["user"]): SaveResult<LogData, LogSchema> {
+	try {
+		if (!user?.name || !user?.id) throw new LogError("Not authenticated", { status: 401 });
+		const userId = user.id;
+
+		const { success } = await rateLimiter(input.id ? "insert" : "update", user.id);
+		if (!success) throw new LogError("Too many requests", { status: 429 });
+
+		...
+
+    // An error can also be tied to a specific field
+    if (input.isDmLog && !character)
+      throw new LogError("Character not found", {
+        status: 404,
+        field: "characterId"
+      });
+
+    ...
+
+		return log; // The type returned is either LogData
+	} catch (err) {
+		return handleSaveError(err); // or SaveError<LogSchema>
+	}
+}
+```
+
+## Returning the Error to Superforms
+
+The following code demonstrates how to use the `SaveError` class in a form action. The `saveLog` action saves a log entry for a character. If the save is successful, the user is redirected to the character page. If there is an error, a SaveError object's `toForm` method is called to return the error message to the user.
+
+```ts
+export const actions = { // [!code focus]
+	saveLog: async (event) => { // [!code focus]
+		const session = await event.locals.session;
+		if (!session?.user) redirect(302, "/");
+
+		const character = await getCharacterCache(event.params.characterId || "");
+		if (!character) redirect(302, "/characters");
+
+		const log = await getLog(event.params.logId, session.user.id, character.id);
+		if (event.params.logId !== "new" && !log.id) redirect(302, `/characters/${character.id}`);
+
+		const form = await superValidate(event, valibot(characterLogSchema(character))); // [!code focus]
+		if (!form.valid) return fail(400, { form }); // [!code focus]
+
+		const result = await saveLog(form.data, session.user); // [!code focus] // [!code highlight]
+		if ("error" in result) return result.toForm(form); // [!code focus] // [!code highlight]
+
+		redirect(302, `/characters/${character.id}`); // [!code focus]
+	} // [!code focus]
+}; // [!code focus]
+```
