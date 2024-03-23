@@ -35,25 +35,27 @@ const baseLevel = headings[0]?.depth ?? 1;
 	<Content components={all} />
 	{
 		hasToc && (
-			<div class="w-0 border-l border-dotted hidden xl:block border-base-content/50"></div>
-			<aside slot="toc" class="relative min-w-52 hidden xl:block">
-				<div class="sticky top-4 max-h-dscreen overflow-auto">
-					<h2 class="mb-2 text-xl font-bold">Table of Contents</h2>
-					<ul class="flex flex-col gap-2">
-						{items
-							.filter(({ depth }) => depth - 2 < 2)
-							.map(({ slug, depth, text }) => (
-								<li
-									class={cn(depth > baseLevel && "text-sm", depth == baseLevel + 1 && "pl-4", depth == baseLevel + 2 && "pl-8")}
-								>
-									<a href={`#${slug}`} class="text-primary">
-										{text}
-									</a>
-								</li>
-							))}
-					</ul>
-				</div>
-			</aside>
+			<Fragment slot="toc">
+				<div class="hidden w-0 border-l border-dotted border-base-content/50 xl:block" />
+				<aside class="relative hidden min-w-[200px] max-w-[250px] xl:block">
+					<div class="sticky top-4 max-h-dscreen overflow-auto">
+						<h2 class="mb-2 text-xl font-bold">Table of Contents</h2>
+						<ul class="flex flex-col gap-2">
+							{items
+								.filter(({ depth }) => depth - 2 < 2)
+								.map(({ slug, depth, text }) => (
+									<li
+										class={cn(depth > baseLevel && "text-sm", depth == baseLevel + 1 && "pl-4", depth == baseLevel + 2 && "pl-8")}
+									>
+										<a href={`#${slug}`} class="text-primary">
+											{text}
+										</a>
+									</li>
+								))}
+						</ul>
+					</div>
+				</aside>
+			</Fragment>
 		)
 	}
 </PostLayout>
