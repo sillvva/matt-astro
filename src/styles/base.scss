@@ -2,8 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-@import "./hex-menu.scss";
-@import "./blog.scss";
+@import "../components/hex-menu.scss";
+@import "../components/markdown/blog.scss";
 
 @mixin dark-theme {
 	--scheme: dark;
@@ -107,11 +107,11 @@
 }
 
 @layer components {
-	@include hex-menu;
-	@include alert-box;
-	@include button-row;
-	@include tweets;
-	@include code;
+	@include hex-menu();
+	@include alert-box();
+	@include button-row();
+	@include tweets();
+	@include code();
 
 	.bg-img {
 		background-image: var(--bg-img);
