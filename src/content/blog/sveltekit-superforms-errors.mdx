@@ -14,9 +14,9 @@ tags:
 
 The following code is a class that can be used to streamline error handling with Superforms. It is designed to be used with the `SaveResult` type, which is a promise that resolves to either the saved object or a `SaveError` object. The `SaveError` object can be used to provide a more detailed error message to the user, including the field that caused the error and the HTTP status code.
 
-The `toForm` method of the `SaveError` class can be returned from the form action to display the error message to the user. 
+The static `from` method can be used to handle other types of errors that occur during the save process and convert them to `SaveError` objects.
 
-The `handleSaveError` function can be used to handle other types of errors that occur during the save process and convert them to `SaveError` objects.
+The `toForm` method can be returned from the form action to display the error message to the user. 
 
 ```ts
 import { type NumericRange } from "@sveltejs/kit";
@@ -37,6 +37,15 @@ export class SaveError<TOut extends Record<string, unknown>, TIn extends Record<
 		if (options?.status) this.status = options.status;
 	}
 
+	static from<TOut extends Record<string, unknown>, TIn extends Record<string, unknown> = TOut>(
+		err: SaveError<TOut, TIn> | Error | unknown
+	) {
+		if (dev) console.error(err);
+		if (err instanceof SaveError) return err;
+		if (err instanceof Error) return new SaveError<TOut, TIn>(err.message);
+		return new SaveError<TOut, TIn>("An unknown error has occurred.");
+	}
+
 	toForm(form: SuperValidated<TOut, App.Superforms.Message, TIn>) {
 		return this.options?.field
 			? setError(form, this.options.field, this.error, {
@@ -53,13 +62,6 @@ export class SaveError<TOut extends Record<string, unknown>, TIn extends Record<
 					}
 				);
 	}
-}
-
-export function handleSaveError<TObj extends Record<string, unknown>>(err: SaveError<TObj> | Error | unknown) {
-	if (dev) console.error(err);
-	if (err instanceof SaveError) return err;
-	if (err instanceof Error) return new SaveError<TObj>(err.message);
-	return new SaveError<TObj>("An unknown error has occurred.");
 }
 ```
 
@@ -97,7 +99,7 @@ export async function saveLog(input: LogSchema, user?: Session["user"]): SaveRes
 
 		return log; // The type returned is either LogData
 	} catch (err) {
-		return handleSaveError(err); // or SaveError<LogSchema>
+		return LogError.from(err); // or SaveError<LogSchema>
 	}
 }
 ```
