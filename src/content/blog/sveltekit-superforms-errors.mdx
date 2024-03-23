@@ -2,6 +2,7 @@
 title: SaveError Class for SvelteKit Superforms
 description: A helper class for streamlined error handling with Superforms.
 date: 2024-03-23T03:23:00.344Z
+updated: 2024-03-23T14:26:12.942Z
 image: $/assets/images/forms.webp
 tags:
   - TypeScript
@@ -127,6 +128,28 @@ export const actions = { // [!code focus]
 		if ("error" in result) return result.toForm(form); // [!code focus] // [!code highlight]
 
 		redirect(302, `/characters/${character.id}`); // [!code focus]
+	} // [!code focus]
+}; // [!code focus]
+```
+
+You can also use the `SaveError` class to handle errors in forms that do not use Superforms. The following code demonstrates how to use the `SaveError` class in a form action that deletes a dungeon master. If an error occurs, SvelteKit's `fail` function is called to return the error message to the form.
+
+```ts
+export const actions = { // [!code focus]
+	deleteDM: async (event) => { // [!code focus]
+		const session = await event.locals.session;
+		if (!session?.user) redirect(302, "/");
+
+		const dms = await getUserDMsWithLogsCache(session.user);
+		const dm = dms.find((dm) => dm.id == event.params.dmId);
+		if (!dm) redirect(302, "/dms");
+
+		if (dm.logs.length) return fail(400, { error: "Cannot delete a DM with logs" });
+
+		const result = await deleteDM(event.params.dmId, session.user); // [!code focus]
+		if ("error" in result) return fail(result.status, { error: result.error }); // [!code focus]
+
+		redirect(302, `/dms`); // [!code focus]
 	} // [!code focus]
 }; // [!code focus]
 ```
