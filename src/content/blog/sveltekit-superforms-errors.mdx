@@ -112,7 +112,7 @@ export async function saveLog(input: LogSchema, user?: Session["user"]): SaveRes
 
 ## Returning the Error to Superforms
 
-The following code demonstrates how to use the `SaveError` class in a form action. The `saveLog` action saves a log entry for a character. If the save is successful, the user is redirected to the character page. If there is an error, a SaveError object's `toForm` method is called to return the error message to the user.
+The following code demonstrates how to use the `SaveError` class in a form action. The `saveLog` action saves a log entry for a character. If the save is successful, the user is redirected to the character page. If there is an error, the SaveError object's `toForm` method is called to return the error message to the user.
 
 <TabbedCode filename=".../[logId]/+page.server.ts">
 ```ts
