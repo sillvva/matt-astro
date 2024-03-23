@@ -36,7 +36,7 @@ async function fetchTweet(id: string) {
 const tweet = await fetchTweet(link);
 ---
 
-{tweet && <astro-embed-tweet class="max-w-portfolio" set:html={tweet.html} />}
+{tweet && <astro-embed-tweet class="tweet max-w-portfolio" set:html={tweet.html} />}
 
 <script is:inline>
 	if (!document.getElementById("tweet-script")) {
