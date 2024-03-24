@@ -1,70 +1,37 @@
 @mixin code() {
 	.code-block {
-		position: relative;
-		margin-top: theme("space.4");
-		margin-bottom: theme("space.2");
-		border-radius: theme("borderRadius.md");
-		border: theme("borderWidth.DEFAULT") solid theme("borderColor.base-100");
-		background-color: theme("backgroundColor.neutral-900");
-		color: theme("textColor.base-content");
-		.tabbed &,
-		&.multi-tabbed {
-			nav {
-				@apply py-0;
-				label {
-					max-width: calc(100vw - 160px);
-					height: theme("space.11");
-					white-space: nowrap;
-					padding: 11px theme("space.3");
-					font-size: theme("fontSize.sm");
-					border-width: 2px 1px 0;
-					border-style: solid;
-					border-color: theme("borderColor.neutral-900");
-					background-color: theme("backgroundColor.neutral-900");
-					input[type="radio"] {
-						position: absolute;
-						width: 0px;
-						height: 0px;
-						overflow: hidden;
-						clip: rect(0 0 0 0);
-						clip-path: inset(50%);
-						white-space: nowrap;
-					}
-					&:has(input[type="radio"]) {
-						cursor: pointer;
-						&:not(:has(:checked)) {
-							opacity: 0.5;
-						}
-						&:has(:checked) {
-							opacity: 1;
-							border-top-color: theme("borderColor.primary");
-							border-inline-color: theme("borderColor.neutral-700 / 50%");
-						}
-					}
-					&:not(:has(input[type="radio"])) {
-						border-top-color: theme("borderColor.primary");
-						border-inline-color: theme("borderColor.neutral-700 / 50%");
-						&::before {
-							content: var(--filename);
-							display: block;
-							overflow: hidden;
-							text-overflow: ellipsis;
-						}
-					}
+		nav label {
+			max-width: calc(100vw - 160px);
+			height: theme("space.11");
+			white-space: nowrap;
+			padding: 11px theme("space.3");
+			font-size: theme("fontSize.sm");
+			border-width: 2px 1px 0;
+			border-style: solid;
+			border-color: theme("borderColor.neutral-900");
+			background-color: theme("backgroundColor.neutral-900");
+			input[type="radio"] {
+				display: none;
+			}
+			&:has(input[type="radio"]) {
+				cursor: pointer;
+				opacity: 0.5;
+				&:has(:checked) {
+					opacity: 1;
+					border-top-color: theme("borderColor.primary");
+					border-inline-color: theme("borderColor.neutral-700 / 50%");
 				}
 			}
-		}
-		nav {
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
-			gap: theme("space.4");
-			border-top-left-radius: theme("borderRadius.DEFAULT");
-			border-top-right-radius: theme("borderRadius.DEFAULT");
-			border-bottom: theme("borderWidth.DEFAULT") solid theme("borderColor.base-100");
-			background-color: theme("backgroundColor.neutral-800");
-			padding: theme("space.2");
-			font-size: theme("fontSize.sm");
+			&:not(:has(input[type="radio"])) {
+				border-top-color: theme("borderColor.primary");
+				border-inline-color: theme("borderColor.neutral-700 / 50%");
+				&::before {
+					content: var(--filename);
+					display: block;
+					overflow: hidden;
+					text-overflow: ellipsis;
+				}
+			}
 		}
 		pre {
 			position: relative;
@@ -136,50 +103,6 @@
 						}
 					}
 				}
-			}
-		}
-		.copy {
-			border-radius: theme("borderRadius.md");
-			background-color: theme("backgroundColor.neutral-600");
-			padding: theme("space.1") theme("space.2");
-			font-size: theme("fontSize.sm");
-			color: theme("textColor.white");
-			@apply max-sm:hidden;
-		}
-		&.multi-tabbed .copy {
-			display: none;
-		}
-		.lang {
-			display: inline-block;
-			position: absolute;
-			top: calc(theme("space.11") + 1px);
-			right: 0rem;
-			z-index: 1;
-			background-color: theme("backgroundColor.neutral-900");
-			padding: theme("space.1") theme("space.2");
-			font-size: theme("fontSize.xs");
-			text-transform: uppercase;
-			color: rgba(255, 255, 255, 0.5);
-		}
-		.panels {
-			position: relative;
-			.panel {
-				display: none;
-				width: theme("width.full");
-				margin: 0;
-				border-radius: theme("borderRadius.DEFAULT");
-				background-color: theme("backgroundColor.neutral-900");
-				font-size: theme("fontSize.sm");
-				color: theme("textColor.base-content");
-			}
-		}
-		&:has(.tallest) .panel {
-			display: inline-block;
-			visibility: hidden;
-			&:not(.tallest) {
-				position: absolute;
-				top: 0;
-				left: 0;
 			}
 		}
 	}

@@ -1,0 +1,14 @@
+---
+import { cn } from "$/util";
+export interface Props extends astroHTML.JSX.HTMLAttributes {}
+---
+
+<div
+	class={cn(
+		"code-block group",
+		"relative mb-4 mt-2 rounded-md border border-base-100 bg-neutral-900 text-base-content",
+		Astro.props.class
+	)}
+>
+	<slot />
+</div>

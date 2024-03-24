@@ -1,9 +1,0 @@
----
-type Props = {
-	filename: string;
-};
----
-
-<div class="tabbed group" style={`--filename: '${Astro.props.filename.replace(/'/g, "\\'")}'`}>
-	<slot />
-</div>

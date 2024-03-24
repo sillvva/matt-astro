@@ -8,7 +8,7 @@ tags:
   - SvelteKit
   - UI
 ---
-import TabbedCode from "$/components/markdown/tabbed-code.astro";
+import TabbedCode from "$/components/markdown/code/tabbed.astro";
 
 ## Table of Contents
 
@@ -22,7 +22,9 @@ Here is an example used on my [Adventurers League Log Sheet](https://ddal.dekok.
 
 #### Root layout
 
-<TabbedCode filename=".../+layout.server.ts">
+<TabbedCode>
+<Fragment slot="tab-1">.../+layout.server.ts</Fragment>
+<Fragment slot="panel-1">
 ```ts
 export const load = async (event) => {
     return {
@@ -30,11 +32,14 @@ export const load = async (event) => {
     };
 };
 ```
+</Fragment>
 </TabbedCode>
 
 #### First breadcrumb segment
 
-<TabbedCode filename=".../characters/+layout.server.ts">
+<TabbedCode>
+<Fragment slot="tab-1">.../characters/+layout.server.ts</Fragment>
+<Fragment slot="panel-1">
 ```ts
 export const load = async (event) => {
     const parent = await event.parent();
@@ -49,11 +54,14 @@ export const load = async (event) => {
     };
 };
 ```
+</Fragment>
 </TabbedCode>
 
 #### Next breadcrumb segment with param
 
-<TabbedCode filename=".../characters/[characterId]/+layout.server.ts">
+<TabbedCode>
+<Fragment slot="tab-1">.../characters/[characterId]/+layout.server.ts</Fragment>
+<Fragment slot="panel-1">
 ```ts
 import { getCharacter } from "$/server/data/characters";
 import { error, redirect } from "@sveltejs/kit";
@@ -75,6 +83,7 @@ export const load = async (event) => {
     };
 };
 ```
+</Fragment>
 </TabbedCode>
 
 Now the resulting array in `data.breadcrumbs` for `/characters/[characterId]` is:
@@ -90,7 +99,9 @@ Now the resulting array in `data.breadcrumbs` for `/characters/[characterId]` is
 
 From there, you can create a breadcrumbs component like this:
 
-<TabbedCode filename="Breadcrumbs.svelte">
+<TabbedCode>
+<Fragment slot="tab-1">Breadcrumbs.svelte</Fragment>
+<Fragment slot="panel-1">
 ```svelte
 <script lang="ts">
     import { page } from "$app/stores";
@@ -123,4 +134,5 @@ From there, you can create a breadcrumbs component like this:
     </ul>
 </div>
 ```
+</Fragment>
 </TabbedCode>

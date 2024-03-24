@@ -8,8 +8,7 @@ tags:
   - TypeScript
   - SvelteKit
 ---
-import MultiTabbedCode from "$/components/markdown/multi-tabbed-code.astro";
-import TabbedCode from "$/components/markdown/tabbed-code.astro";
+import TabbedCode from "$/components/markdown/code/tabbed.astro";
 
 ## Table of Contents
 
@@ -21,7 +20,9 @@ The static `from` method can be used to handle other types of errors that occur 
 
 The `toForm` method can be returned from the form action to display the error message to the user. 
 
-<TabbedCode filename="src/lib/util.ts">
+<TabbedCode>
+<Fragment slot="tab-1">$lib/util.ts</Fragment>
+<Fragment slot="panel-1">
 ```ts
 import { dev } from "$app/environment";
 import { type NumericRange } from "@sveltejs/kit";
@@ -69,13 +70,16 @@ export class SaveError<TOut extends Record<string, unknown>, TIn extends Record<
 	}
 }
 ```
+</Fragment>
 </TabbedCode>
 
 ## Using `SaveResult` and `SaveError`
 
 The following code demonstrates how to use the `SaveResult` type and the `SaveError` class in a function that saves a log entry for a character. The function returns an object that matches the defined return type in `SaveResult` (the first type argument) or a `SaveError` object with the defined schema (the second type argument).
 
-<TabbedCode filename="src/server/actions/logs.ts">
+<TabbedCode>
+<Fragment slot="tab-1">src/server/actions/logs.ts</Fragment>
+<Fragment slot="panel-1">
 ```ts
 import { SaveError, type SaveResult } from "$lib/util";
 
@@ -109,13 +113,16 @@ export async function saveLog(input: LogSchema, user?: Session["user"]): SaveRes
 	}
 }
 ```
+</Fragment>
 </TabbedCode>
 
 ## Returning the Error to Superforms
 
 The following code demonstrates how to use the `SaveError` class in a form action. The `saveLog` action saves a log entry for a character. If the save is successful, the user is redirected to the character page. If there is an error, the SaveError object's `toForm` method is called to return the error message to the user.
 
-<TabbedCode filename=".../[logId]/+page.server.ts">
+<TabbedCode>
+<Fragment slot="tab-1">.../[logId]/+page.server.ts</Fragment>
+<Fragment slot="panel-1">
 ```ts
 export const actions = { // [!code focus]
 	saveLog: async (event) => { // [!code focus]
@@ -138,13 +145,14 @@ export const actions = { // [!code focus]
 	} // [!code focus]
 }; // [!code focus]
 ```
+</Fragment>
 </TabbedCode>
 
 ## Using Without Superforms
 
 You can also use the `SaveError` class to handle errors in forms that do not use Superforms. The following code demonstrates how to use the `SaveError` class in a form action that deletes a dungeon master. If an error occurs, SvelteKit's `fail` function is called to return the error message to the form.
 
-<MultiTabbedCode>
+<TabbedCode>
 <Fragment slot="tab-1">.../[dmId]/+page.server.ts</Fragment>
 <Fragment slot="panel-1">
 ```ts
@@ -196,4 +204,4 @@ export const actions = { // [!code focus]
 </form>
 ```
 </Fragment>
-</MultiTabbedCode>
+</TabbedCode>

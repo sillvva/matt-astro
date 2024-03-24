@@ -22,7 +22,6 @@ const youTubeId = typeof image === "string" && image.match(/v=([^&]+)/)?.[1];
 	{title}
 	{description}
 	image={typeof image === "string" ? image : image.src}
-	stylesheets={["/styles/prism-one-dark.css"]}
 	articleMeta={{
 		published_date: date.toISOString(),
 		...(updated && { modified_date: updated.toISOString() })
