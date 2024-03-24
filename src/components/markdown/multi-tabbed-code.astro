@@ -74,7 +74,6 @@ const uid = crypto.randomUUID();
 									type="radio"
 									name={uid}
 									checked={name.endsWith("active") || index === 1 ? "" : undefined}
-									id={`${uid}-${index}`}
 								/>
 								<Fragment set:html={render} />
 							</label>
