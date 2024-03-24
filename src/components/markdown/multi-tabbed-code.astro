@@ -2,30 +2,24 @@
 import { cn } from "$/util";
 import crypto from "node:crypto";
 
+const uid = crypto.randomUUID();
 const tabs: string[] = [];
 const panels: string[] = [];
 
-let inlineStyles = "";
+let index = 0;
+const classes: string[] = [];
+Object.entries(Astro.slots).forEach(([name]) => {
+	if (name.startsWith("tab")) {
+		index += 1;
+		tabs.push(name);
+		classes.push(`.multi-tabbed:has(.radio-${index}:checked) .panel-${index}`);
+		classes.push(`.multi-tabbed:has(.radio-${index}:checked) .copy-${index}`);
+	} else if (name.startsWith("panel")) {
+		panels.push(name);
+	}
+});
 
-{
-	let index = 0;
-	const classes: string[] = [];
-	Object.entries(Astro.slots).forEach(([name]) => {
-		if (name.startsWith("tab")) {
-			index += 1;
-			tabs.push(name);
-			classes.push(`.multi-tabbed:has(.radio-${index}:checked) .panel-${index}`);
-			classes.push(`.multi-tabbed:has(.radio-${index}:checked) .copy-${index}`);
-		} else if (name.startsWith("panel")) {
-			panels.push(name);
-		}
-	});
-	inlineStyles += classes.join(",\n");
-}
-console.log(panels);
-inlineStyles += ` {\n  visibility: visible;\n  display: inline-block;\n}`;
-
-const uid = crypto.randomUUID();
+const inlineStyles = classes.join(",") + " { visibility: visible; display: inline-block; }";
 ---
 
 <script>
@@ -65,7 +59,14 @@ const uid = crypto.randomUUID();
 					const index = idx + 1;
 					const render = await Astro.slots.render(name);
 					return (
-						<label class="code-tab h-[44px] whitespace-nowrap border-t border-primary bg-neutral-900 p-3 text-sm opacity-50 has-[:checked]:opacity-100">
+						<label
+							class={cn(
+								"code-tab h-[44px] whitespace-nowrap p-3 py-[11px] text-sm opacity-50",
+								"cursor-pointer border-x border-t-2 border-neutral-900 bg-neutral-900",
+								"has-[:checked]:border-x has-[:checked]:opacity-100",
+								"has-[:checked]:border-primary has-[:checked]:border-x-neutral-700/50"
+							)}
+						>
 							<input
 								class:list={["radio", `radio-${index}`, "tab-selector"]}
 								type="radio"

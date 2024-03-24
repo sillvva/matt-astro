@@ -42,7 +42,11 @@ import { cn } from "$/util";
 			<div class="h-2 w-2 rounded-full bg-gray-500"></div>
 		</div>
 		<div
-			class={cn("code-tab hidden h-[44px] border-t border-primary bg-neutral-900", "p-3 text-sm group-[.tabbed]:block md:ml-3")}
+			class={cn(
+				"code-tab hidden h-[44px] bg-neutral-900",
+				"border-t-2 border-x border-primary border-x-neutral-700/50",
+				"p-3 py-[11px] text-sm group-[.tabbed]:block md:ml-3"
+			)}
 		>
 		</div>
 		<div class="flex-1"></div>
