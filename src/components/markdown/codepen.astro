@@ -27,7 +27,7 @@ const penLink = `https://codepen.io/${user}/pen/${hash}/`;
 const userProfileLink = `https://codepen.io/${user}`;
 ---
 
-<div class="codepen-container hidden sm:block">
+<div class="codepen-container max-sm:hidden">
 	<div
 		data-height={height}
 		data-theme-id={themeId}
@@ -41,7 +41,7 @@ const userProfileLink = `https://codepen.io/${user}`;
 		class="codepen"
 	>
 		See the <a href={penLink} class="text-primary">{title}</a> Pen by <a href={userProfileLink} class="text-primary">@{user}</a>
-		 on{" "}
+		on{" "}
 		<a href="https://codepen.io" class="text-primary">CodePen</a>.
 	</div>
 </div>

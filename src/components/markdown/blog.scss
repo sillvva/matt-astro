@@ -219,7 +219,7 @@
 			}
 		}
 		> :last-child {
-			@apply hidden md:flex;
+			@apply max-md:hidden;
 			width: 300px;
 			> * {
 				flex: 1;

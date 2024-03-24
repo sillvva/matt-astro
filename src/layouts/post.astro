@@ -84,7 +84,7 @@ const youTubeId = typeof image === "string" && image.match(/v=([^&]+)/)?.[1];
 				{
 					tags.length && (
 						<nav class="flex gap-4">
-							<h2 class="hidden text-xl sm:block">Tags</h2>
+							<h2 class="text-xl max-sm:hidden">Tags</h2>
 							<ul class="flex flex-1 flex-wrap justify-center gap-2 sm:justify-end">
 								{tags
 									.sort((a, b) => sorter(a, b))
@@ -109,9 +109,9 @@ const youTubeId = typeof image === "string" && image.match(/v=([^&]+)/)?.[1];
 	</div>
 
 	<button id="to-top" class="btn btn-primary fixed bottom-4 right-4 z-20 hidden aspect-square h-14 w-14 rounded-full p-2">
-		<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
-			><path fill="currentColor" d="M14 20h-4v-9l-3.5 3.5l-2.42-2.42L12 4.16l7.92 7.92l-2.42 2.42L14 11v9Z"></path></svg
-		>
+		<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
+			<path fill="currentColor" d="M14 20h-4v-9l-3.5 3.5l-2.42-2.42L12 4.16l7.92 7.92l-2.42 2.42L14 11v9Z"></path>
+		</svg>
 	</button>
 </PortfolioLayout>
 
