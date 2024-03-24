@@ -16,19 +16,24 @@ import { cn } from "$/util";
 	}
 
 	document.addEventListener("astro:page-load", () => {
-		document.querySelectorAll("article .pre-block:not(.shiki)").forEach((block) => {
+		document.querySelectorAll("article .pre-block:not(.shiki):not(.multi-tabbed)").forEach((block) => {
 			const btn = block.querySelector(".copy");
 			if (btn) btn.addEventListener("click", () => copyBlock(btn));
 		});
 	});
 </script>
 
-<div class="pre-block relative mb-4 mt-2 rounded-md border border-base-100 bg-neutral-900 text-base-content">
+<div
+	class={cn(
+		"pre-block relative mb-4 mt-2 rounded-md border border-base-100 bg-neutral-900 text-base-content",
+		"group-[.multi-tabbed]:border-0 group-[.multi-tabbed]:m-0"
+	)}
+>
 	<div
 		class={cn(
 			"flex items-center justify-between rounded-t",
 			"border-b border-base-100 bg-neutral-800",
-			"p-2 text-sm group-[.tabbed-code]:py-0"
+			"p-2 text-sm group-[.tabbed]:py-0 group-[.multi-tabbed]:hidden"
 		)}
 	>
 		<div class="hidden space-x-1 md:flex">
@@ -37,16 +42,13 @@ import { cn } from "$/util";
 			<div class="h-2 w-2 rounded-full bg-gray-500"></div>
 		</div>
 		<div
-			class={cn(
-				"code-tab hidden h-[44px] border-t border-primary bg-neutral-900",
-				"p-3 text-sm group-[.tabbed-code]:block md:ml-3"
-			)}
+			class={cn("code-tab hidden h-[44px] border-t border-primary bg-neutral-900", "p-3 text-sm group-[.tabbed]:block md:ml-3")}
 		>
 		</div>
 		<div class="flex-1"></div>
-		<button class="copy rounded-md bg-gray-700 px-2 py-1 text-sm text-white" type="button">Copy</button>
+		<button class="copy rounded-md bg-gray-700 px-2 py-1 text-sm text-white max-sm:hidden" type="button">Copy</button>
 	</div>
-	<span class="lang">{Astro.props.lang}</span>
+	<span class="lang group-[.multi-tabbed]:top-0">{Astro.props.lang}</span>
 	<div class="max-h-[20rem] overflow-y-auto md:max-h-[40rem]">
 		<pre
 			class={cn(

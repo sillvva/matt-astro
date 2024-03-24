@@ -31,6 +31,7 @@
 		"@shikijs/transformers": "^1.2.0",
 		"@tailwindcss/typography": "^0.5.10",
 		"@total-typescript/ts-reset": "^0.5.1",
+		"@types/node": "^20.11.30",
 		"daisyui": "^4.7.3",
 		"sass": "^1.71.1"
 	},

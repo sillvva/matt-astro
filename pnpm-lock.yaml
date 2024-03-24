@@ -16,7 +16,7 @@ dependencies:
     version: 7.3.6(astro@4.5.1)(react@18.2.0)
   astro:
     specifier: ^4.5.1
-    version: 4.5.1(sass@1.71.1)(typescript@5.4.2)
+    version: 4.5.1(@types/node@20.11.30)(sass@1.71.1)(typescript@5.4.2)
   clsx:
     specifier: ^2.1.0
     version: 2.1.0
@@ -64,6 +64,9 @@ devDependencies:
   '@total-typescript/ts-reset':
     specifier: ^0.5.1
     version: 0.5.1
+  '@types/node':
+    specifier: ^20.11.30
+    version: 20.11.30
   daisyui:
     specifier: ^4.7.3
     version: 4.7.3(postcss@8.4.35)
@@ -131,7 +134,7 @@ packages:
       '@astrojs/markdown-remark': 4.3.0
       '@mdx-js/mdx': 3.0.1
       acorn: 8.11.3
-      astro: 4.5.1(sass@1.71.1)(typescript@5.4.2)
+      astro: 4.5.1(@types/node@20.11.30)(sass@1.71.1)(typescript@5.4.2)
       es-module-lexer: 1.4.1
       estree-util-visit: 2.0.0
       github-slugger: 2.0.0
@@ -161,7 +164,7 @@ packages:
       astro: ^3.0.0 || ^4.0.0
       tailwindcss: ^3.0.24
     dependencies:
-      astro: 4.5.1(sass@1.71.1)(typescript@5.4.2)
+      astro: 4.5.1(@types/node@20.11.30)(sass@1.71.1)(typescript@5.4.2)
       autoprefixer: 10.4.17(postcss@8.4.35)
       postcss: 8.4.35
       postcss-load-config: 4.0.2(postcss@8.4.35)
@@ -193,7 +196,7 @@ packages:
       '@astrojs/internal-helpers': 0.3.0
       '@vercel/analytics': 1.2.2(react@18.2.0)
       '@vercel/nft': 0.26.4
-      astro: 4.5.1(sass@1.71.1)(typescript@5.4.2)
+      astro: 4.5.1(@types/node@20.11.30)(sass@1.71.1)(typescript@5.4.2)
       esbuild: 0.19.12
       fast-glob: 3.3.2
       set-cookie-parser: 2.6.0
@@ -1189,6 +1192,11 @@ packages:
       '@types/unist': 2.0.10
     dev: false
 
+  /@types/node@20.11.30:
+    resolution: {integrity: sha512-dHM6ZxwlmuZaRmUPfv1p+KrdD1Dci04FbdEm/9wEMouFqxYoFl5aMkt0VMAUtYRQDyYvD41WJLukhq/ha3YuTw==}
+    dependencies:
+      undici-types: 5.26.5
+
   /@types/ungap__structured-clone@0.3.3:
     resolution: {integrity: sha512-RNmhIPwoip6K/zZOv3ypksTAqaqLEXvlNSXKyrC93xMSOAHZCR7PifW6xKZCwkbbnbM9dwB9X56PPoNTlNwEqw==}
     dev: false
@@ -1358,7 +1366,7 @@ packages:
     hasBin: true
     dev: false
 
-  /astro@4.5.1(sass@1.71.1)(typescript@5.4.2):
+  /astro@4.5.1(@types/node@20.11.30)(sass@1.71.1)(typescript@5.4.2):
     resolution: {integrity: sha512-xqSBxeDZFUUgHl+npNwgoe6taTOCI8sJNwqWJaK3t/vcCHdfYJX00Tr9g43w/cYKPoTN4wKbNktbKYJZAbE3ZQ==}
     engines: {node: '>=18.14.1', npm: '>=6.14.0'}
     hasBin: true
@@ -1421,7 +1429,7 @@ packages:
       tsconfck: 3.0.3(typescript@5.4.2)
       unist-util-visit: 5.0.0
       vfile: 6.0.1
-      vite: 5.1.6(sass@1.71.1)
+      vite: 5.1.6(@types/node@20.11.30)(sass@1.71.1)
       vitefu: 0.2.5(vite@5.1.6)
       which-pm: 2.1.1
       yargs-parser: 21.1.1
@@ -4672,6 +4680,9 @@ packages:
     hasBin: true
     dev: false
 
+  /undici-types@5.26.5:
+    resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==}
+
   /unherit@3.0.1:
     resolution: {integrity: sha512-akOOQ/Yln8a2sgcLj4U0Jmx0R5jpIg2IUyRrWOzmEbjBtGzBdHtSeFKgoEcoH4KYIG/Pb8GQ/BwtYm0GCq1Sqg==}
     dev: false
@@ -4845,7 +4856,7 @@ packages:
       vfile-message: 4.0.2
     dev: false
 
-  /vite@5.1.6(sass@1.71.1):
+  /vite@5.1.6(@types/node@20.11.30)(sass@1.71.1):
     resolution: {integrity: sha512-yYIAZs9nVfRJ/AiOLCA91zzhjsHUgMjB+EigzFb6W2XTLO8JixBCKCjvhKZaye+NKYHCrkv3Oh50dH9EdLU2RA==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
@@ -4873,6 +4884,7 @@ packages:
       terser:
         optional: true
     dependencies:
+      '@types/node': 20.11.30
       esbuild: 0.19.12
       postcss: 8.4.35
       rollup: 4.12.1
@@ -4889,7 +4901,7 @@ packages:
       vite:
         optional: true
     dependencies:
-      vite: 5.1.6(sass@1.71.1)
+      vite: 5.1.6(@types/node@20.11.30)(sass@1.71.1)
     dev: false
 
   /web-namespaces@2.0.1:

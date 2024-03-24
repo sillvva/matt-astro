@@ -8,6 +8,7 @@ tags:
   - TypeScript
   - SvelteKit
 ---
+import MultiTabbedCode from "$/components/markdown/multi-tabbed-code.astro";
 import TabbedCode from "$/components/markdown/tabbed-code.astro";
 
 ## Table of Contents
@@ -143,7 +144,9 @@ export const actions = { // [!code focus]
 
 You can also use the `SaveError` class to handle errors in forms that do not use Superforms. The following code demonstrates how to use the `SaveError` class in a form action that deletes a dungeon master. If an error occurs, SvelteKit's `fail` function is called to return the error message to the form.
 
-<TabbedCode filename=".../[dmId]/+page.server.ts">
+<MultiTabbedCode>
+<Fragment slot="handle-1">.../[dmId]/+page.server.ts</Fragment>
+<Fragment slot="panel-1">
 ```ts
 export const actions = { // [!code focus]
 	deleteDM: async (event) => { // [!code focus]
@@ -163,9 +166,9 @@ export const actions = { // [!code focus]
 	} // [!code focus]
 }; // [!code focus]
 ```
-</TabbedCode>
-
-<TabbedCode filename=".../[dmId]/+page.svelte">
+</Fragment>
+<Fragment slot="handle-2">../[dmId]/+page.svelte</Fragment>
+<Fragment slot="panel-2">
 ```svelte
 <form
 	method="POST"
@@ -192,4 +195,5 @@ export const actions = { // [!code focus]
 	</button>
 </form>
 ```
-</TabbedCode>
+</Fragment>
+</MultiTabbedCode>

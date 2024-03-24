@@ -4,6 +4,6 @@ type Props = {
 };
 ---
 
-<div class="tabbed-code group" style={`--filename: '${Astro.props.filename.replace(/'/g, "\\'")}'`}>
+<div class="tabbed group" style={`--filename: '${Astro.props.filename.replace(/'/g, "\\'")}'`}>
 	<slot />
 </div>

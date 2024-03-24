@@ -28,14 +28,14 @@ const { code, lang, wrap } = Astro.props;
 	}
 
 	document.addEventListener("astro:page-load", () => {
-		document.querySelectorAll("article .pre-block:not(.shiki)").forEach((block) => {
+		document.querySelectorAll("article .pre-block.shiki").forEach((block) => {
 			const btn = block.querySelector(".copy");
 			if (btn) btn.addEventListener("click", () => copyBlock(btn));
 		});
 	});
 </script>
 
-<div class="pre-block relative mb-4 mt-2 rounded-md border border-base-100 bg-neutral-900 text-base-content">
+<div class="pre-block shiki relative mb-4 mt-2 rounded-md border border-base-100 bg-neutral-900 text-base-content">
 	<div
 		class={cn(
 			"flex items-center justify-between rounded-t",
@@ -56,7 +56,7 @@ const { code, lang, wrap } = Astro.props;
 		>
 		</div>
 		<div class="flex-1"></div>
-		<button class="copy rounded-md bg-gray-700 px-2 py-1 text-sm text-white" type="button">Copy</button>
+		<button class="copy rounded-md bg-gray-700 px-2 py-1 text-sm text-white max-sm:hidden" type="button">Copy</button>
 	</div>
 	<span class="lang">{lang}</span>
 	<div class="max-h-[20rem] overflow-y-auto md:max-h-[40rem]">

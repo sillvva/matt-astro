@@ -6,8 +6,7 @@ import {
 	transformerNotationErrorLevel,
 	transformerNotationFocus,
 	transformerNotationHighlight,
-	transformerNotationWordHighlight,
-	transformerRenderWhitespace
+	transformerNotationWordHighlight
 } from "@shikijs/transformers";
 import { defineConfig } from "astro/config";
 import remarkToc from "remark-toc";
@@ -33,7 +32,6 @@ export default defineConfig({
 				transformerNotationHighlight(),
 				transformerNotationWordHighlight(),
 				transformerNotationFocus(),
-				transformerRenderWhitespace(),
 				transformerNotationErrorLevel(),
 				{
 					preprocess(text, config) {

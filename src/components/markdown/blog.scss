@@ -1,5 +1,5 @@
 @mixin code() {
-	.tabbed-code {
+	.tabbed {
 		.code-tab {
 			max-width: calc(100vw - 160px);
 			&::before {
@@ -94,6 +94,43 @@
 			padding: 0.1rem 0.4rem;
 			font-size: x-small;
 			color: rgba(255, 255, 255, 0.5);
+		}
+	}
+
+	.multi-tabbed {
+		.panels {
+			position: relative;
+		}
+
+		.panel {
+			display: none;
+			width: 100%;
+		}
+
+		.copy {
+			display: none;
+		}
+
+		&:has(.tallest) .panel {
+			display: inline-block;
+			visibility: hidden;
+
+			&:not(.tallest) {
+				position: absolute;
+				top: 0;
+				left: 0;
+			}
+		}
+
+		.radio {
+			// visually hidden
+			position: absolute;
+			width: 0px;
+			height: 0px;
+			overflow: hidden;
+			clip: rect(0 0 0 0);
+			clip-path: inset(50%);
+			white-space: nowrap;
 		}
 	}
 }
