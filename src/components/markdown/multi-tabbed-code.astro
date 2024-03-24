@@ -2,7 +2,7 @@
 import { cn } from "$/util";
 import crypto from "node:crypto";
 
-const handles: string[] = [];
+const tabs: string[] = [];
 const panels: string[] = [];
 
 let inlineStyles = "";
@@ -11,11 +11,9 @@ let inlineStyles = "";
 	let index = 0;
 	const classes: string[] = [];
 	Object.entries(Astro.slots).forEach(([name]) => {
-		if (name.startsWith("handle")) {
+		if (name.startsWith("tab")) {
 			index += 1;
-
-			handles.push(name);
-
+			tabs.push(name);
 			classes.push(`.multi-tabbed:has(.radio-${index}:checked) .panel-${index}`);
 			classes.push(`.multi-tabbed:has(.radio-${index}:checked) .copy-${index}`);
 		} else if (name.startsWith("panel")) {
@@ -63,28 +61,25 @@ const uid = crypto.randomUUID();
 	>
 		<div class="flex flex-1 overflow-x-auto">
 			{
-				handles.map(async (name, idx) => {
+				tabs.map(async (name, idx) => {
 					const index = idx + 1;
-					if (name.startsWith("handle")) {
-						const render = await Astro.slots.render(name);
-						return (
-							<label class="code-tab h-[44px] whitespace-nowrap border-t border-primary bg-neutral-900 p-3 text-sm opacity-50 has-[:checked]:opacity-100">
-								<input
-									class:list={["radio", `radio-${index}`, "tab-selector"]}
-									type="radio"
-									name={uid}
-									checked={name.endsWith("active") || index === 1 ? "" : undefined}
-								/>
-								<Fragment set:html={render} />
-							</label>
-						);
-					}
-					return null;
+					const render = await Astro.slots.render(name);
+					return (
+						<label class="code-tab h-[44px] whitespace-nowrap border-t border-primary bg-neutral-900 p-3 text-sm opacity-50 has-[:checked]:opacity-100">
+							<input
+								class:list={["radio", `radio-${index}`, "tab-selector"]}
+								type="radio"
+								name={uid}
+								checked={name.endsWith("active") || index === 1 ? "" : undefined}
+							/>
+							<Fragment set:html={render} />
+						</label>
+					);
 				})
 			}
 		</div>
 		{
-			handles.map(async (name, idx) => (
+			tabs.map(async (name, idx) => (
 				<button
 					class={cn("copy rounded-md bg-gray-700 px-2 py-1 text-sm text-white max-sm:hidden", `copy-${idx + 1}`)}
 					data-idx={idx + 1}

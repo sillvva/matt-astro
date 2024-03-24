@@ -145,7 +145,7 @@ export const actions = { // [!code focus]
 You can also use the `SaveError` class to handle errors in forms that do not use Superforms. The following code demonstrates how to use the `SaveError` class in a form action that deletes a dungeon master. If an error occurs, SvelteKit's `fail` function is called to return the error message to the form.
 
 <MultiTabbedCode>
-<Fragment slot="handle-1">.../[dmId]/+page.server.ts</Fragment>
+<Fragment slot="tab-1">.../[dmId]/+page.server.ts</Fragment>
 <Fragment slot="panel-1">
 ```ts
 export const actions = { // [!code focus]
@@ -167,7 +167,7 @@ export const actions = { // [!code focus]
 }; // [!code focus]
 ```
 </Fragment>
-<Fragment slot="handle-2">../[dmId]/+page.svelte</Fragment>
+<Fragment slot="tab-2">../[dmId]/+page.svelte</Fragment>
 <Fragment slot="panel-2">
 ```svelte
 <form
