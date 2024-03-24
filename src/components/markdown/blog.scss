@@ -1,10 +1,12 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 @mixin code() {
 	.code-block {
-		@apply relative mb-4 mt-2 rounded-md border border-base-100 bg-neutral-900 text-base-content;
+		position: relative;
+		margin-top: theme("space.4");
+		margin-bottom: theme("space.2");
+		border-radius: theme("borderRadius.md");
+		border: theme("borderWidth.DEFAULT") solid theme("borderColor.base-100");
+		background-color: theme("backgroundColor.neutral-900");
+		color: theme("textColor.base-content");
 		.tabbed &,
 		&.multi-tabbed {
 			nav {
@@ -53,14 +55,24 @@
 			}
 		}
 		nav {
-			@apply flex items-center justify-between gap-4 rounded-t border-b border-base-100 bg-neutral-800 p-2 text-sm;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: theme("space.4");
+			border-top-left-radius: theme("borderRadius.DEFAULT");
+			border-top-right-radius: theme("borderRadius.DEFAULT");
+			border-bottom: theme("borderWidth.DEFAULT") solid theme("borderColor.base-100");
+			background-color: theme("backgroundColor.neutral-800");
+			padding: theme("space.2");
+			font-size: theme("fontSize.sm");
 		}
 		pre {
 			position: relative;
+			tab-size: 2;
 			code {
 				&:has(.line.diff) {
 					.line:not(.diff) {
-						padding-left: 1rem;
+						padding-left: theme("space.4");
 					}
 				}
 				&:has(.line.focused) {
@@ -71,7 +83,7 @@
 				}
 				.line {
 					display: inline-block;
-					width: 100%;
+					width: theme("width.full");
 					line-height: 1.5;
 					&:empty {
 						display: none;
@@ -85,7 +97,7 @@
 					&.diff {
 						&::before {
 							display: inline-block;
-							width: 1rem;
+							width: theme("width.4");
 							text-align: center;
 						}
 						&.add {
@@ -127,29 +139,38 @@
 			}
 		}
 		.copy {
-			@apply rounded-md bg-gray-700 px-2 py-1 text-sm text-white max-sm:hidden;
+			border-radius: theme("borderRadius.md");
+			background-color: theme("backgroundColor.neutral-600");
+			padding: theme("space.1") theme("space.2");
+			font-size: theme("fontSize.sm");
+			color: theme("textColor.white");
+			@apply max-sm:hidden;
 		}
 		&.multi-tabbed .copy {
 			display: none;
 		}
 		.lang {
-			text-transform: uppercase;
 			display: inline-block;
 			position: absolute;
-			top: 45px;
+			top: calc(theme("space.11") + 1px);
 			right: 0rem;
 			z-index: 1;
-			background-color: #171717;
-			padding: 0.1rem 0.4rem;
-			font-size: x-small;
+			background-color: theme("backgroundColor.neutral-900");
+			padding: theme("space.1") theme("space.2");
+			font-size: theme("fontSize.xs");
+			text-transform: uppercase;
 			color: rgba(255, 255, 255, 0.5);
 		}
 		.panels {
 			position: relative;
 			.panel {
-				@apply m-0 rounded-lg bg-neutral-900 text-sm text-base-content [tab-size:2];
 				display: none;
-				width: 100%;
+				width: theme("width.full");
+				margin: 0;
+				border-radius: theme("borderRadius.DEFAULT");
+				background-color: theme("backgroundColor.neutral-900");
+				font-size: theme("fontSize.sm");
+				color: theme("textColor.base-content");
 			}
 		}
 		&:has(.tallest) .panel {
