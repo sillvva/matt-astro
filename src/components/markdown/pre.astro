@@ -16,49 +16,26 @@ import { cn } from "$/util";
 	}
 
 	document.addEventListener("astro:page-load", () => {
-		document.querySelectorAll("article .pre-block:not(.shiki):not(.multi-tabbed)").forEach((block) => {
+		document.querySelectorAll("article .code-block:not(.shiki):not(.multi-tabbed)").forEach((block) => {
 			const btn = block.querySelector(".copy");
 			if (btn) btn.addEventListener("click", () => copyBlock(btn));
 		});
 	});
 </script>
 
-<div
-	class={cn(
-		"pre-block relative mb-4 mt-2 rounded-md border border-base-100 bg-neutral-900 text-base-content",
-		"group-[.multi-tabbed]:border-0 group-[.multi-tabbed]:m-0"
-	)}
->
-	<div
-		class={cn(
-			"flex items-center justify-between rounded-t",
-			"border-b border-base-100 bg-neutral-800",
-			"p-2 text-sm group-[.tabbed]:py-0 group-[.multi-tabbed]:hidden"
-		)}
-	>
+<div class="code-block group-[.multi-tabbed]:m-0 group-[.multi-tabbed]:border-0">
+	<nav class="group-[.multi-tabbed]:hidden group-[.tabbed]:py-0">
 		<div class="flex space-x-1 group-[.tabbed]:max-md:hidden">
 			<div class="h-2 w-2 rounded-full bg-gray-500"></div>
 			<div class="h-2 w-2 rounded-full bg-gray-500"></div>
 			<div class="h-2 w-2 rounded-full bg-gray-500"></div>
 		</div>
-		<div
-			class={cn(
-				"code-tab hidden h-[44px] bg-neutral-900",
-				"border-t-2 border-x border-primary border-x-neutral-700/50",
-				"p-3 py-[11px] text-sm group-[.tabbed]:block md:ml-3"
-			)}
-		>
-		</div>
+		<label class="code-tab group-[.tabbed]:block"></label>
 		<div class="flex-1"></div>
-		<button class="copy rounded-md bg-gray-700 px-2 py-1 text-sm text-white max-sm:hidden" type="button">Copy</button>
-	</div>
+		<button class="copy" type="button">Copy</button>
+	</nav>
 	<span class="lang group-[.multi-tabbed]:top-0">{Astro.props.lang}</span>
 	<div class="max-h-[20rem] overflow-y-auto md:max-h-[40rem]">
-		<pre
-			class={cn(
-				Astro.props.class,
-				"max-w-portfolio group m-0 rounded-lg bg-neutral-900",
-				"px-4 py-5 text-sm text-base-content [tab-size:2]"
-			)}><slot /></pre>
+		<pre class={cn(Astro.props.class, "group")}><slot /></pre>
 	</div>
 </div>

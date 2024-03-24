@@ -42,37 +42,23 @@ const inlineStyles = classes.join(",") + " { visibility: visible; display: inlin
 	}
 
 	document.addEventListener("astro:page-load", () => {
-		document.querySelectorAll("article .pre-block.multi-tabbed .copy").forEach((btn) => {
+		document.querySelectorAll("article .code-block.multi-tabbed .copy").forEach((btn) => {
 			if (btn) btn.addEventListener("click", () => copyBlock(btn));
 		});
 	});
 </script>
 
-<div class="pre-block multi-tabbed group relative mb-4 mt-2 rounded-md border border-base-100 bg-neutral-900 text-base-content">
+<div class="code-block multi-tabbed group">
 	<style set:html={inlineStyles}></style>
-	<nav
-		class={cn("flex items-center rounded-t justify-between gap-4", "border-b border-base-100 bg-neutral-800 p-2 text-sm py-0")}
-	>
+	<nav>
 		<div class="flex flex-1 overflow-x-auto">
 			{
 				tabs.map(async (name, idx) => {
 					const index = idx + 1;
 					const render = await Astro.slots.render(name);
 					return (
-						<label
-							class={cn(
-								"code-tab h-[44px] whitespace-nowrap p-3 py-[11px] text-sm opacity-50",
-								"cursor-pointer border-x border-t-2 border-neutral-900 bg-neutral-900",
-								"has-[:checked]:border-x has-[:checked]:opacity-100",
-								"has-[:checked]:border-primary has-[:checked]:border-x-neutral-700/50"
-							)}
-						>
-							<input
-								class:list={["radio", `radio-${index}`, "tab-selector"]}
-								type="radio"
-								name={uid}
-								checked={name.endsWith("active") || index === 1 ? "" : undefined}
-							/>
+						<label class={cn("code-tab")}>
+							<input class={`radio-${index}`} type="radio" name={uid} checked={index === 1 ? "" : undefined} />
 							<Fragment set:html={render} />
 						</label>
 					);
@@ -81,11 +67,7 @@ const inlineStyles = classes.join(",") + " { visibility: visible; display: inlin
 		</div>
 		{
 			tabs.map(async (name, idx) => (
-				<button
-					class={cn("copy rounded-md bg-gray-700 px-2 py-1 text-sm text-white max-sm:hidden", `copy-${idx + 1}`)}
-					data-idx={idx + 1}
-					type="button"
-				>
+				<button class={cn("copy", `copy-${idx + 1}`)} data-idx={idx + 1} type="button">
 					Copy
 				</button>
 			))
@@ -95,12 +77,7 @@ const inlineStyles = classes.join(",") + " { visibility: visible; display: inlin
 		{
 			panels.map(async (name, index) => (
 				<div
-					class={cn(
-						"max-w-portfolio group m-0 rounded-lg bg-neutral-900",
-						"text-sm text-base-content [tab-size:2]",
-						name.endsWith("tallest") && "tallest",
-						`panel panel-${index + 1}`
-					)}
+					class={cn("panel", `panel-${index + 1}`, name.endsWith("tallest") && "tallest")}
 					set:html={await Astro.slots.render(name)}
 				/>
 			))

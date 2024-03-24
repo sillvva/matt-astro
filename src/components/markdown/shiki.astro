@@ -28,36 +28,24 @@ const { code, lang, wrap } = Astro.props;
 	}
 
 	document.addEventListener("astro:page-load", () => {
-		document.querySelectorAll("article .pre-block.shiki").forEach((block) => {
+		document.querySelectorAll("article .code-block.shiki").forEach((block) => {
 			const btn = block.querySelector(".copy");
 			if (btn) btn.addEventListener("click", () => copyBlock(btn));
 		});
 	});
 </script>
 
-<div class="pre-block shiki relative mb-4 mt-2 rounded-md border border-base-100 bg-neutral-900 text-base-content">
-	<div
-		class={cn(
-			"flex items-center justify-between rounded-t",
-			"border-b border-base-100 bg-neutral-800",
-			"p-2 text-sm group-[.tabbed-code]:py-0"
-		)}
-	>
+<div class="code-block shiki group">
+	<nav class="group-[.tabbed-code]:py-0">
 		<div class="hidden space-x-1 md:flex">
 			<div class="h-2 w-2 rounded-full bg-gray-500"></div>
 			<div class="h-2 w-2 rounded-full bg-gray-500"></div>
 			<div class="h-2 w-2 rounded-full bg-gray-500"></div>
 		</div>
-		<div
-			class={cn(
-				"code-tab hidden h-[44px] border-t border-primary bg-neutral-900",
-				"p-3 text-sm group-[.tabbed-code]:block md:ml-3"
-			)}
-		>
-		</div>
+		<label class="code-tab group-[.tabbed-code]:block md:ml-3"> </label>
 		<div class="flex-1"></div>
-		<button class="copy rounded-md bg-gray-700 px-2 py-1 text-sm text-white max-sm:hidden" type="button">Copy</button>
-	</div>
+		<button class="copy" type="button">Copy</button>
+	</nav>
 	<span class="lang">{lang}</span>
 	<div class="max-h-[20rem] overflow-y-auto md:max-h-[40rem]">
 		<Code
@@ -68,11 +56,7 @@ const { code, lang, wrap } = Astro.props;
 				name: theme.name,
 				settings: theme.tokenColors
 			}}
-			class={cn(
-				Astro.props.class,
-				"max-w-portfolio group m-0 rounded-lg bg-neutral-900",
-				"px-4 py-5 text-sm text-base-content [tab-size:2]"
-			)}
+			class={cn(Astro.props.class, "group my-2")}
 		/>
 	</div>
 </div>
