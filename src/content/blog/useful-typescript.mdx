@@ -7,8 +7,8 @@ image: $/assets/images/typescript.png
 tags:
   - TypeScript
 ---
+import TabbedCode from "$/components/markdown/code/tabbed.astro";
 import Collapsible from "$/components/markdown/collapsible.astro";
-import TabbedCode from "$/components/markdown/tabbed-code.astro";
 import Tweet from "$/components/markdown/tweet.astro";
 
 ## Table of Contents
@@ -30,7 +30,9 @@ The `startViewTransition` function is a method on the `document` object which en
   [MDN](btn::https://developer.mozilla.org/en-US/docs/Web/API/Document/startViewTransition)
 </div>
 
-<TabbedCode filename="app.d.ts">
+<TabbedCode>
+<Fragment slot="tab-1">app.d.ts</Fragment>
+<Fragment slot="panel-1">
 ```ts
 declare global {
 	interface ViewTransition {
@@ -63,6 +65,7 @@ declare global {
 	}
 }
 ```
+</Fragment>
 </TabbedCode>
 
 <Collapsible title="Using in SvelteKit">

@@ -1,0 +1,77 @@
+---
+import { cn } from "$/util";
+
+export interface Props extends astroHTML.JSX.HTMLAttributes {
+	tabs?: string[];
+}
+
+const { tabs = [] } = Astro.props;
+const hasDots = tabs.length <= 2;
+---
+
+<script>
+	function copyBlock(el: Element) {
+		const idx = el.getAttribute("data-idx");
+		const pre: HTMLPreElement | null | undefined = el.parentNode?.parentNode?.querySelector(idx ? `.panel-${idx} pre` : "pre");
+		if (!pre) {
+			alert("No code block found to copy");
+			return;
+		}
+		navigator.clipboard.writeText(pre.innerText);
+		document.querySelectorAll(".copy").forEach((btn) => {
+			btn.innerHTML = "Copy";
+			btn.classList.add("bg-neutral-600");
+			btn.classList.remove("bg-primary");
+		});
+		el.innerHTML = "Copied";
+		el.classList.remove("bg-neutral-600");
+		el.classList.add("bg-primary");
+	}
+
+	document.addEventListener("astro:page-load", () => {
+		document.querySelectorAll("article .code-block .copy").forEach((btn) => {
+			if (btn) btn.addEventListener("click", () => copyBlock(btn));
+		});
+	});
+</script>
+
+<nav
+	class={cn(
+		"flex items-center rounded-t justify-between gap-4 h-11",
+		"border-b border-base-100 bg-neutral-800 p-2 text-sm",
+		tabs.length && "group-[.tabbed]:py-0",
+		Astro.props.class
+	)}
+>
+	{
+		hasDots && (
+			<div class="flex space-x-1">
+				<div class="h-2 w-2 rounded-full bg-gray-500" />
+				<div class="h-2 w-2 rounded-full bg-gray-500" />
+				<div class="h-2 w-2 rounded-full bg-gray-500" />
+			</div>
+		)
+	}
+	<slot />
+	{
+		tabs.length ? (
+			tabs.map(async (_, idx) => (
+				<button
+					class={cn(
+						`copy copy-${idx + 1} inline-block rounded-md bg-neutral-600`,
+						"px-2 py-1 text-sm text-neutral-100 max-sm:hidden",
+						"group-[.tabbed]:hidden"
+					)}
+					data-idx={idx + 1}
+					type="button"
+				>
+					Copy
+				</button>
+			))
+		) : (
+			<button class="copy inline-block rounded-md bg-neutral-600 px-2 py-1 text-sm text-neutral-100 max-sm:hidden" type="button">
+				Copy
+			</button>
+		)
+	}
+</nav>

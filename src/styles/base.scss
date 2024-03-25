@@ -79,9 +79,9 @@
 	}
 
 	button.bg-primary {
-		text-shadow: 0 0 3px rgba(0, 0, 0, 0.75);
+		text-shadow: 0 0 3px black;
 		svg {
-			filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.75));
+			filter: drop-shadow(0 0 2px black);
 		}
 	}
 }

@@ -1,23 +1,45 @@
 @mixin code() {
-	.tabbed-code {
-		.code-tab {
+	.code-block {
+		nav label {
 			max-width: calc(100vw - 160px);
-			&::before {
-				content: var(--filename);
-				display: block;
-				overflow: hidden;
-				text-overflow: ellipsis;
+			height: theme("space.11");
+			white-space: nowrap;
+			padding: 11px theme("space.3");
+			font-size: theme("fontSize.sm");
+			border-width: 2px 1px 0;
+			border-style: solid;
+			border-color: theme("borderColor.neutral-900");
+			background-color: theme("backgroundColor.neutral-900");
+			input[type="radio"] {
+				display: none;
+			}
+			&:has(input[type="radio"]) {
+				cursor: pointer;
+				opacity: 0.5;
+				&:has(:checked) {
+					opacity: 1;
+					border-top-color: theme("borderColor.primary");
+					border-inline-color: theme("borderColor.neutral-700 / 50%");
+				}
+			}
+			&:not(:has(input[type="radio"])) {
+				border-top-color: theme("borderColor.primary");
+				border-inline-color: theme("borderColor.neutral-700 / 50%");
+				&::before {
+					content: var(--filename);
+					display: block;
+					overflow: hidden;
+					text-overflow: ellipsis;
+				}
 			}
 		}
-	}
-
-	.pre-block {
 		pre {
 			position: relative;
+			tab-size: 2;
 			code {
 				&:has(.line.diff) {
 					.line:not(.diff) {
-						padding-left: 1rem;
+						padding-left: theme("space.4");
 					}
 				}
 				&:has(.line.focused) {
@@ -28,7 +50,7 @@
 				}
 				.line {
 					display: inline-block;
-					width: 100%;
+					width: theme("width.full");
 					line-height: 1.5;
 					&:empty {
 						display: none;
@@ -42,7 +64,7 @@
 					&.diff {
 						&::before {
 							display: inline-block;
-							width: 1rem;
+							width: theme("width.4");
 							text-align: center;
 						}
 						&.add {
@@ -82,18 +104,6 @@
 					}
 				}
 			}
-		}
-		.lang {
-			text-transform: uppercase;
-			display: inline-block;
-			position: absolute;
-			top: 45px;
-			right: 0rem;
-			z-index: 1;
-			background-color: #171717;
-			padding: 0.1rem 0.4rem;
-			font-size: x-small;
-			color: rgba(255, 255, 255, 0.5);
 		}
 	}
 }
@@ -219,7 +229,7 @@
 			}
 		}
 		> :last-child {
-			@apply hidden md:flex;
+			@apply max-md:hidden;
 			width: 300px;
 			> * {
 				flex: 1;

@@ -47,26 +47,26 @@ const pages = Array.from(range(first, last, 1));
 					</span>
 				)}
 				{currentPage > 3 && (
-					<a href={url.format.replace(":page", "")} class="btn join-item btn-sm hidden sm:btn-md sm:inline-flex">
+					<a href={url.format.replace(":page", "")} class="btn join-item btn-sm sm:btn-md max-sm:hidden">
 						1
 					</a>
 				)}
-				{currentPage > 4 && <span class="btn btn-disabled join-item btn-sm hidden sm:btn-md sm:inline-flex">...</span>}
+				{currentPage > 4 && <span class="btn btn-disabled join-item btn-sm sm:btn-md max-sm:hidden">...</span>}
 				{pages.map((p) => (
 					<a
 						href={url.format.replace(":page", p == 1 ? "" : p.toString())}
 						class={cn(
 							"btn join-item btn-sm sm:btn-md",
 							p === currentPage && "btn-primary text-white",
-							Math.abs(p - currentPage) > 1 && currentPage !== 1 && currentPage !== lastPage && "hidden sm:inline-flex"
+							Math.abs(p - currentPage) > 1 && currentPage !== 1 && currentPage !== lastPage && "max-sm:hidden"
 						)}
 					>
 						{p}
 					</a>
 				))}
-				{lastPage - currentPage > 3 && <span class="btn btn-disabled join-item btn-sm hidden sm:btn-md sm:inline-flex">...</span>}
+				{lastPage - currentPage > 3 && <span class="btn btn-disabled join-item btn-sm sm:btn-md max-sm:hidden">...</span>}
 				{lastPage - currentPage > 2 && (
-					<a href={url.format.replace(":page", lastPage.toString())} class="btn join-item btn-sm hidden sm:btn-md sm:inline-flex">
+					<a href={url.format.replace(":page", lastPage.toString())} class="btn join-item btn-sm sm:btn-md max-sm:hidden">
 						{lastPage}
 					</a>
 				)}
@@ -96,7 +96,7 @@ const pages = Array.from(range(first, last, 1));
 				</label>
 				<ul
 					tabindex="0"
-					class="menu dropdown-content rounded-box z-[1] max-h-80 flex-nowrap overflow-y-auto bg-base-200 p-2 shadow"
+					class="menu dropdown-content z-[1] max-h-80 flex-nowrap overflow-y-auto rounded-box bg-base-200 p-2 shadow"
 				>
 					<li>
 						<a href={tagPathFormat.replace(":tag", "")} class="hover:bg-accent focus:!bg-accent">

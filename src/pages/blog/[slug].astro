@@ -36,8 +36,8 @@ const baseLevel = headings[0]?.depth ?? 1;
 	{
 		hasToc && (
 			<Fragment slot="toc">
-				<div class="hidden w-0 border-l border-dotted border-base-content/50 xl:block" />
-				<aside class="relative hidden w-[250px] xl:block">
+				<div class="w-0 border-l border-dotted border-base-content/50 max-xl:hidden" />
+				<aside class="relative w-[250px] max-xl:hidden">
 					<div class="sticky top-4 max-h-dscreen overflow-auto">
 						<h2 class="mb-2 text-xl font-bold">Table of Contents</h2>
 						<ul class="flex flex-col gap-2">

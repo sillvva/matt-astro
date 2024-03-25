@@ -9,7 +9,7 @@ tags:
   - Database
   - Redis
 ---
-import TabbedCode from "$/components/markdown/tabbed-code.astro";
+import TabbedCode from "$/components/markdown/code/tabbed.astro";
 
 ## Table of Contents
 
@@ -19,7 +19,9 @@ Aside from cold starts, often the slowest part of an application is fetching dat
 
 If the Redis connection is lost or not ready, the functions will use the callback function on each call instead as a fallback to prevent the application from crashing.
 
-<TabbedCode filename="cache.ts">
+<TabbedCode>
+<Fragment slot="tab-1">cache.ts</Fragment>
+<Fragment slot="panel-1">
 ```ts
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
@@ -154,6 +156,7 @@ export function revalidateKeys(keys: Array<CacheKey | "" | false | null | undefi
 	if (cacheKeys.length) redis.del(...cacheKeys);
 }
 ```
+</Fragment>
 </TabbedCode>
 
 ### Example
