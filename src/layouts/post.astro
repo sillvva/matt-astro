@@ -63,6 +63,7 @@ const youTubeId = typeof image === "string" && image.match(/v=([^&]+)/)?.[1];
 							alt={title}
 							id="post-image"
 							class="h-full w-full object-cover object-center shadow shadow-black/50"
+							loading="eager"
 						/>
 					) : (
 						<div class="relative aspect-video">
@@ -76,6 +77,7 @@ const youTubeId = typeof image === "string" && image.match(/v=([^&]+)/)?.[1];
 									{ media: "(min-width: 701px)", size: 900 }
 								]}
 								class="h-full w-full object-cover object-center shadow shadow-black/50"
+								loading="eager"
 							/>
 						</div>
 					)

@@ -91,9 +91,9 @@ const pages = Array.from(range(first, last, 1));
 	{
 		tags && tagPathFormat && (
 			<div class={cn("dropdown dropdown-end", position == "bottom" && "dropdown-top")}>
-				<label tabindex="0" class="btn btn-sm capitalize sm:btn-md">
+				<span tabindex="0" class="btn btn-sm capitalize sm:btn-md">
 					Tags
-				</label>
+				</span>
 				<ul
 					tabindex="0"
 					class="menu dropdown-content z-[1] max-h-80 flex-nowrap overflow-y-auto rounded-box bg-base-200 p-2 shadow"
