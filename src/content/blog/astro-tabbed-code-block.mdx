@@ -392,7 +392,7 @@ const inlineStyles = classes.join(", ") + " { visibility: visible; display: inli
 
 ### Example
 
-The `tabbed.astro` component is used to wrap the markdown codeblocks (wrapped with single or triple backticks). It can be used like this:
+The `tabbed.astro` component is used to wrap markdown codeblocks triple backticks like the following example. Without the `tabbed.astro` component, the code block would still be rendered thanks to `pre.astro` and `code.astro` components, but without tabs.
 
 ```mdx
 import TabbedCode from "$/components/markdown/code/tabbed.astro";
