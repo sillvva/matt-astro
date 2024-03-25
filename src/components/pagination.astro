@@ -34,7 +34,7 @@ const pages = Array.from(range(first, last, 1));
 		hasPages ? (
 			<div class={cn("join flex-1", !tags && "flex justify-center")}>
 				{url.prev ? (
-					<a href={url.prev} class="btn join-item btn-sm px-1 sm:btn-md sm:px-2">
+					<a href={url.prev} tabindex="0" aria-label="Previous Page" class="btn join-item btn-sm px-1 sm:btn-md sm:px-2">
 						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
 							<path fill="currentColor" d="M15.41 16.58L10.83 12l4.58-4.59L14 6l-6 6l6 6l1.41-1.42Z" />
 						</svg>
@@ -47,7 +47,7 @@ const pages = Array.from(range(first, last, 1));
 					</span>
 				)}
 				{currentPage > 3 && (
-					<a href={url.format.replace(":page", "")} class="btn join-item btn-sm sm:btn-md max-sm:hidden">
+					<a href={url.format.replace(":page", "")} tabindex="0" class="btn join-item btn-sm sm:btn-md max-sm:hidden">
 						1
 					</a>
 				)}
@@ -55,6 +55,7 @@ const pages = Array.from(range(first, last, 1));
 				{pages.map((p) => (
 					<a
 						href={url.format.replace(":page", p == 1 ? "" : p.toString())}
+						tabindex="0"
 						class={cn(
 							"btn join-item btn-sm sm:btn-md",
 							p === currentPage && "btn-primary text-white",
@@ -66,12 +67,16 @@ const pages = Array.from(range(first, last, 1));
 				))}
 				{lastPage - currentPage > 3 && <span class="btn btn-disabled join-item btn-sm sm:btn-md max-sm:hidden">...</span>}
 				{lastPage - currentPage > 2 && (
-					<a href={url.format.replace(":page", lastPage.toString())} class="btn join-item btn-sm sm:btn-md max-sm:hidden">
+					<a
+						href={url.format.replace(":page", lastPage.toString())}
+						tabindex="0"
+						class="btn join-item btn-sm sm:btn-md max-sm:hidden"
+					>
 						{lastPage}
 					</a>
 				)}
 				{url.next ? (
-					<a href={url.next} class="btn join-item btn-sm px-1 sm:btn-md sm:px-2">
+					<a href={url.next} tabindex="0" aria-label="Next Page" class="btn join-item btn-sm px-1 sm:btn-md sm:px-2">
 						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
 							<path fill="currentColor" d="M8.59 16.58L13.17 12L8.59 7.41L10 6l6 6l-6 6l-1.41-1.42Z" />
 						</svg>
@@ -91,15 +96,20 @@ const pages = Array.from(range(first, last, 1));
 	{
 		tags && tagPathFormat && (
 			<div class={cn("dropdown dropdown-end", position == "bottom" && "dropdown-top")}>
-				<label tabindex="0" class="btn btn-sm capitalize sm:btn-md">
+				<button tabindex="0" class="btn btn-sm capitalize sm:btn-md">
 					Tags
-				</label>
+				</button>
 				<ul
 					tabindex="0"
 					class="menu dropdown-content z-[1] max-h-80 flex-nowrap overflow-y-auto rounded-box bg-base-200 p-2 shadow"
 				>
 					<li>
-						<a href={tagPathFormat.replace(":tag", "")} class="hover:bg-accent focus:!bg-accent">
+						<a
+							href={tagPathFormat.replace(":tag", "")}
+							aria-label="View All"
+							tabindex="0"
+							class="hover:bg-accent focus:!bg-accent"
+						>
 							View All
 						</a>
 					</li>
@@ -110,6 +120,8 @@ const pages = Array.from(range(first, last, 1));
 								<a
 									href={tagPathFormat.replace(":tag", slugify(t))}
 									class={cn("hover:bg-accent focus:!bg-accent", t == tag && "bg-primary")}
+									aria-label={t}
+									tabindex="0"
 								>
 									{t}
 								</a>

@@ -1,0 +1,517 @@
+---
+title: Astro Tabbed Code Block
+description: The same code block used in this site
+date: 2024-03-25T03:10:44.480Z
+image: $/assets/images/astro.webp
+tags:
+  - Astro
+  - Component
+  - CSS
+  - TypeScript
+  - UI
+---
+import TabbedCode from "$/components/markdown/code/tabbed.astro";
+
+## Table of Contents
+
+## Astro Subcomponents
+
+The following components are the building blocks for the tabbed code block. The `block.astro` component is the main component that wraps the code block. The `nav.astro` component is the navigation bar that allows users to switch between tabs. The `frame.astro` component is the frame that wraps the code block and allows for scrolling. The `lang.astro` component is the language label that appears at the top right of the code block.
+
+<TabbedCode>
+<Fragment slot="tab-1">block.astro</Fragment>
+<Fragment slot="panel-1">
+```astro
+---
+import { cn } from "$/util";
+export interface Props extends astroHTML.JSX.HTMLAttributes {}
+---
+
+<div
+	class={cn(
+		"code-block group",
+		"relative mb-4 mt-2 rounded-md border border-base-100 bg-neutral-900 text-base-content",
+		Astro.props.class
+	)}
+>
+	<slot />
+</div>
+```
+</Fragment>
+<Fragment slot="tab-2">nav.astro</Fragment>
+<Fragment slot="panel-2">
+```astro
+---
+import { cn } from "$/util";
+
+export interface Props extends astroHTML.JSX.HTMLAttributes {
+	tabs?: string[];
+}
+
+const { tabs = [] } = Astro.props;
+const hasDots = tabs.length <= 2;
+---
+
+<script>
+	function copyBlock(el: Element) {
+		const idx = el.getAttribute("data-idx");
+		const pre: HTMLPreElement | null | undefined = el.parentNode?.parentNode?.querySelector(idx ? `.panel-${idx} pre` : "pre");
+		if (!pre) {
+			alert("No code block found to copy");
+			return;
+		}
+		navigator.clipboard.writeText(pre.innerText);
+		document.querySelectorAll(".copy").forEach((btn) => {
+			btn.innerHTML = "Copy";
+			btn.classList.add("bg-neutral-600");
+			btn.classList.remove("bg-primary");
+		});
+		el.innerHTML = "Copied";
+		el.classList.remove("bg-neutral-600");
+		el.classList.add("bg-primary");
+	}
+
+	document.addEventListener("astro:page-load", () => {
+		document.querySelectorAll("article .code-block .copy").forEach((btn) => {
+			if (btn) btn.addEventListener("click", () => copyBlock(btn));
+		});
+	});
+</script>
+
+<nav
+	class={cn(
+		"flex items-center rounded-t justify-between gap-4 h-11",
+		"border-b border-base-100 bg-neutral-800 p-2 text-sm",
+		tabs.length && "group-[.tabbed]:py-0",
+		Astro.props.class
+	)}
+>
+	{
+		hasDots && (
+			<div class="flex space-x-1">
+				<div class="h-2 w-2 rounded-full bg-gray-500" />
+				<div class="h-2 w-2 rounded-full bg-gray-500" />
+				<div class="h-2 w-2 rounded-full bg-gray-500" />
+			</div>
+		)
+	}
+	<slot />
+	{
+		tabs.length ? (
+			tabs.map(async (_, idx) => (
+				<button
+					class={cn(
+						`copy copy-${idx + 1} inline-block rounded-md bg-neutral-600`,
+						"px-2 py-1 text-sm text-neutral-100 max-sm:hidden",
+						"group-[.tabbed]:hidden"
+					)}
+					data-idx={idx + 1}
+					type="button"
+				>
+					Copy
+				</button>
+			))
+		) : (
+			<button class="copy inline-block rounded-md bg-neutral-600 px-2 py-1 text-sm text-neutral-100 max-sm:hidden" type="button">
+				Copy
+			</button>
+		)
+	}
+</nav>
+```
+</Fragment>
+<Fragment slot="tab-3">frame.astro</Fragment>
+<Fragment slot="panel-3">
+```astro
+---
+import { cn } from "$/util";
+export interface Props extends astroHTML.JSX.HTMLAttributes {}
+---
+
+<div class={cn("max-h-[20rem] overflow-y-auto md:max-h-[40rem]", Astro.props.class)}>
+	<slot />
+</div>
+```
+</Fragment>
+<Fragment slot="tab-4">lang.astro</Fragment>
+<Fragment slot="panel-4">
+```astro
+---
+import { cn } from "$/util";
+export interface Props extends astroHTML.JSX.HTMLAttributes {}
+---
+
+<span
+	class={cn(
+		"absolute right-0 top-[calc(2.75rem+1px)] z-10 inline-block",
+		"bg-neutral-900 px-2 py-1 text-xs uppercase text-neutral-content",
+		Astro.props.class
+	)}
+>
+	<slot />
+</span>
+```
+</Fragment>
+</TabbedCode>
+
+## `.code-block` Component Class
+
+The following SCSS mixin is used to style the `.code-block` component class. The mixin includes styles for the tab and the Shiki transformer styles. For more information about Shiki transformer styles, see the [Shiki documentation](https://shiki.style/packages/transformers).
+
+<TabbedCode>
+<Fragment slot="tab-1">mixins.scss</Fragment>
+<Fragment slot="panel-1">
+```scss
+@mixin code() {
+	.code-block {
+		nav label {
+			max-width: calc(100vw - 160px);
+			height: theme("space.11");
+			white-space: nowrap;
+			padding: 11px theme("space.3");
+			font-size: theme("fontSize.sm");
+			border-width: 2px 1px 0;
+			border-style: solid;
+			border-color: theme("borderColor.neutral-900");
+			border-top-color: theme("borderColor.neutral-600");
+			background-color: theme("backgroundColor.neutral-900");
+			input[type="radio"] {
+				display: none;
+			}
+			&:has(input[type="radio"]) {
+				cursor: pointer;
+				opacity: 0.5;
+				&:has(:checked) {
+					opacity: 1;
+					border-top-color: theme("borderColor.primary");
+					border-inline-color: theme("borderColor.neutral-700 / 50%");
+				}
+			}
+			&:not(:has(input[type="radio"])) {
+				border-top-color: theme("borderColor.primary");
+				border-inline-color: theme("borderColor.neutral-700 / 50%");
+				&::before {
+					content: var(--filename);
+					display: block;
+					overflow: hidden;
+					text-overflow: ellipsis;
+				}
+			}
+		}
+		pre {
+			position: relative;
+			tab-size: 2;
+			code {
+				&:has(.line.diff) {
+					.line:not(.diff) {
+						padding-left: theme("space.4");
+					}
+				}
+				&:has(.line.focused) {
+					.line:not(.focused) {
+						opacity: 0.5;
+						filter: blur(0.095rem);
+					}
+				}
+				.line {
+					display: inline-block;
+					width: theme("width.full");
+					line-height: 1.5;
+					&:empty {
+						display: none;
+					}
+					&.highlighted {
+						background-color: rgba(255, 255, 255, 0.1);
+						&.error {
+							background-color: rgba(244, 63, 94, 0.16);
+						}
+					}
+					&.diff {
+						&::before {
+							display: inline-block;
+							width: theme("width.4");
+							text-align: center;
+						}
+						&.add {
+							background-color: rgba(159, 122, 234, 0.16);
+							&:before {
+								content: "+";
+								color: green;
+							}
+						}
+						&.remove {
+							background-color: rgba(244, 63, 94, 0.16);
+							&:before {
+								content: "-";
+								color: red;
+							}
+						}
+					}
+					.highlighted-word {
+						background-color: rgba(255, 255, 255, 0.1);
+						border: 1px solid rgba(255, 255, 255, 0.2);
+						padding: 1px 3px;
+						margin: -1px -3px;
+						border-radius: 4px;
+					}
+					&.error .highlighted-word {
+						background-color: transparent;
+						border: 0;
+						margin: 0;
+						padding: 0;
+						border-radius: 0;
+						text-decoration: underline;
+						text-decoration-style: wavy;
+						text-decoration-color: rgb(205, 0, 0);
+						@supports (color: color-mix(in srgb, red 80%, black)) {
+							text-decoration-color: color-mix(in srgb, red 80%, black);
+						}
+					}
+				}
+			}
+		}
+	}
+}
+```
+</Fragment>
+</TabbedCode>
+
+## The Component
+
+The `code.astro` and  `pre.astro` components are also subcomponents of the `tabbed.astro` component. However, they can also be used used as the default components for rendering markdown code blocks wrapped with single or triple backticks. For more information about assigning custom components to HTML elements in `.mdx` files, see the [Astro documentation](https://docs.astro.build/en/guides/markdown-content/#assigning-custom-components-to-html-elements).
+
+The `tabbed.astro` compoennt is the main component that creates the tabbed code block. The component includes the `CodeBlock`, `CodeNav`, `CodeLang`, and `CodeFrame` components.
+
+<TabbedCode>
+<Fragment slot="tab-1">pre.astro</Fragment>
+<Fragment slot="panel-1">
+```astro
+---
+import { cn } from "$/util";
+import CodeBlock from "./block/block.astro";
+import CodeFrame from "./block/frame.astro";
+import CodeLang from "./block/lang.astro";
+import CodeNav from "./block/nav.astro";
+---
+
+<CodeBlock class="group-[.tabbed]:m-0 group-[.tabbed]:border-0">
+	<CodeNav class="group-[.tabbed]:hidden" />
+	<CodeLang class="group-[.tabbed]:top-0">
+		{Astro.props.lang}
+	</CodeLang>
+	<CodeFrame class="group-[.tabbed]:max-h-none">
+		<pre class={cn(Astro.props.class, "group my-1")}><slot /></pre>
+	</CodeFrame>
+</CodeBlock>
+```
+</Fragment>
+<Fragment slot="tab-2">code.astro</Fragment>
+<Fragment slot="panel-2">
+```astro
+---
+import { cn } from "$/util";
+---
+
+<code
+	class={cn(
+		Astro.props.class,
+		"group-[.astro-code]:bg-transparent group-[.astro-code]:text-xs rounded-sm bg-white/20 text-base-content",
+		"[#table-of-contents+ul_&]:bg-transparent [#table-of-contents+ul_&]:font-montserrat",
+		"[:is(h1,h2,h3,h4)>&]:bg-transparent [:is(h1,h2,h3,h4)>&]:font-robo-flex"
+	)}><slot /></code>
+
+```
+</Fragment>
+<Fragment slot="tab-3">tabbed.astro</Fragment>
+<Fragment slot="panel-3">
+```astro
+---
+import { cn } from "$/util";
+import CodeBlock from "./block/block.astro";
+import CodeFrame from "./block/frame.astro";
+import CodeNav from "./block/nav.astro";
+
+const uuid = crypto.randomUUID();
+const tabs: string[] = [];
+const panels: string[] = [];
+
+let index = 0;
+const classes: string[] = [];
+Object.entries(Astro.slots).forEach(([name]) => {
+	if (name.startsWith("tab")) {
+		index += 1;
+		tabs.push(name);
+		classes.push(`.tabbed:has(.radio-${index}:checked) .panel-${index}`);
+		classes.push(`.tabbed:has(.radio-${index}:checked) .copy-${index}`);
+	} else if (name.startsWith("panel")) {
+		panels.push(name);
+	}
+});
+
+const inlineStyles = classes.join(", ") + " { visibility: visible; display: inline-block !important; }";
+---
+
+<CodeBlock class="tabbed">
+	{tabs.length > 0 && <style set:html={inlineStyles} />}
+	<CodeNav {tabs}>
+		<div class="flex flex-1 overflow-x-auto">
+			{
+				tabs.map(async (name, idx) => {
+					const index = idx + 1;
+					const render = await Astro.slots.render(name);
+					return (
+						<label>
+							<input class={`radio-${index}`} type="radio" name={uuid} checked={index === 1 ? "" : undefined} />
+							<Fragment set:html={render} />
+						</label>
+					);
+				})
+			}
+		</div>
+	</CodeNav>
+	<CodeFrame>
+		{
+			panels.length ? (
+				panels.map(async (name, index) => (
+					<div
+						class={cn(`panel-${index + 1}`, "m-0 hidden w-full rounded bg-neutral-900 text-sm text-neutral-content")}
+						set:html={await Astro.slots.render(name)}
+					/>
+				))
+			) : (
+				<div class="panel-0 m-0 w-full rounded bg-neutral-900 text-sm text-neutral-content">
+					<slot />
+				</div>
+			)
+		}
+	</CodeFrame>
+</CodeBlock>
+```
+</Fragment>
+</TabbedCode>
+
+### Example
+
+The `tabbed.astro` component is used to wrap the markdown codeblocks (wrapped with single or triple backticks). It can be used like this:
+
+```mdx
+import TabbedCode from "$/components/markdown/code/tabbed.astro";
+
+<TabbedCode>
+<Fragment slot="tab-1">mixins.scss</Fragment>
+<Fragment slot="panel-1">
+``‍`scss
+@mixin code() {
+	.code-block {
+		nav label {
+			max-width: calc(100vw - 160px);
+			height: theme("space.11");
+			white-space: nowrap;
+			padding: 11px theme("space.3");
+			font-size: theme("fontSize.sm");
+			border-width: 2px 1px 0;
+			border-style: solid;
+			border-color: theme("borderColor.neutral-900");
+			border-top-color: theme("borderColor.neutral-600");
+			background-color: theme("backgroundColor.neutral-900");
+			input[type="radio"] {
+				display: none;
+			}
+			&:has(input[type="radio"]) {
+				cursor: pointer;
+				opacity: 0.5;
+				&:has(:checked) {
+					opacity: 1;
+					border-top-color: theme("borderColor.primary");
+					border-inline-color: theme("borderColor.neutral-700 / 50%");
+				}
+			}
+			&:not(:has(input[type="radio"])) {
+				border-top-color: theme("borderColor.primary");
+				border-inline-color: theme("borderColor.neutral-700 / 50%");
+				&::before {
+					content: var(--filename);
+					display: block;
+					overflow: hidden;
+					text-overflow: ellipsis;
+				}
+			}
+		}
+		pre {
+			position: relative;
+			tab-size: 2;
+			code {
+				&:has(.line.diff) {
+					.line:not(.diff) {
+						padding-left: theme("space.4");
+					}
+				}
+				&:has(.line.focused) {
+					.line:not(.focused) {
+						opacity: 0.5;
+						filter: blur(0.095rem);
+					}
+				}
+				.line {
+					display: inline-block;
+					width: theme("width.full");
+					line-height: 1.5;
+					&:empty {
+						display: none;
+					}
+					&.highlighted {
+						background-color: rgba(255, 255, 255, 0.1);
+						&.error {
+							background-color: rgba(244, 63, 94, 0.16);
+						}
+					}
+					&.diff {
+						&::before {
+							display: inline-block;
+							width: theme("width.4");
+							text-align: center;
+						}
+						&.add {
+							background-color: rgba(159, 122, 234, 0.16);
+							&:before {
+								content: "+";
+								color: green;
+							}
+						}
+						&.remove {
+							background-color: rgba(244, 63, 94, 0.16);
+							&:before {
+								content: "-";
+								color: red;
+							}
+						}
+					}
+					.highlighted-word {
+						background-color: rgba(255, 255, 255, 0.1);
+						border: 1px solid rgba(255, 255, 255, 0.2);
+						padding: 1px 3px;
+						margin: -1px -3px;
+						border-radius: 4px;
+					}
+					&.error .highlighted-word {
+						background-color: transparent;
+						border: 0;
+						margin: 0;
+						padding: 0;
+						border-radius: 0;
+						text-decoration: underline;
+						text-decoration-style: wavy;
+						text-decoration-color: rgb(205, 0, 0);
+						@supports (color: color-mix(in srgb, red 80%, black)) {
+							text-decoration-color: color-mix(in srgb, red 80%, black);
+						}
+					}
+				}
+			}
+		}
+	}
+}
+``‍`
+</Fragment>
+</TabbedCode>
+```

@@ -4,6 +4,8 @@ import { cn } from "$/util";
 import { Code } from "astro:components";
 import { type BundledLanguage } from "shiki";
 import CodeBlock from "./block/block.astro";
+import CodeFrame from "./block/frame.astro";
+import CodeLang from "./block/lang.astro";
 import CodeNav from "./block/nav.astro";
 
 interface Props {
@@ -18,15 +20,10 @@ const { code, lang, wrap } = Astro.props;
 
 <CodeBlock class="shiki">
 	<CodeNav />
-	<span
-		class={cn(
-			"absolute right-0 top-[calc(2.75rem+1px)] z-10 inline-block",
-			"bg-neutral-900 px-2 py-1 text-xs uppercase text-neutral-content"
-		)}
-	>
+	<CodeLang>
 		{Astro.props.lang}
-	</span>
-	<div class="max-h-[20rem] overflow-y-auto md:max-h-[40rem]">
+	</CodeLang>
+	<CodeFrame>
 		<Code
 			{code}
 			{lang}
@@ -37,5 +34,5 @@ const { code, lang, wrap } = Astro.props;
 			}}
 			class={cn(Astro.props.class, "group my-1")}
 		/>
-	</div>
+	</CodeFrame>
 </CodeBlock>

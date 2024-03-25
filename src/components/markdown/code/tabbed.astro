@@ -1,6 +1,7 @@
 ---
 import { cn } from "$/util";
 import CodeBlock from "./block/block.astro";
+import CodeFrame from "./block/frame.astro";
 import CodeNav from "./block/nav.astro";
 
 const uuid = crypto.randomUUID();
@@ -41,7 +42,7 @@ const inlineStyles = classes.join(", ") + " { visibility: visible; display: inli
 			}
 		</div>
 	</CodeNav>
-	<div class="relative max-h-[20rem] overflow-y-auto md:max-h-[40rem]">
+	<CodeFrame>
 		{
 			panels.length ? (
 				panels.map(async (name, index) => (
@@ -56,5 +57,5 @@ const inlineStyles = classes.join(", ") + " { visibility: visible; display: inli
 				</div>
 			)
 		}
-	</div>
+	</CodeFrame>
 </CodeBlock>

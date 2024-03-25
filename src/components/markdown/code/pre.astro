@@ -1,21 +1,17 @@
 ---
 import { cn } from "$/util";
 import CodeBlock from "./block/block.astro";
+import CodeFrame from "./block/frame.astro";
+import CodeLang from "./block/lang.astro";
 import CodeNav from "./block/nav.astro";
 ---
 
 <CodeBlock class="group-[.tabbed]:m-0 group-[.tabbed]:border-0">
 	<CodeNav class="group-[.tabbed]:hidden" />
-	<span
-		class={cn(
-			"absolute right-0 top-[calc(2.75rem+1px)] z-10 inline-block",
-			"bg-neutral-900 px-2 py-1 text-xs uppercase text-neutral-content",
-			"group-[.tabbed]:top-0"
-		)}
-	>
+	<CodeLang class="group-[.tabbed]:top-0">
 		{Astro.props.lang}
-	</span>
-	<div class="max-h-[20rem] overflow-y-auto group-[.tabbed]:max-h-none md:max-h-[40rem]">
+	</CodeLang>
+	<CodeFrame class="group-[.tabbed]:max-h-none">
 		<pre class={cn(Astro.props.class, "group my-1")}><slot /></pre>
-	</div>
+	</CodeFrame>
 </CodeBlock>
