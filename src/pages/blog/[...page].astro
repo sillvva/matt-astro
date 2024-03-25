@@ -8,7 +8,7 @@ import { Image } from "astro:assets";
 import { getCollection, type CollectionEntry } from "astro:content";
 
 export const getStaticPaths = (async ({ paginate }) => {
-	const posts = await getCollection("blog").then(posts => posts.filter(post => !post.data.hidden));
+	const posts = await getCollection("blog").then((posts) => posts.filter((post) => !post.data.hidden));
 	const totalPosts = posts.length;
 	const perPage = 12;
 
@@ -37,7 +37,9 @@ export const getStaticPaths = (async ({ paginate }) => {
 	const allPosts: PaginatedTagPosts[] = [
 		...tags.flatMap((tag) =>
 			paginate(
-				posts.filter((p) => p.data.tags.includes(tag)).sort((a, b) => sorter(b.data.updated || b.data.date, a.data.updated || a.data.date)),
+				posts
+					.filter((p) => p.data.tags.includes(tag))
+					.sort((a, b) => sorter(b.data.updated || b.data.date, a.data.updated || a.data.date)),
 				{
 					pageSize: perPage,
 					params: {
@@ -93,7 +95,7 @@ const {
 ---
 
 <PortfolioLayout title="Blog" noBg>
-	<div class="flex flex-col items-center gap-4 lg:gap-6 w-full">
+	<div class="flex w-full flex-col items-center gap-4 lg:gap-6">
 		<Pagination
 			{currentPage}
 			{lastPage}
@@ -109,6 +111,7 @@ const {
 				data.map((post) => (
 					<a
 						href={`/blog/${post.slug}`}
+						tabindex="0"
 						class={cn(
 							"card min-w-[15rem] rounded-lg bg-base-200 transition-all hover:bg-base-300 motion-safe:hover:scale-105",
 							"shadow-md shadow-black/15 hover:shadow-lg hover:shadow-black/25"
@@ -120,11 +123,11 @@ const {
 							</div>
 							<p class="text-sm">{post.data.description}</p>
 						</div>
-						<figure class="h-40 relative" transition:name={slugify(`image ${post.slug}`)}>
-							<div class="absolute top-0 right-0 bg-black/60 px-2 py-1 flex flex-col rounded-bl-md">
+						<figure class="relative h-40" transition:name={slugify(`image ${post.slug}`)}>
+							<div class="absolute right-0 top-0 flex flex-col rounded-bl-md bg-black/60 px-2 py-1">
 								{post.data.date && (
 									<span class="text-sm">
-										Published: 
+										Published:
 										<span class="text-theme-faded underline decoration-dotted underline-offset-2">
 											{formatDate(post.data.date)}
 										</span>
@@ -132,7 +135,7 @@ const {
 								)}
 								{post.data.updated && (
 									<span class="text-sm">
-										Updated: 
+										Updated:
 										<span class="text-theme-faded underline decoration-dotted underline-offset-2">
 											{formatDate(post.data.updated)}
 										</span>
@@ -147,6 +150,7 @@ const {
 										class="h-full w-full object-cover object-center"
 										width={640}
 										height={360}
+										loading="eager"
 									/>
 								) : (
 									<Image
@@ -155,6 +159,7 @@ const {
 										class="h-full w-full object-cover object-center"
 										width={640}
 										height={360}
+										loading="eager"
 									/>
 								)
 							) : (
@@ -166,6 +171,7 @@ const {
 										{ media: "(max-width: 564px)", size: 640 }
 									]}
 									class="h-full w-full object-cover object-center"
+									loading="eager"
 								/>
 							)}
 						</figure>
