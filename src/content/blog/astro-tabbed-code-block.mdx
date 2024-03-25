@@ -2,7 +2,7 @@
 title: Astro Tabbed Code Block
 description: The same code block used in this site
 date: 2024-03-25T03:10:44.480Z
-image: $/assets/images/astro.webp
+image: $/assets/images/tabbed-code.webp
 tags:
   - Astro
   - Component
@@ -393,6 +393,8 @@ const inlineStyles = classes.join(", ") + " { visibility: visible; display: inli
 ### Example
 
 The `tabbed.astro` component is used to wrap markdown codeblocks triple backticks like the following example. Without the `tabbed.astro` component, the code block would still be rendered thanks to `pre.astro` and `code.astro` components, but without tabs.
+
+For more examples, you can look at the [source code](https://github.com/sillvva/matt-astro/blob/main/src/content/blog/astro-tabbed-code-block.mdx?plain=1) for this page.
 
 ```mdx
 import TabbedCode from "$/components/markdown/code/tabbed.astro";
