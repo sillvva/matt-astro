@@ -10,7 +10,9 @@ tags:
   - TypeScript
   - UI
 ---
+import outline from "$/assets/images/tabbed-code-outline.jpg";
 import TabbedCode from "$/components/markdown/code/tabbed.astro";
+import MDImage from "$/components/markdown/mdimage.astro";
 
 ## Table of Contents
 
@@ -153,6 +155,12 @@ export interface Props extends astroHTML.JSX.HTMLAttributes {}
 ```
 </Fragment>
 </TabbedCode>
+
+### Diagram
+
+The following diagram shows how the components are structured and how they interact with each other.
+
+<MDImage src={outline} alt="" />
 
 ## `.code-block` Component Class
 
