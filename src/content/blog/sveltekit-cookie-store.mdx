@@ -1,0 +1,272 @@
+---
+title: SvelteKit Cookie Store
+description: A writeable store for cookies in SvelteKit
+date: 2024-03-27T16:03:39.123Z
+image: $/assets/images/cookie-stack.jpg
+tags:
+  - TypeScript
+  - SvelteKit
+---
+import TabbedCode from "$/components/markdown/code/tabbed.astro";
+
+## Table of Contents
+
+## Dependencies
+
+This script uses the `js-cookie` package to manage cookies.
+
+```bash
+pnpm add js-cookie
+```
+
+## The Store
+
+`cookieStore` is a writeable store that will automatically update the cookie whenever the store is updated. 
+
+`serverGetCookie` is a function that should be called from the `load` function of a page/layout server route.
+
+<TabbedCode>
+<Fragment slot="tab-1">cookies.ts</Fragment>
+<Fragment slot="panel-1">
+```ts
+import { browser } from "$app/environment";
+import type { Cookies } from "@sveltejs/kit";
+import Cookie from "js-cookie";
+import { writable, type Writable } from "svelte/store";
+
+export type CookieStore<T extends string | number | boolean | object> = Writable<T> & { initial: T };
+
+/**
+ * Create a cookie store that will automatically update the cookie whenever the store is updated.
+ *
+ * @param cookie The name of the cookie
+ * @param initial The initial value of the cookie
+ * @returns The cookie store
+ */
+export const cookieStore = function <T extends string | number | boolean | object>(name: string, initial: T) {
+	const cookie = writable(initial);
+  const expires = 1000 * 60 * 60 * 24 * 365; // 1 year
+
+	cookie.subscribe((value) => {
+    if (!browser) return;
+		Cookie.set(name, typeof value !== "string" ? JSON.stringify(value) : value, {
+			path: "/",
+			expires: new Date(Date.now() + expires)
+		});
+	});
+
+	return {
+		...cookie,
+		initial
+	};
+};
+
+/**
+ * Get a cookie from the server.
+ *
+ * The function should be called from the `load` function of a page/layout server route. The cookie will be returned as part
+ * of the `load` function's return value.
+ *
+ * ```ts
+ * const defaultValue = {
+ * 	descriptions: false
+ * };
+ *
+ * export const load = async (event) => {
+ * 	const cookie = serverGetCookie(event.cookies, "settings", defaultValue);
+ * 	return {
+ * 		...cookie // {descriptions: boolean}
+ * 	};
+ * };
+ * ```
+ *
+ * @param cookies Cookies object from the server
+ * @param name Name of the cookie
+ * @param defaultCookie Default value of the cookie
+ * @returns The cookie value
+ */
+export function serverGetCookie<T extends string | number | boolean | object>(cookies: Cookies, name: string, defaultCookie: T) {
+	const val = cookies.get(name) === "undefined" ? undefined : cookies.get(name);
+	const cookie = JSON.parse(val || JSON.stringify(defaultCookie)) as typeof defaultCookie;
+	if (typeof cookie !== typeof defaultCookie) throw new Error(`Cookie "${name}" is not of type ${typeof defaultCookie}`);
+	if (typeof cookie === "object" && typeof defaultCookie === "object")
+		return {
+			...defaultCookie,
+			...cookie
+		};
+	else return cookie;
+}
+```
+</Fragment>
+</TabbedCode>
+
+## Usage
+
+The initial value should be set from the cookie if it already exists. Get the cookie from the server for SSR and set the initial value to the cookie value in the layout.
+
+In this example, the cookie is named `app` and has a default value of `{ settings: { theme: "system", mode: "dark" } }`. It can be used as the basis for a theme switcher. You would use the current value of the store to display the selected theme. Any changes to the theme would update the store and the cookie.
+
+<TabbedCode>
+<Fragment slot="tab-1">+layout.server.ts</Fragment>
+<Fragment slot="panel-1">
+```ts
+export const load = async (event) => {
+  // Get cookie if it exists, otherwise use default settings
+	const app = serverGetCookie<App.Cookie>(event.cookies, "app", {
+		settings: {
+			theme: "system",
+      mode: "dark"
+		}
+	});
+
+  return { app };
+};
+```
+</Fragment>
+<Fragment slot="tab-2">+layout.svelte</Fragment>
+<Fragment slot="panel-2">
+```svelte
+<script lang="ts">
+	import { cookieStore } from "$server/cookie";
+	import { setContext } from "svelte";
+
+	export let data;
+
+	$: app = setContext("app", cookieStore("app", data.app));
+</script>
+```
+</Fragment>
+</TabbedCode>
+
+## Creating a Theme Switcher with DaisyUI
+
+The `App.Cookie` type used in the load function above is based on the types in `constants.ts`. `app.settings.theme` is of type `Themes`, which is a union of the available theme names, and `app.settings.mode` is of type `ThemeGroups`, which is a union of `"dark" | "light"`.
+
+The themes in `constants.ts` correspond to the themes configured in the `DaisyUI` plugin. The `ThemeSwitcher` component will allow the user to select a theme from the available themes. If the theme is set to `"system"`, the `theme` and `mode` will be set based on the user's system preference and update accordingly. Otherwise, `mode` will be set based on the theme's group.
+
+The special `ska:html` element is from the [@sveltekit-addons/document](https://www.npmjs.com/package/@sveltekit-addons/document) package. It is a tiny utility for SvelteKit that lets you change the `<html>`, `<head>`, and `<body>` tags from any page or layout—with full SSR support.
+
+<TabbedCode>
+<Fragment slot="tab-1">+layout.svelte</Fragment>
+<Fragment slot="panel-1">
+```svelte
+<script lang="ts">
+	import { cookieStore } from "$server/cookie";
+	import { setContext } from "svelte";
+
+	export let data;
+
+	$: app = setContext("app", cookieStore("app", data.app));
+</script>
+
+<!-- In Tailwind, you can enable the `dark:` variant by setting the root class to "dark" -->
+<!-- DaisyUI uses the data-theme attribtue to enable a specific theme -->
+<ska:html data-theme={$app.settings.theme} class={$app.settings.mode} /> <!-- [!code ++] -->
+```
+</Fragment>
+<Fragment slot="tab-2">constants.ts</Fragment>
+<Fragment slot="panel-2">
+```ts
+type Theme = {
+	name: string;
+	value: string;
+	group?: "dark" | "light";
+};
+
+export const themes = [
+	{
+		name: "System",
+		value: "system"
+	},
+	{
+		name: "Light",
+		value: "light",
+		group: "light"
+	},
+	{
+		name: "Corporate",
+		value: "corporate",
+		group: "light"
+	},
+	{
+		name: "Retro",
+		value: "retro",
+		group: "light"
+	},
+	{
+		name: "Valentine",
+		value: "valentine",
+		group: "light"
+	},
+	{
+		name: "Dark",
+		value: "dark",
+		group: "dark"
+	},
+	{
+		name: "Business",
+		value: "business",
+		group: "dark"
+	},
+	{
+		name: "Halloween",
+		value: "halloween",
+		group: "dark"
+	},
+	{
+		name: "Night",
+		value: "night",
+		group: "dark"
+	}
+] as const satisfies Theme[];
+
+export const themeGroups = ["dark", "light"] as const;
+export type Themes = (typeof themes)[number]["value"];
+export type ThemeGroups = (typeof themeGroups)[number];
+```
+</Fragment>
+<Fragment slot="tab-3">ThemeSwitcher.svelte</Fragment>
+<Fragment slot="panel-3">
+```svelte
+<script lang="ts">
+	import { themeGroups, themes } from "$lib/constants";
+	import type { CookieStore } from "$server/cookie";
+	import { browser } from "@svelteuidev/composables";
+	import { getContext } from "svelte";
+
+	const app = getContext<CookieStore<App.Cookie>>("app");
+
+	function watchMedia(node: HTMLElement) {
+		const mql = window.matchMedia("(prefers-color-scheme: dark)");
+		mql.addEventListener("change", (ev) => {
+			if ($app.settings.theme == "system") $app.settings.mode = ev.matches ? "dark" : "light";
+		});
+	}
+
+	$: if (browser) {
+		if ($app.settings.theme === "system") {
+			const mql = window.matchMedia("(prefers-color-scheme: dark)");
+			$app.settings.mode = mql.matches ? "dark" : "light";
+		}
+	}
+
+	$: {
+		const selected = themes.find((t) => t.value === $app.settings.theme);
+		if (selected && "group" in selected) {
+			$app.settings.mode = selected.group;
+		}
+	}
+</script>
+
+<select class="select select-bordered select-sm" bind:value={$app.settings.theme} use:watchMedia>
+	<option value="system">System</option>
+	{#each themeGroups as group}
+		<hr />
+		{#each themes.filter((t) => "group" in t && t.group === group) as theme}
+			<option value={theme.value}>{theme.name}</option>
+		{/each}
+	{/each}
+</select>
+```
+</Fragment>
+</TabbedCode>
