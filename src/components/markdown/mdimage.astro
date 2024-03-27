@@ -2,10 +2,9 @@
 import { cn } from "$/util";
 import ResponsiveImage from "../responsive-image.astro";
 const alt = Astro.props.alt || "";
-const noAspect = false;
 ---
 
-<figure class="flex flex-col [&_picture]:m-0 my-16">
+<figure class="my-12 flex flex-col [&_picture]:m-0">
 	<a
 		href={Astro.props.src.src}
 		target="_blank"
