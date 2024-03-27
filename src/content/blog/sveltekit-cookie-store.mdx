@@ -1,11 +1,13 @@
 ---
-title: SvelteKit Cookie Store
-description: A writeable store for cookies in SvelteKit
+title: Cookie Store for SvelteKit
+description: A writeable store for cookies in SvelteKit and a theme switcher example using DaisyUI.
 date: 2024-03-27T16:03:39.123Z
 image: $/assets/images/cookie-stack.jpg
 tags:
   - TypeScript
   - SvelteKit
+  - CSS
+  - UI
 ---
 import TabbedCode from "$/components/markdown/code/tabbed.astro";
 
@@ -13,11 +15,16 @@ import TabbedCode from "$/components/markdown/code/tabbed.astro";
 
 ## Dependencies
 
-This script uses the `js-cookie` package to manage cookies.
+This script uses the `js-cookie` package to manage cookies. And for the theme switcher, it uses the `@sveltekit-addons/document` package to change the `<html>` tag's `data-theme` and `class` attributes.
 
 ```bash
 pnpm add js-cookie
+pnpm add -D @sveltekit-addons/document
 ```
+
+### Adding the document preprocessor
+
+The `@sveltekit-addons/document` package provides a preprocessor that allows you to modify the `<html>` and `<body>` tags from any page or layout. For setup instructions, see the [documentation](https://www.npmjs.com/package/@sveltekit-addons/document).
 
 ## The Store
 
@@ -43,9 +50,12 @@ export type CookieStore<T extends string | number | boolean | object> = Writable
  * @param initial The initial value of the cookie
  * @returns The cookie store
  */
-export const cookieStore = function <T extends string | number | boolean | object>(name: string, initial: T) {
+export const cookieStore = function <T extends string | number | boolean | object>(
+  name: string, 
+  initial: T,
+  expires = 1000 * 60 * 60 * 24 * 365 // 1 year
+) {
 	const cookie = writable(initial);
-  const expires = 1000 * 60 * 60 * 24 * 365; // 1 year
 
 	cookie.subscribe((value) => {
     if (!browser) return;
@@ -110,6 +120,8 @@ In this example, the cookie is named `app` and has a default value of `{ setting
 <Fragment slot="tab-1">+layout.server.ts</Fragment>
 <Fragment slot="panel-1">
 ```ts
+import { serverGetCookie } from "$server/cookie.js";
+
 export const load = async (event) => {
   // Get cookie if it exists, otherwise use default settings
 	const app = serverGetCookie<App.Cookie>(event.cookies, "app", {
@@ -138,13 +150,11 @@ export const load = async (event) => {
 </Fragment>
 </TabbedCode>
 
-## Creating a Theme Switcher with DaisyUI
+### Example: Creating a Theme Switcher with DaisyUI
 
 The `App.Cookie` type used in the load function above is based on the types in `constants.ts`. `app.settings.theme` is of type `Themes`, which is a union of the available theme names, and `app.settings.mode` is of type `ThemeGroups`, which is a union of `"dark" | "light"`.
 
 The themes in `constants.ts` correspond to the themes configured in the `DaisyUI` plugin. The `ThemeSwitcher` component will allow the user to select a theme from the available themes. If the theme is set to `"system"`, the `theme` and `mode` will be set based on the user's system preference and update accordingly. Otherwise, `mode` will be set based on the theme's group.
-
-The special `ska:html` element is from the [@sveltekit-addons/document](https://www.npmjs.com/package/@sveltekit-addons/document) package. It is a tiny utility for SvelteKit that lets you change the `<html>`, `<head>`, and `<body>` tags from any page or layout—with full SSR support.
 
 <TabbedCode>
 <Fragment slot="tab-1">+layout.svelte</Fragment>
