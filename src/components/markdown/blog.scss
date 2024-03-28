@@ -19,12 +19,15 @@
 				opacity: 0.5;
 				&:has(:checked) {
 					opacity: 1;
-					border-top-color: theme("borderColor.primary");
+					border-top-color: theme("borderColor.secondary");
 					border-inline-color: theme("borderColor.neutral-700 / 50%");
+				}
+				&:not(:has(:checked)):hover {
+					border-top-color: theme("borderColor.primary");
 				}
 			}
 			&:not(:has(input[type="radio"])) {
-				border-top-color: theme("borderColor.primary");
+				border-top-color: theme("borderColor.secondary");
 				border-inline-color: theme("borderColor.neutral-700 / 50%");
 				&::before {
 					content: var(--filename);

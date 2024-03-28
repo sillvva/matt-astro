@@ -34,30 +34,39 @@ const pages = Array.from(range(first, last, 1));
 		hasPages ? (
 			<div class={cn("join flex-1", !tags && "flex justify-center")}>
 				{url.prev ? (
-					<a href={url.prev} tabindex="0" aria-label="Previous Page" class="btn join-item btn-sm px-1 sm:btn-md sm:px-2">
+					<a
+						href={url.prev}
+						tabindex="0"
+						aria-label="Previous Page"
+						class="btn join-item btn-sm px-1 text-lg text-white sm:btn-md sm:px-2"
+					>
 						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
 							<path fill="currentColor" d="M15.41 16.58L10.83 12l4.58-4.59L14 6l-6 6l6 6l1.41-1.42Z" />
 						</svg>
 					</a>
 				) : (
-					<span class="btn btn-disabled join-item btn-sm px-1 sm:btn-md sm:px-2">
+					<span class="btn btn-disabled join-item btn-sm px-1 text-lg text-white sm:btn-md sm:px-2">
 						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
 							<path fill="currentColor" d="M15.41 16.58L10.83 12l4.58-4.59L14 6l-6 6l6 6l1.41-1.42Z" />
 						</svg>
 					</span>
 				)}
 				{currentPage > 3 && (
-					<a href={url.format.replace(":page", "")} tabindex="0" class="btn join-item btn-sm sm:btn-md max-sm:hidden">
+					<a
+						href={url.format.replace(":page", "")}
+						tabindex="0"
+						class="btn join-item btn-sm text-lg text-white sm:btn-md max-sm:hidden"
+					>
 						1
 					</a>
 				)}
-				{currentPage > 4 && <span class="btn btn-disabled join-item btn-sm sm:btn-md max-sm:hidden">...</span>}
+				{currentPage > 4 && <span class="btn btn-disabled join-item btn-sm text-lg text-white sm:btn-md max-sm:hidden">...</span>}
 				{pages.map((p) => (
 					<a
 						href={url.format.replace(":page", p == 1 ? "" : p.toString())}
 						tabindex="0"
 						class={cn(
-							"btn join-item btn-sm sm:btn-md",
+							"btn join-item btn-sm text-lg sm:btn-md",
 							p === currentPage && "btn-primary text-white",
 							Math.abs(p - currentPage) > 1 && currentPage !== 1 && currentPage !== lastPage && "max-sm:hidden"
 						)}
@@ -65,24 +74,31 @@ const pages = Array.from(range(first, last, 1));
 						{p}
 					</a>
 				))}
-				{lastPage - currentPage > 3 && <span class="btn btn-disabled join-item btn-sm sm:btn-md max-sm:hidden">...</span>}
+				{lastPage - currentPage > 3 && (
+					<span class="btn btn-disabled join-item btn-sm text-lg text-white sm:btn-md max-sm:hidden">...</span>
+				)}
 				{lastPage - currentPage > 2 && (
 					<a
 						href={url.format.replace(":page", lastPage.toString())}
 						tabindex="0"
-						class="btn join-item btn-sm sm:btn-md max-sm:hidden"
+						class="btn join-item btn-sm text-lg text-white sm:btn-md max-sm:hidden"
 					>
 						{lastPage}
 					</a>
 				)}
 				{url.next ? (
-					<a href={url.next} tabindex="0" aria-label="Next Page" class="btn join-item btn-sm px-1 sm:btn-md sm:px-2">
+					<a
+						href={url.next}
+						tabindex="0"
+						aria-label="Next Page"
+						class="btn join-item btn-sm px-1 text-lg text-white sm:btn-md sm:px-2"
+					>
 						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
 							<path fill="currentColor" d="M8.59 16.58L13.17 12L8.59 7.41L10 6l6 6l-6 6l-1.41-1.42Z" />
 						</svg>
 					</a>
 				) : (
-					<span class="btn btn-disabled join-item btn-sm px-1 sm:btn-md sm:px-2">
+					<span class="btn btn-disabled join-item btn-sm px-1 text-lg text-white sm:btn-md sm:px-2">
 						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
 							<path fill="currentColor" d="M8.59 16.58L13.17 12L8.59 7.41L10 6l6 6l-6 6l-1.41-1.42Z" />
 						</svg>
@@ -96,7 +112,7 @@ const pages = Array.from(range(first, last, 1));
 	{
 		tags && tagPathFormat && (
 			<div class={cn("dropdown dropdown-end", position == "bottom" && "dropdown-top")}>
-				<button tabindex="0" class="btn btn-sm capitalize sm:btn-md">
+				<button tabindex="0" class="btn btn-sm text-lg capitalize text-white sm:btn-md">
 					Tags
 				</button>
 				<ul
