@@ -76,7 +76,7 @@ module.exports = {
 				black: {
 					...themes.black,
 					primary: "rgb(0, 122, 102)",
-					secondary: "rgb(0, 187, 167)",
+					secondary: "rgb(0, 220, 199)",
 					accent: "rgb(0, 85, 76)",
 					"error-content": "#4c0519",
 					"primary-content": "#fff"
