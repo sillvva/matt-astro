@@ -1,7 +1,6 @@
 ---
 import { all } from "$/components/markdown/all.astro";
 import PostLayout from "$/layouts/post.astro";
-import { cn } from "$/util";
 import type { GetStaticPaths, InferGetStaticPropsType } from "astro";
 import { getCollection } from "astro:content";
 
@@ -25,39 +24,10 @@ const { post, slug } = Astro.props;
 const data = post.data;
 
 const { Content, headings } = await post.render();
-
-const items = headings.filter((item) => item.slug !== "table-of-contents").filter((item) => item.depth <= 3);
-const hasToc = items.length >= 2;
-const baseLevel = headings[0]?.depth ?? 1;
 ---
 
-<PostLayout title={data.title} {slug} {data}>
+<PostLayout title={data.title} {slug} {data} {headings}>
 	<Content components={all} />
-	{
-		hasToc && (
-			<Fragment slot="toc">
-				<div class="w-0 border-l border-dotted border-base-content/50 max-xl:hidden" />
-				<aside class="relative w-[250px] max-xl:hidden">
-					<div class="sticky top-4 max-h-dscreen overflow-auto">
-						<h2 class="mb-2 text-xl font-bold">Table of Contents</h2>
-						<ul class="flex flex-col gap-2">
-							{items
-								.filter(({ depth }) => depth - 2 < 2)
-								.map(({ slug, depth, text }) => (
-									<li
-										class={cn(depth > baseLevel && "text-sm", depth == baseLevel + 1 && "pl-4", depth == baseLevel + 2 && "pl-8")}
-									>
-										<a href={`#${slug}`} class="text-secondary">
-											{text}
-										</a>
-									</li>
-								))}
-						</ul>
-					</div>
-				</aside>
-			</Fragment>
-		)
-	}
 </PostLayout>
 
 <style>
