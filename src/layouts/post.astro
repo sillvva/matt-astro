@@ -5,17 +5,23 @@ import { cn, formatDate, slugify, sorter } from "$/util";
 import PortfolioLayout from "./portfolio.astro";
 import CodePen from "$/components/markdown/codepen.astro";
 import type { CollectionEntry } from "astro:content";
+import type { MarkdownHeading } from "astro";
 
 interface Props extends HeadProps {
 	data: CollectionEntry<"blog">["data"];
 	slug: CollectionEntry<"blog">["slug"];
+	headings: MarkdownHeading[];
 }
 const {
 	slug,
-	data: { title, description, image, codepen, date, updated, tags }
+	data: { title, description, image, codepen, date, updated, tags },
+	headings
 } = Astro.props;
 
 const youTubeId = typeof image === "string" && image.match(/v=([^&]+)/)?.[1];
+
+const toc = headings.filter((item) => item.slug !== "table-of-contents").filter((item) => item.depth <= 3);
+const baseLevel = headings[0]?.depth ?? 1;
 ---
 
 <PortfolioLayout
@@ -26,7 +32,6 @@ const youTubeId = typeof image === "string" && image.match(/v=([^&]+)/)?.[1];
 		published_date: date.toISOString(),
 		...(updated && { modified_date: updated.toISOString() })
 	}}
-	isPost
 	backTo={{
 		href: "/blog",
 		text: "Blog"
@@ -106,10 +111,38 @@ const youTubeId = typeof image === "string" && image.match(/v=([^&]+)/)?.[1];
 			</section>
 		</article>
 
-		<slot name="toc" />
+		{
+			toc.length >= 2 && (
+				<>
+					<div class="w-0 border-l border-dotted border-base-content/50 max-xl:hidden" />
+					<aside class="relative w-[250px] max-xl:hidden">
+						<div class="sticky top-4 max-h-dscreen overflow-auto">
+							<h2 class="mb-2 text-xl font-bold">Table of Contents</h2>
+							<ul class="flex flex-col gap-2">
+								{toc
+									.filter(({ depth }) => depth - 2 < 2)
+									.map(({ slug, depth, text }) => (
+										<li
+											class={cn(
+												depth > baseLevel && "text-sm",
+												depth == baseLevel + 1 && "pl-4",
+												depth == baseLevel + 2 && "pl-8"
+											)}
+										>
+											<a href={`#${slug}`} class="text-secondary">
+												{text}
+											</a>
+										</li>
+									))}
+							</ul>
+						</div>
+					</aside>
+				</>
+			)
+		}
 	</div>
 
-	<button id="to-top" class="btn btn-primary fixed bottom-4 right-4 z-20 hidden aspect-square h-14 w-14 rounded-full p-2">
+	<button id="to-top" class="btn btn-secondary fixed bottom-4 right-4 z-20 hidden aspect-square h-14 w-14 rounded-full p-2">
 		<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
 			<path fill="currentColor" d="M14 20h-4v-9l-3.5 3.5l-2.42-2.42L12 4.16l7.92 7.92l-2.42 2.42L14 11v9Z"></path>
 		</svg>

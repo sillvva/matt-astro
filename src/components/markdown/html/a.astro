@@ -32,11 +32,11 @@ const youTubeId = url?.startsWith("https://www.youtube.com") ? url.match(/v=([^&
 			<slot />
 		</iframe>
 	) : url?.startsWith("http") ? (
-		<a href={url} target="_blank" rel="noreferrer noopener" class="text-primary">
+		<a href={url} target="_blank" rel="noreferrer noopener" class="text-secondary">
 			<slot />
 		</a>
 	) : (
-		<a href={url} class="mt-0 text-primary">
+		<a href={url} class="mt-0 text-secondary">
 			<slot />
 		</a>
 	)

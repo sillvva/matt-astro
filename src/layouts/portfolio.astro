@@ -10,10 +10,9 @@ interface Props extends HeadProps {
 		text: string;
 	};
 	noBg?: boolean;
-	isPost?: true;
 }
 
-const { title, description, image, articleMeta, backTo, noBg, isPost } = Astro.props;
+const { title, description, image, articleMeta, backTo, noBg } = Astro.props;
 
 const dev = import.meta.env.DEV || null;
 ---
@@ -27,7 +26,7 @@ const dev = import.meta.env.DEV || null;
 			<header
 				class={cn(
 					"flex h-20 w-full items-center justify-center gap-4",
-					isPost && "xl:pr-[calc(250px+(2*2rem)+1px)]" // ToC Size + padding + border
+					articleMeta && "xl:pr-[calc(250px+(2*2rem)+1px)]" // ToC Size + padding + border
 				)}
 			>
 				<div class="flex w-16 justify-center lg:w-0">

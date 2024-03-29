@@ -15,16 +15,11 @@ import TabbedCode from "$/components/markdown/code/tabbed.astro";
 
 ## Dependencies
 
-This script uses the `js-cookie` package to manage cookies. And for the theme switcher, it uses the `@sveltekit-addons/document` package to change the `<html>` tag's `data-theme` and `class` attributes.
+This script uses the `js-cookie` package to manage cookies. The theme switcher example has additional dependencies.
 
 ```bash
 pnpm add js-cookie
-pnpm add -D @sveltekit-addons/document
 ```
-
-### Adding the document preprocessor
-
-The `@sveltekit-addons/document` package provides a preprocessor that allows you to modify the `<html>` and `<body>` tags from any page or layout. For setup instructions, see the [documentation](https://www.npmjs.com/package/@sveltekit-addons/document).
 
 ## The Store
 
@@ -97,7 +92,7 @@ export const cookieStore = function <T extends string | number | boolean | objec
  */
 export function serverGetCookie<T extends string | number | boolean | object>(cookies: Cookies, name: string, defaultCookie: T) {
 	const val = cookies.get(name) === "undefined" ? undefined : cookies.get(name);
-	const cookie = JSON.parse(val || JSON.stringify(defaultCookie)) as typeof defaultCookie;
+	const cookie = val ? (JSON.parse(val) as T) : defaultCookie;
 	if (typeof cookie !== typeof defaultCookie) throw new Error(`Cookie "${name}" is not of type ${typeof defaultCookie}`);
 	if (typeof cookie === "object" && typeof defaultCookie === "object")
 		return {
@@ -114,29 +109,6 @@ export function serverGetCookie<T extends string | number | boolean | object>(co
 
 The initial value should be set from the cookie if it already exists. Get the cookie from the server for SSR and set the initial value to the cookie value in the layout.
 
-In this example, the cookie is named `app` and has a default value of `{ settings: { theme: "system", mode: "dark" } }`. It can be used as the basis for a theme switcher. You would use the current value of the store to display the selected theme. Any changes to the theme would update the store and the cookie.
-
-<TabbedCode>
-<Fragment slot="tab-1">+layout.server.ts</Fragment>
-<Fragment slot="panel-1">
-```ts
-import { serverGetCookie } from "$server/cookie.js";
-
-export const load = async (event) => {
-  // Get cookie if it exists, otherwise use default settings
-	const app = serverGetCookie<App.Cookie>(event.cookies, "app", {
-		settings: {
-			theme: "system",
-      mode: "dark"
-		}
-	});
-
-  return { app };
-};
-```
-</Fragment>
-<Fragment slot="tab-2">+layout.svelte</Fragment>
-<Fragment slot="panel-2">
 ```svelte
 <script lang="ts">
 	import { cookieStore } from "$server/cookie";
@@ -144,45 +116,56 @@ export const load = async (event) => {
 
 	export let data;
 
+	// data.app is the value of the cookie, if it exists
 	$: app = setContext("app", cookieStore("app", data.app));
 </script>
 ```
-</Fragment>
-</TabbedCode>
 
 ### Example: Creating a Theme Switcher with DaisyUI
 
-The `App.Cookie` type used in the load function above is based on the types in `constants.ts`. `app.settings.theme` is of type `Themes`, which is a union of the available theme names, and `app.settings.mode` is of type `ThemeGroups`, which is a union of `"dark" | "light"`.
+#### Dependencies
 
-The themes in `constants.ts` correspond to the themes configured in the `DaisyUI` plugin. The `ThemeSwitcher` component will allow the user to select a theme from the available themes. If the theme is set to `"system"`, the `theme` and `mode` will be set based on the user's system preference and update accordingly. Otherwise, `mode` will be set based on the theme's group.
+The theme switcher uses the `@sveltekit-addons/document` package to change the `<html>` tag's `data-theme` and `class` attributes.
+
+The `@sveltekit-addons/document` package provides a preprocessor that allows you to modify the `<html>` and `<body>` tags from any page or layout. For setup instructions, see the [documentation](https://www.npmjs.com/package/@sveltekit-addons/document).
+
+```bash
+pnpm add -D @sveltekit-addons/document
+```
+
+#### Setup
+
+The `App.Cookie` type used in the load function [above](#usage) is based on the types in `constants.ts`. `app.settings.theme` is of type `Themes`, which is a union of the available theme names, and `app.settings.mode` is of type `ThemeGroups`, which is a union of `"dark" | "light"`.
 
 <TabbedCode>
-<Fragment slot="tab-1">+layout.svelte</Fragment>
+<Fragment slot="tab-1">app.d.ts</Fragment>
 <Fragment slot="panel-1">
-```svelte
-<script lang="ts">
-	import { cookieStore } from "$server/cookie";
-	import { setContext } from "svelte";
-
-	export let data;
-
-	$: app = setContext("app", cookieStore("app", data.app));
-</script>
-
-<!-- In Tailwind, you can enable the `dark:` variant by setting the root class to "dark" -->
-<!-- DaisyUI uses the data-theme attribtue to enable a specific theme -->
-<ska:html data-theme={$app.settings.theme} class={$app.settings.mode} /> <!-- [!code ++] -->
+```ts
+declare global {
+	namespace App {
+		interface Cookie {
+			settings: {
+				theme: Themes;
+				mode: ThemeGroups;
+			};
+		}
+	}
+}
 ```
 </Fragment>
 <Fragment slot="tab-2">constants.ts</Fragment>
 <Fragment slot="panel-2">
 ```ts
+export type Themes = (typeof themes)[number]["value"];
+export type ThemeGroups = (typeof themeGroups)[number];
+
 type Theme = {
 	name: string;
 	value: string;
-	group?: "dark" | "light";
+	group?: typeof themeGroups[number];
 };
 
+export const themeGroups = ["dark", "light"] as const;
 export const themes = [
 	{
 		name: "System",
@@ -229,10 +212,48 @@ export const themes = [
 		group: "dark"
 	}
 ] as const satisfies Theme[];
+```
+</Fragment>
+</TabbedCode>
 
-export const themeGroups = ["dark", "light"] as const;
-export type Themes = (typeof themes)[number]["value"];
-export type ThemeGroups = (typeof themeGroups)[number];
+#### Implementation
+
+The themes in `constants.ts` correspond to the themes configured in the `DaisyUI` plugin. The `ThemeSwitcher` component will allow the user to select a theme from the available themes. If the theme is set to `"system"`, the `theme` and `mode` will be set based on the user's system preference and update accordingly. Otherwise, `mode` will be set based on the theme's group.
+
+<TabbedCode>
+<Fragment slot="tab-1">+layout.svelte</Fragment>
+<Fragment slot="panel-1">
+```svelte
+<script lang="ts">
+	import { cookieStore } from "$server/cookie";
+	import { setContext } from "svelte";
+
+	export let data;
+
+	$: app = setContext("app", cookieStore("app", data.app));
+</script>
+
+<!-- In Tailwind, you can enable the `dark:` variant by setting the root class to "dark" -->
+<!-- DaisyUI uses the data-theme attribtue to enable a specific theme -->
+<ska:html data-theme={$app.settings.theme} class={$app.settings.mode} /> <!-- [!code ++] -->
+```
+</Fragment>
+<Fragment slot="tab-2">+layout.server.ts</Fragment>
+<Fragment slot="panel-2">
+```ts
+import { serverGetCookie } from "$server/cookie.js";
+
+export const load = async (event) => {
+  // Get cookie if it exists, otherwise use default settings
+	const app = serverGetCookie<App.Cookie>(event.cookies, "app", {
+		settings: {
+			theme: "system",
+      mode: "dark"
+		}
+	});
+
+  return { app };
+};
 ```
 </Fragment>
 <Fragment slot="tab-3">ThemeSwitcher.svelte</Fragment>
@@ -254,16 +275,15 @@ export type ThemeGroups = (typeof themeGroups)[number];
 	}
 
 	$: if (browser) {
-		if ($app.settings.theme === "system") {
-			const mql = window.matchMedia("(prefers-color-scheme: dark)");
-			$app.settings.mode = mql.matches ? "dark" : "light";
-		}
-	}
-
-	$: {
 		const selected = themes.find((t) => t.value === $app.settings.theme);
-		if (selected && "group" in selected) {
-			$app.settings.mode = selected.group;
+		if (selected) {
+			if (selected.value === "system") {
+				const mql = window.matchMedia("(prefers-color-scheme: dark)");
+				$app.settings.mode = mql.matches ? "dark" : "light";
+			}
+			else {
+				$app.settings.mode = selected.group;
+			}
 		}
 	}
 </script>
