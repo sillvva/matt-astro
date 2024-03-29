@@ -173,6 +173,9 @@ declare global {
 <Fragment slot="tab-2">constants.ts</Fragment>
 <Fragment slot="panel-2">
 ```ts
+export type Themes = (typeof themes)[number]["value"];
+export type ThemeGroups = (typeof themeGroups)[number];
+
 type Theme = {
 	name: string;
 	value: string;
@@ -226,9 +229,6 @@ export const themes = [
 		group: "dark"
 	}
 ] as const satisfies Theme[];
-
-export type Themes = (typeof themes)[number]["value"];
-export type ThemeGroups = (typeof themeGroups)[number];
 ```
 </Fragment>
 </TabbedCode>
