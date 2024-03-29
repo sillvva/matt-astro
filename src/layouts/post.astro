@@ -32,7 +32,6 @@ const baseLevel = headings[0]?.depth ?? 1;
 		published_date: date.toISOString(),
 		...(updated && { modified_date: updated.toISOString() })
 	}}
-	isPost
 	backTo={{
 		href: "/blog",
 		text: "Blog"
