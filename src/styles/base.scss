@@ -87,11 +87,11 @@
 	.scroll-fade-in {
 		@media (prefers-reduced-motion: no-preference) {
 			& {
-				scale: 0.8;
+				scale: 0.75;
 				opacity: 0;
 				animation: scroll-fade-in linear forwards;
 				animation-timeline: view();
-				animation-range: min(10vw, 100px) min(50vw, 400px);
+				animation-range: 0 200px;
 			}
 			@keyframes scroll-fade-in {
 				to {
