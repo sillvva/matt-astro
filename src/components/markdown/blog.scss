@@ -67,6 +67,7 @@
 						}
 					}
 					&.diff {
+						top: 3px;
 						&::before {
 							display: inline-block;
 							width: theme("width.4");
