@@ -23,6 +23,7 @@
 					border-inline-color: theme("borderColor.neutral-700 / 50%");
 				}
 				&:not(:has(:checked)):hover {
+					opacity: 0.85;
 					border-top-color: theme("borderColor.primary");
 				}
 			}
