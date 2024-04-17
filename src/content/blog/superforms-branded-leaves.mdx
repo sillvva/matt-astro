@@ -67,7 +67,7 @@ export type BrandedFormPathLeaves<
 		? FormPathType<TObj, K> extends TType | null
 			? K
 			: never
-		: `${K}.length`
+		: TKey
 	: never;
 ```
 
@@ -80,7 +80,7 @@ export type NonBrandedFormPathLeaves<
 	TObj extends Record<string, unknown>,
 	TType = any,
 	TKey = FormPathLeaves<TObj, TType>
-> = TKey extends `${infer K}.length` ? (FormPathType<TObj, K> extends BrandedType ? never : `${K}.length`) : TKey;
+> = TKey extends `${infer K}.length` ? (FormPathType<TObj, K> extends BrandedType ? never : TKey) : TKey;
 ```
 
 ### IncludeBrandedFormPathLeaves
