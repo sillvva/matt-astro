@@ -159,15 +159,6 @@ Also when passing these to Superforms proxies, you will need to assert them as `
 	import { readable } from "svelte/store";
 	import { formFieldProxy, type SuperForm } from "sveltekit-superforms";
 
-	interface $$Props {
-		superform?: SuperForm<T>;
-		field?: IncludeBrandedFormPathLeaves<T>; // [!code focus]
-		required?: HTMLInputAttributes["required"];
-		label: string;
-		labelFor?: string;
-		fieldErrors?: string[];
-	}
-
 	export let superform: SuperForm<T> | undefined = undefined;
 	export let field: IncludeBrandedFormPathLeaves<T> | undefined = undefined; // [!code focus]
 	export let required: HTMLInputAttributes["required"] = false;
