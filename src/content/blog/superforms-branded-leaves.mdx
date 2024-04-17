@@ -1,0 +1,143 @@
+---
+title: Branded Type Wrappers for Superforms
+description: Utility type wrappers for the FormPathLeaves type
+date: 2024-04-17T12:41:58.395Z
+image: $/assets/images/typescript.png
+tags:
+  - TypeScript
+---
+
+I had previously written a [post](/blog/superforms-helpers) describing the FormPathLeaves type helpers from Superforms. They are some of my favorite utility types. In this post, I will describe the branded type wrappers that I have created to make working with the FormPathLeaves type easier when using branded types in your form.
+
+## What are Branded Types?
+
+Matías Hernández wrote an excellent post on [egghead.io](https://egghead.io/blog/using-branded-types-in-typescript) about branded types. Essentially, the idea is to add more uniqueness to a generic type. For example, if you have a user id that is a string, you can brand it to ensure that it only represents user ids and not some other type of id.
+
+```typescript
+type Brand<K, T> = K & { __brand: T };
+type UserID = Brand<string, "UserId">;
+type PostID = Brand<string, "PostId">;
+```
+
+## The Problem
+
+When using branded types in TypeScript, you can run into issues when trying to use them with the `FormPathLeaves` type. The `FormPathLeaves` type is a utility type that extracts the leaf nodes of a form object. This is useful when you want to create form components that match to a specific object path.
+
+However, the `FormPathLeaves` type does not work well with branded types. Here is an example of the issue:
+
+```typescript
+import { type FormPathLeaves } from "sveltekit-superforms";
+
+type Obj = { id: UserId; };
+type Leaves = FormPathLeaves<Obj>;
+//   ^? Expected: "id", Actual: "id.length"
+
+type StringLeaves = FormPathLeaves<Obj, string>;
+//   ^? Expected: "id", Actual: never
+```
+
+Because the branded types count as both a `string` and an `object`, the `FormPathLeaves` type treats it like an object with additional nested leaves and is therefore not itself a leaf.
+
+## The Solution
+
+To solve the issue, I created a set of wrapper types that identify `.length` paths and check whether they are branded types. If they are, the wrapper type will return the correct branded path instead.
+
+You will need to ensure you have the `BrandType` defined. If you have multiple brand types, this can be a union.
+
+```typescript
+import { brand, string, type Output, type Pipe } from "valibot";
+
+type BrandedType = Output<ReturnType<typeof brandedId>>; // [!code highlight]
+function brandedId<T extends string>(name: T, pipe: Pipe<string> = []) {
+	return brand(string(pipe), name);
+}
+```
+
+### BrandedFormPathLeaves
+
+This wrapper will return leaves that are branded types. It checks each `.length` path to see if it is a branded type. If it is, it will return the branded path. If it is not, it will return the path as is.
+
+```typescript
+export type BrandedFormPathLeaves<
+	TObj extends Record<string, unknown>,
+	TType = string,
+	TKey = FormPathLeaves<TObj>
+> = TKey extends `${infer K}.length`
+	? FormPathType<TObj, K> extends BrandedType | null
+		? FormPathType<TObj, K> extends TType | null
+			? K
+			: never
+		: `${K}.length`
+	: never;
+```
+
+### NonBrandedFormPathLeaves
+
+This wrapper will return leaves that are not branded types. It checks each `.length` path to see if it is a branded type. If it is, it will return `never`. If it is not, it will return the path as is.
+
+```typescript
+export type NonBrandedFormPathLeaves<
+	TObj extends Record<string, unknown>,
+	TType = any,
+	TKey = FormPathLeaves<TObj, TType>
+> = TKey extends `${infer K}.length` ? (FormPathType<TObj, K> extends BrandedType ? never : `${K}.length`) : TKey;
+```
+
+### IncludeBrandedFormPathLeaves
+
+This is a union of the `BrandedFormPathLeaves` and `NonBrandedFormPathLeaves` types. It will return all leaves, branded or not.
+
+```typescript
+export type IncludeBrandedFormPathLeaves<TObj extends Record<string, unknown>, TType = any> =
+	| NonBrandedFormPathLeaves<TObj, TType>
+	| BrandedFormPathLeaves<TObj, TType>;
+```
+
+### IncludeBrandedFormPathLeavesWithErrors
+
+This will return all leaves with errors, branded or not.
+
+```typescript
+export type IncludeBrandedFormPathLeavesWithErrors<
+	TObj extends Record<string, unknown>,
+	TType = any,
+	TKey = FormPathLeavesWithErrors<TObj, TType>
+> = TKey extends `${infer K}.length`
+	? FormPathLeaves<TObj, K> extends BrandedType | null
+		? K
+		: FormPathLeavesWithErrors<TObj, K> extends string[]
+			? K
+			: never
+	: TKey;
+```
+
+## The Result?
+
+```typescript
+type UserId = Output<typeof userIdSchema>;
+//   ^? Brand<string, "UserID">
+const userIdSchema = brandedId("UserId");
+
+type Obj = { id: UserId; name: string; };
+
+type Leaves1 = BrandedFormPathLeaves<Obj>;
+//   ^? "id" ✅
+type Leaves2 = NonBrandedFormPathLeaves<Obj>;
+//   ^? "name" ✅
+type Leaves3 = IncludeBrandedFormPathLeaves<Obj>;
+//   ^? "id" | "name" ✅
+type Leaves4 = IncludeBrandedFormPathLeavesWithErrors<Obj>;
+//   ^? "id" | "name" ✅
+```
+
+### Caveat
+
+This solution is not perfect. It will not work with branded numbers, i.e. `number & { __brand: "UserId" }`. This is because the `FormPathLeaves` type treats branded numbers as if they did not exist. It would return `never`, rather than `num.length`.
+
+```typescript
+const bnum = brand(number(), "BNum");
+type BNum = Output<typeof bnum>;
+type Obj = { num: BNum };
+type Path = FormPathLeaves<Obj>;
+//   ^? Expected: "num" or "num.length", Actual: never
+```
