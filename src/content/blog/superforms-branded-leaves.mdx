@@ -60,7 +60,7 @@ This wrapper will return leaves that are branded types. It checks each `.length`
 ```typescript
 export type BrandedFormPathLeaves<
 	TObj extends Record<string, unknown>,
-	TType = string,
+	TType = any,
 	TKey = FormPathLeaves<TObj>
 > = TKey extends `${infer K}.length`
 	? FormPathType<TObj, K> extends BrandedType | null
