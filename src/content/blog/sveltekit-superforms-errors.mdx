@@ -2,7 +2,7 @@
 title: SaveError Class for SvelteKit Superforms
 description: A helper class for streamlined error handling with Superforms.
 date: 2024-03-23T03:23:00.344Z
-updated: 2024-03-23T14:26:12.942Z
+updated: 2024-04-04T14:07:42.769Z
 image: $/assets/images/save-error.webp
 tags:
   - TypeScript
@@ -205,6 +205,105 @@ export const actions = { // [!code focus]
 		Delete DM
 	</button>
 </form>
+```
+</Fragment>
+</TabbedCode>
+
+## Accounting for Branded Types
+
+### What Are Branded Types?
+
+Branded types are types that are created by using a unique symbol as a property key. This allows you to create types that are compatible with other types but are distinct from them. For example, you can create a branded type for a string that represents a URL and use it in place of a regular string.
+
+This [article](https://egghead.io/blog/using-branded-types-in-typescript) provides a detailed explanation of branded types in TypeScript. 
+
+```ts
+declare const __brand: unique symbol
+type Brand<B> = { [__brand]: B }
+export type Branded<T, B> = T & Brand<B>
+
+type CarBrand = Brand<string, "CarBrand">
+type EngineType = Brand<string, "EngineType">
+type CarModel = Brand<string, "CarModel">
+type CarColor = Brand<string, "CarColor">
+
+function createCar(carBrand: CarBrand, carModel: CarModel, engineType: EngineType, color: CarColor): Car {
+  // ...
+}
+const car = createCar("Toyota", "Corolla", "Diesel", "Red")
+// "Diesel" is not of type "EngineType"
+```
+
+### Making `SaveError` Compatible with Branded Types
+
+The following code demonstrates how to make the `SaveError` class compatible with branded types. The `ExtractBrand` type is used to extract the brand-related keys from the form paths.
+
+<TabbedCode>
+<Fragment slot="tab-1">$lib/util.ts</Fragment>
+<Fragment slot="panel-1">
+```ts
+import { dev } from "$app/environment";
+import { type ExtractBrand } from "$lib/brand"; // [!code focus] // [!code ++]
+import { type NumericRange } from "@sveltejs/kit";
+import { message, setError, type FormPathLeavesWithErrors, type SuperValidated } from "sveltekit-superforms";
+
+export type SaveResult<T extends object | null, S extends Record<string, unknown>> = Promise<T | SaveError<S>>;
+
+export class SaveError<TOut extends Record<string, unknown>, TIn extends Record<string, unknown> = TOut> {
+	public status: NumericRange<400, 599> = 500;
+
+	constructor(
+		public error: string,
+		protected options?: Partial<{ // [!code focus]
+			// [!code word:ExtractBrand\<FormPathLeavesWithErrors\<TOut\>\>]
+			field: ExtractBrand<FormPathLeavesWithErrors<TOut>>; // [!code focus] // [!code ++]
+			status: NumericRange<400, 599>; // [!code focus]
+		}> // [!code focus]
+	) {
+		if (options?.status) this.status = options.status;
+	}
+
+	static from<TOut extends Record<string, unknown>, TIn extends Record<string, unknown> = TOut>(
+		err: SaveError<TOut, TIn> | Error | unknown
+	) {
+		if (dev) console.error(err);
+		if (err instanceof SaveError) return err;
+		if (typeof err === "string") return new SaveError<TOut, TIn>(err);
+		if (err && typeof err === "object" && "message" in err && typeof err.message === "string") {
+			return new SaveError<TOut, TIn>(err.message);
+		}
+		return new SaveError<TOut, TIn>("An unknown error has occurred.");
+	}
+
+	toForm(form: SuperValidated<TOut, App.Superforms.Message, TIn>) {
+		return this.options?.field
+			// [!code word:\ as\ FormPathLeavesWithErrors\<TOut\>]
+			? setError(form, this.options.field as FormPathLeavesWithErrors<TOut>, this.error, { // [!code ++] // [!code focus]
+					status: this.status // [!code focus]
+				}) // [!code focus]
+			: message(
+					form,
+					{
+						type: "error",
+						text: this.error
+					},
+					{
+						status: this.status
+					}
+				);
+	}
+}
+```
+</Fragment>
+<Fragment slot="tab-2">$lib/brand.ts</Fragment>
+<Fragment slot="panel-2">
+```ts
+declare const __brand: unique symbol;
+type BrandKey = keyof Brand<unknown> extends symbol ? never : keyof Brand<unknown>;
+type Brand<B> = { [__brand]: B };
+
+export type Branded<T, B> = T & Brand<B>;
+export type ExtractBrand<K> = K extends `${infer N}.${"length" | BrandKey}` ? N : K;
 ```
 </Fragment>
 </TabbedCode>
