@@ -129,6 +129,8 @@ type Leaves4 = IncludeBrandedFormPathLeavesWithErrors<Obj>;
 
 ### Caveats
 
+#### Branded Numbers
+
 This solution is not perfect. It will not work with branded numbers, i.e. `number & { __brand: "UserId" }`. This is because the `FormPathLeaves` type treats branded numbers as if they did not exist. It would return `never`, rather than `num.length`.
 
 ```typescript
@@ -139,7 +141,9 @@ type Path = FormPathLeaves<Obj>;
 //   ^? Expected: "num" or "num.length", Actual: never
 ```
 
-Also when passing these to Superforms proxies, you will need to assert them as `any` to avoid TypeScript errors.
+#### Type Assertion
+
+When passing these types to Superforms proxies, you will need to assert them as `any` to avoid TypeScript errors. The proxies expect the `FormPathLeaves` type, not the branded equivalents.
 
 ```svelte
 <script lang="ts" context="module">
