@@ -61,7 +61,7 @@ This wrapper will return leaves that are branded types. It checks each `.length`
 export type BrandedFormPathLeaves<
 	TObj extends Record<string, unknown>,
 	TType = any,
-	TKey = FormPathLeaves<TObj>
+	TKey = FormPathLeaves<TObj, TType>
 > = TKey extends `${infer K}.length`
 	? FormPathType<TObj, K> extends BrandedType | null
 		? FormPathType<TObj, K> extends TType | null
