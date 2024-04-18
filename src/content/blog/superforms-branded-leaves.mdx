@@ -100,13 +100,8 @@ This will return all leaves with errors, branded or not.
 ```typescript
 export type IncludeBrandedFormPathLeavesWithErrors<
 	TObj extends Record<string, unknown>,
-	TType = any,
-	TKey = FormPathLeavesWithErrors<TObj, TType>
-> = TKey extends `${infer K}.length`
-	? NonNullable<FormPathType<TObj, K>> extends BrandedType
-		? K
-		: never
-	: TKey;
+	TKey = FormPathLeavesWithErrors<TObj>
+> = TKey extends `${infer K}.length` ? (NonNullable<FormPathType<TObj, K>> extends BrandedType ? K : never) : TKey;
 ```
 
 ## The Result?
