@@ -1,0 +1,128 @@
+---
+title: TypeScript Helpers for Drizzle
+description: Custom utility types for Drizzle
+date: 2024-04-22T13:03:03.141Z
+image: $/assets/images/drizzle-ts.webp
+tags:
+  - TypeScript
+  - Database
+---
+import TabbedCode from "$/components/markdown/code/tabbed.astro";
+
+## Table of Contents
+
+## Models
+
+### InferInsertModel
+
+This custom type is similar to the built-in type, but allows columns with default values to be omitted from the insert type.
+
+The `ColumnConfigs` type is a utility type that extracts a filtered list of column configurations from a table schema. 
+
+The `RequiredColumns` type extracts the columns that are required and do not have a default value. The `OptionalColumns` type extracts the columns that are optional and may have a default value. 
+
+The `InferInsertModel` type combines the `RequiredColumns` and `OptionalColumns` types to create the insert model.
+
+```ts
+import { type AnyColumn, type ColumnBaseConfig, type ColumnDataType } from "drizzle-orm";
+import { PgTable } from "drizzle-orm/pg-core";
+
+type ColumnConfigs<Table extends PgTable, Filter extends Partial<ColumnBaseConfig<ColumnDataType, string>> = {}> = {
+	[K in keyof Table["_"]["columns"] as Table["_"]["columns"][K] extends AnyColumn<Filter>
+		? K
+		: never]: Table["_"]["columns"][K]["_"];
+};
+
+type RequiredColumns<Table extends PgTable> = ColumnConfigs<Table, { notNull: true; hasDefault: false }>;
+type OptionalColumns<Table extends PgTable, Defaults extends boolean = true> = Defaults extends true
+	? ColumnConfigs<Table, { notNull: false } | { hasDefault: true }>
+	: ColumnConfigs<Table, { notNull: false; hasDefault: false }>;
+
+type InferInsertModel<Table extends PgTable, Defaults extends boolean = true> = Prettify<
+	{
+		[K in keyof RequiredColumns<Table>]: RequiredColumns<Table>[K]["data"];
+	} & {
+		[K in keyof OptionalColumns<Table, Defaults>]?: OptionalColumns<Table, Defaults>[K]["data"] | null;
+	}
+>;
+```
+#### Example 
+
+<TabbedCode>
+<Fragment slot="tab-1">Output</Fragment>
+<Fragment slot="panel-1">
+```ts
+type InsertUser = InferInsertModel<typeof users>;
+/**
+type InsertUser = {
+    email: string;
+    id?: (string & Brand<"UserId">) | null | undefined;
+    name?: string | null | undefined;
+    emailVerified?: Date | null | undefined;
+    image?: string | null | undefined;
+}
+*/
+
+type InsertUserNoDefaults = InferInsertModel<typeof users, false>;
+/**
+type InsertUserNoDefaults = {
+    email: string;
+    name?: string | null | undefined;
+    emailVerified?: Date | null | undefined;
+    image?: string | null | undefined;
+}
+*/
+```
+</Fragment>
+<Fragment slot="tab-2">Schema</Fragment>
+<Fragment slot="panel-2">
+```ts
+export const users = pgTable("user", {
+	id: text("id")
+		.primaryKey()
+		.notNull()
+		.$default(() => createId())
+		.$type<UserId>(),
+	name: text("name"),
+	email: text("email").notNull().unique(),
+	emailVerified: timestamp("emailVerified", { mode: "date" }),
+	image: text("image")
+});
+```
+</Fragment>
+</TabbedCode>
+
+### InferQueryModel
+
+This custom type takes two arguments. The table name from the schema, and a query builder configuration object. It returns the type of the query result.
+
+```ts
+import * as schema from "$server/db/schema";
+import { type BuildQueryResult, type DBQueryConfig, type ExtractTablesWithRelations } from "drizzle-orm";
+
+type TSchema = ExtractTablesWithRelations<typeof schema>;
+export type QueryConfig<TableName extends keyof TSchema> = DBQueryConfig<"one" | "many", boolean, TSchema, TSchema[TableName]>;
+export type InferQueryModel<
+	TableName extends keyof TSchema,
+	QBConfig extends QueryConfig<TableName> | {} = {}
+> = BuildQueryResult<TSchema, TSchema[TableName], QBConfig>;
+```
+
+#### Example
+
+```ts
+export const logIncludes = {
+	dm: true,
+	magicItemsGained: true,
+	magicItemsLost: true,
+	storyAwardsGained: true,
+	storyAwardsLost: true
+} as const satisfies QueryConfig<"logs">["with"];
+
+export type LogData = InferQueryModel<"logs", { with: typeof logIncludes }>;
+
+const log = await q.logs.findFirst({
+  with: logIncludes,
+  where: (logs, { eq }) => eq(logs.id, logId)
+});
+```
