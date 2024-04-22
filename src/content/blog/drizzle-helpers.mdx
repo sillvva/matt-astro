@@ -15,15 +15,12 @@ import TabbedCode from "$/components/markdown/code/tabbed.astro";
 
 ### InferInsertModel
 
-This custom type is similar to the built-in type, but allows columns with default values to be omitted from the insert type.
+This is a custom type is similar to the built-in `InferInsertModel` type, but allows columns with default values to be omitted.
 
-The `ColumnConfigs` type is a utility type that extracts a filtered list of column configurations from a table schema. 
-
-The `RequiredColumns` type extracts the columns that are required and do not have a default value. The `OptionalColumns` type extracts the columns that are optional and may have a default value. 
-
-The `InferInsertModel` type combines the `RequiredColumns` and `OptionalColumns` types to create the insert model.
-
-The `Prettify` type is a [simple type](/blog/useful-typescript#combineprettify-two-object-types) that combines the properties of two object types.
+- `ColumnConfigs` - a utility type that extracts a filtered list of column configurations from a table schema. 
+- `RequiredColumns` - extracts the columns that are required and do not have a default value. 
+- `OptionalColumns` - extracts the columns that are optional and may have a default value.
+- `Prettify` - a [simple type](/blog/useful-typescript#combineprettify-two-object-types) that combines the properties of two object types.
 
 ```ts
 import type { AnyColumn, AnyTable, ColumnBaseConfig, ColumnDataType, GetColumnData } from "drizzle-orm";
