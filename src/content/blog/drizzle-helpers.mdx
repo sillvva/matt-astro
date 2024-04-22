@@ -23,9 +23,10 @@ The `RequiredColumns` type extracts the columns that are required and do not hav
 
 The `InferInsertModel` type combines the `RequiredColumns` and `OptionalColumns` types to create the insert model.
 
+The `Prettify` type is a [simple type](/blog/useful-typescript#combineprettify-two-object-types) that combines the properties of two object types.
+
 ```ts
 import type { AnyColumn, AnyTable, ColumnBaseConfig, ColumnDataType, GetColumnData } from "drizzle-orm";
-import { PgTable } from "drizzle-orm/pg-core";
 
 type ColumnConfigs<Table extends AnyTable<{}>, Filter extends Partial<ColumnBaseConfig<ColumnDataType, string>> = {}> = {
 	[K in keyof Table["_"]["columns"] as Table["_"]["columns"][K] extends AnyColumn<Filter> ? K : never]: GetColumnData<
