@@ -93,6 +93,10 @@ export const users = pgTable("user", {
 
 This custom type takes two arguments. The table name from the schema, and a query builder configuration object. It returns the type of the query result.
 
+<div class="button-row">
+  [Source](btn::https://github.com/drizzle-team/drizzle-orm/issues/695#issuecomment-2066989790)
+</div>
+
 ```ts
 import * as schema from "$server/db/schema";
 import type { BuildQueryResult, DBQueryConfig, ExtractTablesWithRelations } from "drizzle-orm";
