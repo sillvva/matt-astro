@@ -15,7 +15,7 @@ const youTubeId = url?.startsWith("https://www.youtube.com") ? url.match(/v=([^&
 			link={url}
 			target="_blank"
 			data={{ istweet: !!url?.includes("twitter.com") ? "" : undefined }}
-			itemClasses={["button3 border border-dotted border-secondary text-secondary"]}
+			itemClasses={["button3 py-2 px-4 border border-dotted border-secondary text-secondary"]}
 		>
 			<slot />
 		</AnimatedButton>
