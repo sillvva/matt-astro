@@ -135,7 +135,7 @@
 		@apply relative mb-4 rounded border border-solid p-4 pl-14;
 		p,
 		&::before {
-			color: var(--fg, black) !important;
+			color: var(--fg, gray) !important;
 		}
 		a {
 			color: white !important;
@@ -160,23 +160,11 @@
 			mask-size: 100% 100%;
 		}
 
-		@supports (color: rgb(from white r g b)) {
-			& {
-				--fg: oklch(from var(--color, black) calc(max(0.5, l) * 1.5) c h);
-				border-color: oklch(from var(--color, black) max(0.5, calc(l * 0.25)) c h);
-				background: oklch(from var(--color, black) calc(max(0.5, l) * 0.75 * 0.5) c h);
-			}
-			::selection {
-				--fg: oklch(from var(--color, black) 1 c h);
-				background: oklch(from var(--color, black) min(1, calc(l * 1.1 * 0.5)) c h);
-			}
-		}
-
 		@supports (color: color-mix(in srgb, red 0%, white)) {
 			& {
 				--fg: color-mix(in srgb, var(--color, black) 30%, oklch(100% 0 0));
 				border-color: color-mix(in srgb, var(--color, black) 5%, oklch(100% 0 0 / 15%));
-				background: color-mix(in srgb, var(--color, black) calc(50% * 0.75), oklch(0% 0 0));
+				background: color-mix(in srgb, var(--color, black) 30%, oklch(0% 0 0));
 			}
 			::selection {
 				--fg: color-mix(in srgb, var(--color, black) 10%, oklch(100% 0 0));
@@ -185,8 +173,22 @@
 			}
 		}
 
+		@supports (color: rgb(from white r g b)) {
+			& {
+				--diff: 15%;
+				--fg: oklch(from var(--color, black) calc(100% - 0.5 * var(--diff)) 0.08 h);
+				border-color: oklch(from var(--color, black) calc(3 * var(--diff)) 0.1 h);
+				background: oklch(from var(--color, black) calc(2 * var(--diff)) 0.08 h);
+			}
+			::selection {
+				--fg: oklch(100% 0 0) !important;
+				background: oklch(from var(--color, black) calc(3 * var(--diff)) 0.08 h);
+				color: var(--fg);
+			}
+		}
+
 		&.success {
-			--color: green;
+			--color: limegreen;
 			&::before {
 				--svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' d='M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10s10-4.5 10-10S17.5 2 12 2m0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8m4.59-12.42L10 14.17l-2.59-2.58L6 13l4 4l8-8z'/%3E%3C/svg%3E");
 			}
