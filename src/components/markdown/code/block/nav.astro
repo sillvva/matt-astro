@@ -44,7 +44,7 @@ const hasDots = tabs.length <= 2;
 
 <nav
 	class={cn(
-		"flex items-center rounded-t justify-between gap-4 h-11",
+		"flex items-center rounded-t justify-between gap-4 min-h-11 h-11",
 		"border-b border-base-100 bg-neutral-800 p-2 text-sm",
 		tabs.length && "group-[.tabbed]:py-0",
 		Astro.props.class
@@ -66,20 +66,20 @@ const hasDots = tabs.length <= 2;
 				tabs.map(async (_, idx) => (
 					<>
 						<button class={cn(`expand expand-${idx + 1}`, "hidden h-6 rounded-md text-neutral-100")} type="button">
-							<i class="iconify mdi-arrow-expand-vertical h-6 w-6" />
+							<i class="iconify h-6 w-6 mdi-arrow-expand-vertical" />
 						</button>
 						<button class={cn(`copy copy-${idx + 1}`, "hidden h-6 rounded-md text-neutral-100")} data-idx={idx + 1} type="button">
-							<i class="iconify mdi-content-copy h-6 w-6" />
+							<i class="iconify h-6 w-6 mdi-content-copy" />
 						</button>
 					</>
 				))
 			) : (
 				<>
 					<button class="expand hidden h-6 rounded-md text-neutral-100" type="button">
-						<i class="iconify mdi-arrow-expand-vertical h-6 w-6" />
+						<i class="iconify h-6 w-6 mdi-arrow-expand-vertical" />
 					</button>
 					<button class="copy hidden h-6 rounded-md text-neutral-100" type="button">
-						<i class="iconify mdi-content-copy h-6 w-6" />
+						<i class="iconify h-6 w-6 mdi-content-copy" />
 					</button>
 				</>
 			)
