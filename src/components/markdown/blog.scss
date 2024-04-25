@@ -130,6 +130,46 @@
 	}
 }
 
+@function oklch-gray-shade($shade, $opacity: 1) {
+	$oklch-values: (
+		100: 90%,
+		200: 80%,
+		300: 70%,
+		400: 60%,
+		500: 50%,
+		600: 40%,
+		700: 30%,
+		800: 20%,
+		900: 10%
+	);
+	$lightness: map-get(
+		$map: $oklch-values,
+		$key: $shade
+	);
+	@return oklch(from gray $lightness 0 h / $opacity);
+}
+
+@function oklch-color-shade($color, $shade, $opacity: 1) {
+	$oklch-values: (
+		100: 97% 0.02,
+		200: 89% 0.05,
+		300: 80% 0.13,
+		400: 71% 0.22,
+		500: 60% 0.31,
+		600: 49% 0.22,
+		700: 38% 0.13,
+		800: 25% 0.05,
+		900: 12% 0.02
+	);
+	$values: map-get(
+		$map: $oklch-values,
+		$key: $shade
+	);
+	$lightness: nth($values, 1);
+	$chroma: nth($values, 2);
+	@return oklch(from $color $lightness $chroma h / $opacity);
+}
+
 @mixin alert-box() {
 	.alert-box {
 		@apply relative mb-4 rounded border border-solid p-4 pl-14;
@@ -175,15 +215,13 @@
 
 		@supports (color: rgb(from white r g b)) {
 			& {
-				--diff: 15%;
-				--fg: oklch(from var(--color, black) calc(100% - 0.5 * var(--diff)) 0.08 h);
-				border-color: oklch(from var(--color, black) calc(3 * var(--diff)) 0.1 h);
-				background: oklch(from var(--color, black) calc(2 * var(--diff)) 0.08 h);
+				color: oklch-color-shade(var(--color), 100);
+				border-color: oklch-color-shade(var(--color), 600);
+				background: oklch-color-shade(var(--color), 700);
 			}
 			::selection {
-				--fg: oklch(100% 0 0) !important;
-				background: oklch(from var(--color, black) calc(3 * var(--diff)) 0.08 h);
-				color: var(--fg);
+				background: oklch-color-shade(var(--color), 600);
+				color: white;
 			}
 		}
 
@@ -206,7 +244,7 @@
 			}
 		}
 		&.info {
-			--color: dodgerblue;
+			--color: deepskyblue;
 		}
 	}
 }
