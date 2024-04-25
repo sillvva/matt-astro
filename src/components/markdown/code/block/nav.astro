@@ -12,25 +12,32 @@ const hasDots = tabs.length <= 2;
 <script>
 	function copyBlock(el: Element) {
 		const idx = el.getAttribute("data-idx");
-		const pre: HTMLPreElement | null | undefined = el.parentNode?.parentNode?.querySelector(idx ? `.panel-${idx} pre` : "pre");
+		const pre: HTMLPreElement | null | undefined = el.closest(".code-block")?.querySelector(idx ? `.panel-${idx} pre` : "pre");
 		if (!pre) {
 			alert("No code block found to copy");
 			return;
 		}
 		navigator.clipboard.writeText(pre.innerText);
 		document.querySelectorAll(".copy").forEach((btn) => {
-			btn.innerHTML = "Copy";
-			btn.classList.add("bg-neutral-600");
-			btn.classList.remove("bg-primary");
+			btn.querySelector("i")?.classList.remove("mdi-check");
+			btn.querySelector("i")?.classList.add("mdi-content-copy");
 		});
-		el.innerHTML = "Copied";
-		el.classList.remove("bg-neutral-600");
-		el.classList.add("bg-primary");
+		el.querySelector("i")?.classList.add("mdi-check");
+		el.querySelector("i")?.classList.remove("mdi-content-copy");
+	}
+
+	function expandBlock(el: Element) {
+		el.closest(".code-block")?.classList.toggle("expanded");
+		el.querySelector("i")?.classList.toggle("mdi-arrow-expand-vertical");
+		el.querySelector("i")?.classList.toggle("mdi-arrow-collapse-vertical");
 	}
 
 	document.addEventListener("astro:page-load", () => {
 		document.querySelectorAll("article .code-block .copy").forEach((btn) => {
 			if (btn) btn.addEventListener("click", () => copyBlock(btn));
+		});
+		document.querySelectorAll("article .code-block .expand").forEach((btn) => {
+			if (btn) btn.addEventListener("click", () => expandBlock(btn));
 		});
 	});
 </script>
@@ -53,25 +60,36 @@ const hasDots = tabs.length <= 2;
 		)
 	}
 	<slot />
-	{
-		tabs.length ? (
-			tabs.map(async (_, idx) => (
-				<button
-					class={cn(
-						`copy copy-${idx + 1} inline-block rounded-md bg-neutral-600`,
-						"px-2 py-1 text-sm text-neutral-100 max-sm:hidden",
-						"group-[.tabbed]:hidden"
-					)}
-					data-idx={idx + 1}
-					type="button"
-				>
-					Copy
-				</button>
-			))
-		) : (
-			<button class="copy inline-block rounded-md bg-neutral-600 px-2 py-1 text-sm text-neutral-100 max-sm:hidden" type="button">
-				Copy
-			</button>
-		)
-	}
+	<div class="flex gap-3">
+		{
+			tabs.length ? (
+				tabs.map(async (_, idx) => (
+					<>
+						<button
+							class={cn(`expand expand-${idx + 1}`, "h-6 rounded-md text-neutral-100 group-[.tabbed]:hidden max-sm:hidden")}
+							type="button"
+						>
+							<i class="iconify mdi-arrow-expand-vertical h-6 w-6" />
+						</button>
+						<button
+							class={cn(`copy copy-${idx + 1}`, "h-6 rounded-md text-neutral-100 group-[.tabbed]:hidden max-sm:hidden")}
+							data-idx={idx + 1}
+							type="button"
+						>
+							<i class="iconify mdi-content-copy h-6 w-6" />
+						</button>
+					</>
+				))
+			) : (
+				<>
+					<button class="expand h-6 rounded-md text-neutral-100 max-sm:hidden" type="button">
+						<i class="iconify mdi-arrow-expand-vertical h-6 w-6" />
+					</button>
+					<button class="copy h-6 rounded-md text-neutral-100 max-sm:hidden" type="button">
+						<i class="iconify mdi-content-copy h-6 w-6" />
+					</button>
+				</>
+			)
+		}
+	</div>
 </nav>

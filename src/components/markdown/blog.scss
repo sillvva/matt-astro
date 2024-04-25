@@ -1,46 +1,68 @@
 @mixin code() {
 	.code-block {
-		nav label {
-			max-width: calc(100vw - 160px);
-			height: theme("space.11");
-			white-space: nowrap;
-			padding: 11px theme("space.3");
-			font-size: theme("fontSize.sm");
-			border-width: 2px 1px 0;
-			border-style: solid;
-			border-color: theme("borderColor.neutral-900");
-			border-top-color: theme("borderColor.neutral-600");
-			background-color: theme("backgroundColor.neutral-900");
-			input[type="radio"] {
-				display: none;
+		max-height: 20rem;
+		@media (min-width: theme("screens.md")) {
+			max-height: 40rem;
+		}
+		&.expanded {
+			max-height: none;
+		}
+		.expand {
+			display: none;
+		}
+		&:has(.line:nth-child(29)) {
+			.expand {
+				display: inline;
 			}
-			&:has(input[type="radio"]) {
-				cursor: pointer;
-				opacity: 0.5;
-				&:has(:checked) {
-					opacity: 1;
+		}
+		nav {
+			label {
+				max-width: calc(100vw - 160px);
+				height: theme("space.11");
+				white-space: nowrap;
+				padding: 11px theme("space.3");
+				font-size: theme("fontSize.sm");
+				border-width: 2px 1px 0;
+				border-style: solid;
+				border-color: theme("borderColor.neutral-900");
+				border-top-color: theme("borderColor.neutral-600");
+				background-color: theme("backgroundColor.neutral-900");
+				input[type="radio"] {
+					display: none;
+				}
+				&:has(input[type="radio"]) {
+					cursor: pointer;
+					opacity: 0.5;
+					&:has(:checked) {
+						opacity: 1;
+						border-top-color: theme("borderColor.secondary");
+						border-inline-color: theme("borderColor.neutral-700 / 50%");
+					}
+					&:not(:has(:checked)):hover {
+						opacity: 0.85;
+						border-top-color: theme("borderColor.primary");
+					}
+				}
+				&:not(:has(input[type="radio"])) {
 					border-top-color: theme("borderColor.secondary");
 					border-inline-color: theme("borderColor.neutral-700 / 50%");
-				}
-				&:not(:has(:checked)):hover {
-					opacity: 0.85;
-					border-top-color: theme("borderColor.primary");
-				}
-			}
-			&:not(:has(input[type="radio"])) {
-				border-top-color: theme("borderColor.secondary");
-				border-inline-color: theme("borderColor.neutral-700 / 50%");
-				&::before {
-					content: var(--filename);
-					display: block;
-					overflow: hidden;
-					text-overflow: ellipsis;
+					&::before {
+						content: var(--filename);
+						display: block;
+						overflow: hidden;
+						text-overflow: ellipsis;
+					}
 				}
 			}
+		}
+		.code-frame {
+			overflow-y: auto;
 		}
 		pre {
 			position: relative;
 			tab-size: 2;
+			line-height: 1.25rem;
+			background-color: rgb(23 23 23 / 1) !important;
 			code {
 				&:has(.line.diff) {
 					.line:not(.diff) {
@@ -125,6 +147,16 @@
 						}
 					}
 				}
+			}
+		}
+		.code-block {
+			max-height: none;
+			> * {
+				display: none;
+			}
+			.code-frame {
+				overflow-y: visible;
+				display: block;
 			}
 		}
 	}

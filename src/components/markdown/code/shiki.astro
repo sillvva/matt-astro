@@ -15,13 +15,13 @@ interface Props {
 	wrap?: boolean;
 }
 
-const { code, lang, wrap } = Astro.props;
+const { code, lang, wrap, class: className } = Astro.props;
 ---
 
 <CodeBlock class="shiki">
 	<CodeNav />
 	<CodeLang>
-		{Astro.props.lang}
+		{lang}
 	</CodeLang>
 	<CodeFrame>
 		<Code
@@ -32,7 +32,7 @@ const { code, lang, wrap } = Astro.props;
 				name: theme.name,
 				settings: theme.tokenColors
 			}}
-			class={cn(Astro.props.class, "group my-1")}
+			class={cn(className, "group my-1")}
 		/>
 	</CodeFrame>
 </CodeBlock>
