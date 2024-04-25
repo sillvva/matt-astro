@@ -5,8 +5,10 @@ export interface Props extends astroHTML.JSX.HTMLAttributes {}
 
 <div
 	class={cn(
-		"code-block group flex flex-col",
+		"code-block group flex flex-col max-h-[20rem] md:max-h-[40rem] [&.expanded]:max-h-none",
 		"relative mb-4 mt-2 rounded-md border border-base-100 bg-neutral-900 text-base-content",
+		"group-[.code-block]:max-h-none group-[.code-block]:[&_>_nav]:hidden",
+		"group-[.code-block]:[&_.code-frame]:block group-[.code-block]:[&_.code-frame]:overflow-y-visible",
 		Astro.props.class
 	)}
 >

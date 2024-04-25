@@ -3,6 +3,6 @@ import { cn } from "$/util";
 export interface Props extends astroHTML.JSX.HTMLAttributes {}
 ---
 
-<div class={cn("code-frame rounded-b-lg", Astro.props.class)}>
+<div class={cn("code-frame rounded-b-lg overflow-y-auto", Astro.props.class)}>
 	<slot />
 </div>

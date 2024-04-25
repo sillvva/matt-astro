@@ -34,8 +34,15 @@ const inlineStyles = classes.join(", ") + " { visibility: visible; display: inli
 					const index = idx + 1;
 					const render = await Astro.slots.render(name);
 					return (
-						<label>
-							<input class={`radio-${index}`} type="radio" name={uuid} checked={index === 1 ? "" : undefined} />
+						<label
+							class={cn(
+								"h-11 max-w-[calc(100vw_-_160px)] cursor-pointer whitespace-nowrap bg-neutral-900 px-3 py-[11px] opacity-50",
+								"border-x border-t-[2px] border-solid border-neutral-900 border-t-neutral-600",
+								"member-checked:opacity-100 member-checked:border-t-secondary member-checked:border-x-neutral-700/50",
+								"member-not-checked:hover:opacity-85 member-not-checked:hover:border-t-primary"
+							)}
+						>
+							<input class={`radio-${index} member hidden`} type="radio" name={uuid} checked={index === 1 ? "" : undefined} />
 							<Fragment set:html={render} />
 						</label>
 					);
