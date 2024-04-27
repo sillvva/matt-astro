@@ -4,13 +4,8 @@ import ResponsiveImage from "../responsive-image.astro";
 const alt = Astro.props.alt || "";
 ---
 
-<figure class="my-12 flex flex-col [&_picture]:m-0">
-	<a
-		href={Astro.props.src.src}
-		target="_blank"
-		rel="noreferrer noopener"
-		class={cn("relative mx-auto mb-2 flex w-full max-w-[800px]")}
-	>
+<figure class="my-12 flex flex-col">
+	<a href={Astro.props.src.src} target="_blank" rel="noreferrer noopener" class="relative mx-auto mb-2 flex w-full max-w-[800px]">
 		<ResponsiveImage
 			src={Astro.props.src}
 			alt={alt}
@@ -28,6 +23,7 @@ const alt = Astro.props.alt || "";
 				"shadow-md shadow-black/15 motion-safe:hover:shadow-lg motion-safe:hover:shadow-black/25 scroll-fade-in",
 				!alt.includes("no-aspect") && "object-cover md:object-contain"
 			)}
+			pictureClass="m-0"
 		/>
 	</a>
 	<figcaption class="block text-center text-sm text-white/70">Click to open full screen</figcaption>

@@ -16,6 +16,7 @@ const blogCollection = defineCollection({
 					hash: z.string(),
 					user: z.string().default("Sillvva"),
 					height: z.number().default(700),
+					editable: z.boolean().default(false),
 					defaultTab: z.string().default("result")
 				})
 				.optional(),

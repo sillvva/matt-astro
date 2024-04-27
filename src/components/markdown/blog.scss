@@ -134,6 +134,19 @@
 	@return oklch(from $color $lightness $chroma h / $opacity);
 }
 
+@function rgb-color-shade($color, $shade, $opacity: 1) {
+	@if $shade >= 500 {
+		@return rgb(
+			from $color calc(r * (1000 - $shade) / 500) calc(g * (1000 - $shade) / 500) calc(b * (1000 - $shade) / 500) / $opacity
+		);
+	} @else {
+		@return rgb(
+			from $color calc((255 - r) * (500 - $shade) / 500 + r) calc((255 - g) * (500 - $shade) / 500 + g)
+				calc((255 - b) * (500 - $shade) / 500 + b) / $opacity
+		);
+	}
+}
+
 @mixin alert-box() {
 	.alert-box {
 		position: relative;
@@ -191,6 +204,18 @@
 			mask-size: 100% 100%;
 		}
 
+		@supports (color: color-mix(in srgb, red 0%, white)) {
+			&:is(&, p):is(&, .color-mix) {
+				color: color-mix(in srgb, var(--color, black) 25%, oklch(100% 0 0));
+				border-color: color-mix(in srgb, var(--color, black) 15%, oklch(100% 0 0 / 15%));
+				background: color-mix(in srgb, var(--color, black) 40%, oklch(0% 0 0));
+			}
+			&:is(&, .color-mix) ::selection {
+				color: color-mix(in srgb, var(--color, black) 10%, oklch(100% 0 0));
+				background: color-mix(in srgb, var(--color, black) 50%, oklch(0% 0 0 / 0.5));
+			}
+		}
+
 		@supports (color: oklch(from white l c h)) {
 			&:is(&, p):is(.oklch) {
 				color: oklch-color-shade(var(--color), 200);
@@ -203,15 +228,15 @@
 			}
 		}
 
-		@supports (color: color-mix(in srgb, red 0%, white)) {
-			&:is(&, p):is(&, .color-mix) {
-				color: color-mix(in srgb, var(--color, black) 25%, oklch(100% 0 0));
-				border-color: color-mix(in srgb, var(--color, black) 15%, oklch(100% 0 0 / 15%));
-				background: color-mix(in srgb, var(--color, black) 40%, oklch(0% 0 0));
+		@supports (color: rgb(from white r g b)) {
+			&:is(&, p):is(.rgb) {
+				color: rgb-color-shade(var(--color, black), 100);
+				border-color: rgb-color-shade(var(--color, black), 700);
+				background: rgb-color-shade(var(--color, black), 800);
 			}
-			&:is(&, .color-mix) ::selection {
-				color: color-mix(in srgb, var(--color, black) 10%, oklch(100% 0 0));
-				background: color-mix(in srgb, var(--color, black) 50%, oklch(0% 0 0 / 0.5));
+			&:is(.rgb) ::selection {
+				color: rgb-color-shade(var(--color, black), 100);
+				background: rgb-color-shade(var(--color, black), 600);
 			}
 		}
 	}
