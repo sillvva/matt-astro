@@ -1,3 +1,5 @@
+@use "sass:math";
+
 @mixin code() {
 	.code-block {
 		pre {
@@ -147,6 +149,16 @@
 	}
 }
 
+@function srgb-color-mix($color, $shade) {
+	@if $shade >= 500 {
+		$percentage: math.percentage(math.div(1000 - $shade, 500));
+		@return color-mix(in srgb, $color $percentage, black);
+	} @else {
+		$percentage: math.percentage(math.div(500 - $shade, 500));
+		@return color-mix(in srgb, $color, white $percentage);
+	}
+}
+
 @mixin alert-box() {
 	.alert-box {
 		position: relative;
@@ -154,6 +166,8 @@
 		border-radius: 0.25rem;
 		border-width: 1px;
 		border-style: solid;
+		border-color: grey;
+		color: grey;
 		padding: 1rem;
 		padding-left: 3.5rem;
 
@@ -204,39 +218,39 @@
 			mask-size: 100% 100%;
 		}
 
-		@supports (color: color-mix(in srgb, red 0%, white)) {
-			&:is(&, p):is(&, .color-mix) {
-				color: color-mix(in srgb, var(--color, black) 25%, oklch(100% 0 0));
-				border-color: color-mix(in srgb, var(--color, black) 15%, oklch(100% 0 0 / 15%));
-				background: color-mix(in srgb, var(--color, black) 40%, oklch(0% 0 0));
-			}
-			&:is(&, .color-mix) ::selection {
-				color: color-mix(in srgb, var(--color, black) 10%, oklch(100% 0 0));
-				background: color-mix(in srgb, var(--color, black) 50%, oklch(0% 0 0 / 0.5));
-			}
-		}
-
 		@supports (color: oklch(from white l c h)) {
-			&:is(&, p):is(.oklch) {
+			&:is(&, p):is(&, .oklch) {
 				color: oklch-color-shade(var(--color), 200);
 				border-color: oklch-color-shade(var(--color), 600);
 				background: oklch-color-shade(var(--color), 700);
 			}
-			&:is(.oklch) ::selection {
+			&:is(&, .oklch) ::selection {
 				color: oklch-color-shade(var(--color), 100);
 				background: oklch-color-shade(var(--color), 600);
 			}
 		}
 
 		@supports (color: rgb(from white r g b)) {
-			&:is(&, p):is(.rgb) {
+			&:is(&, p):is(&, .rgb) {
 				color: rgb-color-shade(var(--color, black), 100);
 				border-color: rgb-color-shade(var(--color, black), 700);
 				background: rgb-color-shade(var(--color, black), 800);
 			}
-			&:is(.rgb) ::selection {
+			&:is(&, .rgb) ::selection {
 				color: rgb-color-shade(var(--color, black), 100);
 				background: rgb-color-shade(var(--color, black), 600);
+			}
+		}
+
+		@supports (color: color-mix(in srgb, red 0%, white)) {
+			&:is(&, p):is(&, .color-mix) {
+				color: srgb-color-mix(var(--color, black), 100);
+				border-color: srgb-color-mix(var(--color, black), 700);
+				background: srgb-color-mix(var(--color, black), 800);
+			}
+			&:is(&, .color-mix) ::selection {
+				color: srgb-color-mix(var(--color, black), 100);
+				background: srgb-color-mix(var(--color, black), 600);
 			}
 		}
 	}

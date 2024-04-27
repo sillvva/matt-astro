@@ -1,6 +1,6 @@
 ---
 title: SCSS Alert Boxes
-description: CSS Alert Boxes with OKLCH and Color Mix
+description: Created using SCSS functions and mixins
 date: 2024-04-27T00:14:50.691Z
 image: $/assets/images/alert-boxes.jpg
 codepen:
@@ -19,13 +19,15 @@ import TabbedCode from "$/components/markdown/code/tabbed.astro";
 ## The Code
 
 <div class="button-row">
-  [Playground](btn::https://sass-lang.com/playground/#eJzNV11vo0YUfXZ+xW2UxHbXEGYAg6lSRY0q7YP3aaV9x3gCKHxYA7aTVPnvvXcGA/baWWerqlUc+8zcD+6cM1wGxu4f10VUp2UB5VMWJUYswxejSsKlGF2pnwlclaswSuuXANgY/roYXGnPTZitRRXA6GIwYJYVwMy6niDmhH2NbcKexg7hqcYuYVfjKWFHY4+wrbFPmGs8I8ys64vB+DcsIEvjpC5EhVfPw5URi5qKuEIcwF51FHv1JLB0vRgdfy9FvZbNikePssyBlg1dXrAggdt25Rj0dnFxSFVUZqXccaUGE/gwZ941WKbFO+JmasJt2UMmcYLZLYUeownOWx6nysNmHZmzzkMz6nc5NK1udxXNLdd1NATv6vwZdvvqFHUyapJNkAmyRgnyHR6Y+AlZNK19YZr4d+WR8eJD4tynj40Nfr/DbWnRZFsOZqP1D/oFRWEWjST8Cs1NAgaFjbEm9aPM8fvmxUlztzC8LBHzBvciq8R5VY2462JCOab8tBajWVuTHz6Rre8av+Maj+kig7774h33xbHqlTh5+pwWEGZC1saifB4p4s12rNa2KquUBAxAiiys043A8EEeyjgt0KmuyxwlkyKn6UUpl0IaMlyma9xpuN/dfcs2XdYJ+q+ee5NV/ZKJAKoyS5c0vQqXy7SIu7TNhJGJxxpvHFMnRUOoShwopgPYJmkt4Jc0X5WyDouaQt/I7cas1lFEO1W5G0YTkKW5iKUQBXkOboJgIR5LqTUlt2qDRaxlNrpchnUYpHkYi1uc/PScZ5Nr+wEhICyqu2FS16vg9na73Zpb2yxlfIudwyLnIWxSsf2jfL4bWtjCuIOf4bX9J8avwjqBxzTL7obXHBuLNYTl3fAL48AfpqYL+Av6l/HKQcAs/amYZeixwayvzGt8gOdo9SO0OQwswzeQqxn++JUGQNAnBmeAg8rQiAy5Qx6Mmw6f0zUck3mZwWkSv/z5FJidOeBk6P06vNULoPUhuhwrAt8u9P+NKaTErb9PthTLf5dmtbfuhsguJIJ6k8bnsI+1aep9k3tgz20gsPFMZzpXU5wlNHhQVLOZSXkYMNf07BZ8I8+5nrO/zEwGbuKa/pzNAAcbBR1zhuGfcTx3iePZN4RIPeMGM+3Z3DM9Rt6kAUnDOGng+0BfGSNZ6WuOWjMbQbZvNLTRVn5cGVV4ZvSsGEq5f6ThNpQF3nQHKsZl9n+UcXfbzBlJxTkNphmKZSNPn/F28L4wpMTaOAnfGE5uoHnDCfMf8ZAWj+UBCUshVtXTywKfk12P2ecjKotaFNitLi9Vvq6NhgtsdOtaRQ7qctW1uYHub+2waZbc0d1yoOnoTSzC6CmW5bpY7iqL1lLiZR9opFzysHoylBQBbEI56rSaKPgfdDcGHlH/zXvNbZLE4InBUJTEsHGebdSQv+a+4UYWuKbbtTr8/orbd9fvvk7bxocdEdoOSfJaEbVIh1OL8w31Vxmq9al2Rw3RB/VXqTapeuN3e4E4GndESrESISpQlA3sTFX6Kug4jOc++mr3xX21XtHzqILRTiN1CsJn7wgfvhWeGSbUGwEP1foJNh7rLXQTpNXoZgKrcQPMNrLxGJzOSFo3+3UCiww3ypgOmJPmIKfqRMHGenG7J/HH8rHv8+FJA2fbrO3+PDsnvXM0OfcqfOsz0iciCCqRCX3G/BlSmHWalI+X7x6Wj4Rgsx33m8rRTdE7X+tjTAYRJMe3gqmcD/bA968/R+rDQz0eZo9Jfmb4tAvvkXNmsLcL7sTcLeWkimemZv+krmm/rhP60NG+p46EGM/Vx9VB1wNtDt99frSEPWXOCj6uy1mhx1RRSzipyUeX89GKDvRoXlbSIsrW+F7We1357W/ZVp+E)
+  [Playground](btn::https://sass-lang.com/playground/#eJzNV21vozgQ/pz+irmqbZLbQLGBQFj1VF110n7IflppvxPiBFReIkOStqv+95uxCZBs2iZ7Ot2pKYznxZ55HjMYxu7XpYDLMizLIAur+PLzxcX9Yp1HVVLkUDymUWwsZfhslHE4F4MrdRvBVbEKo6R6DoAN4cdF70p7bsJ0LcoABhe9HrOsACbW9QhlTrKvZZtkT8sOyWMtuyS7Wh6T7GjZI9nWsk8y1/KEZGZdX/SGnzGBNFnGVS6wDMjClbEUFSVxhXIAe9lR7NWjwNR1MTr+XopqLeuKBwtZZEBlQzsvWBDDbVM5Br3+DFVUpIXcYaUGIzgbM+8aLNPiLXATpXAb9BBJVDC7gdBjpOC8wXGsPGzWgjlpPTSifjuHhtVtV9HYcp1HDfAuz19Bt8tOXsWDerIRIkHWKEa8wwMTf4MWDWuXmDr+XXrkcnYWOffJorbBH3e4LS1SNungbFR/r5tQFKbRQMLvMEAWLTDq8CEmheFDbV9+YJ+9bW9rw5UJm1e4Fyk+vCclNuCui3PKIS3g/jw/fCJb13X5jutySIv0uu6zd9xnx7Lf56dsCcqSpwN63mHkaiVkJPIqXAramlVstoqBGs+TzT6iI4Un5dDA1i6c6FRGzTZrpxvBLA2jx0PoT8vA/cUERrCNk0p082jRQ390D1MhK2NWPA0UTmYzVumtijIhhAOQIg2rZCNo3SyUyyRHp6oqMtzzUmSknhVyLqQhw3myxkcVG4a7b9km8ypG/9VTR1lWzynWXhZpMu+oVf4BtlHxTNqD4Sqcz5N82a5dK4xULCpsT6ZeGQ2hqmMXr+H4LclWhazCvKLQV3K7Mct1FFE/UO7Gbv00yQQuKnLy7N0EwUwsCqm5I7dyg0msZTq4nIdVGCQZQnyLyk9PWTq6th9QBBTz8q4fV9UquL3dbrfm1jYLubzF/myRcx82idj+WTzd9S18UXAHf/1r+y+MX+EWgEWSpnf9a47t2+rD/K7/lXHgD2PTBbyDvjNeOigwS/9KZhl6bDDrG/NqH+AZWv0IbQ4Dy/ANxGqCN7/UApDoE4ITwEFpaIkMmUMejJsOn9Iajsm81OCkxIs/HQOzUwecFL1f+re6AKoPpUu1YRFr/X9jCinxAdkHW4r5vwuz2oB3fUQXYkFvAC2fgj7mpqH3Te6BPbWBhI1nOuOpUnEW0+BBQc0mJs3DgLmmZzfCd/Kcap39dWIycGPX9KdsAjjYKNExJxj+BcdTlzCefEcRoWfcYKY9mXqmx8ibOCBqGCcOfB/okjKilS5T5JrZKKT7RkMbbeXHlVGFp0bHiqE090ccbkOZ40N3wOKySP+PNO4emykjqjinwThFsmzE6Qs+Dt5XhpBYGyfmG8PJDDRvOMn8IxySfFEcgDAXYlU+Ps/wNNL2mH08oiKvsCcHcHmp5mt7bTjDbriuVGSvKlZtm+vp/tYM647KHd1SexqOjmKG75ylLNb5fJdZtJYSl32gkXLJwvLRUFQEsAnloOVqpMT/oLsx8Aj6795LZhMlBo8NhqTEho16tlFD/pL5hhtZ4Jpu2+rw+g23767ffRs3jQ87IjQdkui1ImqRDqcW5xvqrzRU61PtjhqiD+qvVG1S9caf9gJhNGyBlGIlQmQgL2qxNZXJi6CPDjxd06XZF/flekXvoxIGNUedA6t+Y6UQQTwc6o1zEyTl4GYEqyEJpnKuTb3uBHtHVmK23p27owiekvEkofI7eOueGD5uw5ttdnKwtwt+bWralRIEpUiFPtr9Slnsn+Q17ub1Bj90UO6wI2GJp9Tj7KDrATeHHxMflbDHzEnB3tH6Twr1j7CiSniTk3PLOTejU/g4cgDG9zXgp75m6A1umrADhg4+J84i6JTY4/ycEnmMnk4Vb5J0ZkVnZnVAUf19keRRusbvrc4Xxue/AZpi+54=)
 </div>
 
 <TabbedCode>
 <Fragment slot="tab-1">SCSS</Fragment>
 <Fragment slot="panel-1">
 ```scss
+@use "sass:math";
+
 @function oklch-gray-shade($shade, $opacity: 1) {
 	$oklch-values: (
 		100: 90%,
@@ -79,6 +81,16 @@ import TabbedCode from "$/components/markdown/code/tabbed.astro";
 	}
 }
 
+@function srgb-color-mix($color, $shade) {
+	@if $shade >= 500 {
+		$percentage: math.percentage(math.div(1000 - $shade, 500));
+		@return color-mix(in srgb, $color $percentage, black);
+	} @else {
+		$percentage: math.percentage(math.div(500 - $shade, 500));
+		@return color-mix(in srgb, $color, white $percentage);
+	}
+}
+
 @mixin alert-box() {
 	.alert-box {
 		position: relative;
@@ -86,6 +98,8 @@ import TabbedCode from "$/components/markdown/code/tabbed.astro";
 		border-radius: 0.25rem;
 		border-width: 1px;
 		border-style: solid;
+		border-color: grey;
+		color: grey;
 		padding: 1rem;
 		padding-left: 3.5rem;
 
@@ -131,18 +145,6 @@ import TabbedCode from "$/components/markdown/code/tabbed.astro";
 			mask-size: 100% 100%;
 		}
 
-		@supports (color: color-mix(in srgb, red 0%, white)) {
-			&:is(&, p):is(&, .color-mix) {
-				color: color-mix(in srgb, var(--color, black) 25%, oklch(100% 0 0));
-				border-color: color-mix(in srgb, var(--color, black) 15%, oklch(100% 0 0 / 15%));
-				background: color-mix(in srgb, var(--color, black) 40%, oklch(0% 0 0));
-			}
-			&:is(&, .color-mix) ::selection {
-				color: color-mix(in srgb, var(--color, black) 10%, oklch(100% 0 0));
-				background: color-mix(in srgb, var(--color, black) 50%, oklch(0% 0 0 / 0.5));
-			}
-		}
-
 		@supports (color: oklch(from white l c h)) {
 			&:is(&, p):is(.oklch) {
 				color: oklch-color-shade(var(--color, black), 200);
@@ -164,6 +166,18 @@ import TabbedCode from "$/components/markdown/code/tabbed.astro";
 			&:is(.rgb) ::selection {
 				color: rgb-color-shade(var(--color, black), 100);
 				background: rgb-color-shade(var(--color, black), 600);
+			}
+		}
+
+		@supports (color: color-mix(in srgb, red 0%, white)) {
+			&:is(&, p):is(.color-mix) {
+				color: srgb-color-mix(var(--color, black), 100);
+				border-color: srgb-color-mix(var(--color, black), 700);
+				background: srgb-color-mix(var(--color, black), 800);
+			}
+			&:is(.color-mix) ::selection {
+				color: srgb-color-mix(var(--color, black), 100);
+				background: srgb-color-mix(var(--color, black), 600);
 			}
 		}
 	}
