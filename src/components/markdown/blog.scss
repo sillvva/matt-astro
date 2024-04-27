@@ -97,43 +97,19 @@
 }
 
 @function oklch-gray-shade($shade, $opacity: 1) {
-	$oklch-values: (
-		100: 90%,
-		200: 80%,
-		300: 70%,
-		400: 60%,
-		500: 50%,
-		600: 40%,
-		700: 30%,
-		800: 20%,
-		900: 10%
-	);
-	$lightness: map-get(
-		$map: $oklch-values,
-		$key: $shade
-	);
-	@return oklch(from gray $lightness 0 h / $opacity);
+	$lightness: math.percentage(math.div(1000 - $shade, 1000));
+	@return oklch(from gray $lightness 0 0 / $opacity);
 }
 
 @function oklch-color-shade($color, $shade, $opacity: 1) {
-	$oklch-values: (
-		100: 97% 0.02,
-		200: 89% 0.05,
-		300: 80% 0.13,
-		400: 71% 0.22,
-		500: 60% 0.31,
-		600: 49% 0.22,
-		700: 38% 0.13,
-		800: 25% 0.05,
-		900: 12% 0.02
-	);
-	$values: map-get(
-		$map: $oklch-values,
-		$key: $shade
-	);
-	$lightness: nth($values, 1);
-	$chroma: nth($values, 2);
-	@return oklch(from $color $lightness $chroma h / $opacity);
+	$lightness: math.percentage(math.div(1000 - $shade, 1000));
+	@if $shade >= 500 {
+		$chroma: (0.22 - 0.05) * math.div(900 - $shade, 400) + 0.05;
+		@return oklch(from $color $lightness $chroma h / $opacity);
+	} @else {
+		$chroma: (0.05 - 0.22) * math.div(500 - $shade, 400) + 0.22;
+		@return oklch(from $color $lightness $chroma h / $opacity);
+	}
 }
 
 @function rgb-color-shade($color, $shade, $opacity: 1) {
@@ -217,9 +193,9 @@
 
 		@supports (color: oklch(from white l c h)) {
 			&:is(&, p):is(&, .oklch) {
-				color: oklch-color-shade(var(--color), 200);
-				border-color: oklch-color-shade(var(--color), 600);
-				background: oklch-color-shade(var(--color), 700);
+				color: oklch-color-shade(var(--color), 100);
+				border-color: oklch-color-shade(var(--color), 540);
+				background: oklch-color-shade(var(--color), 640);
 			}
 			&:is(&, .oklch) ::selection {
 				color: oklch-color-shade(var(--color), 100);
