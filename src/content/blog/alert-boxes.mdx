@@ -59,6 +59,7 @@ As of this writing, Firefox does not support relative `oklch()` and `rgb()` func
 	@return oklch(from gray $lightness 0 h / $opacity);
 }
 
+/* Based on https://blog.logrocket.com/oklch-css-consistent-accessible-color-palettes/#creating-color-palettes-with-oklch */
 @function oklch-color-shade($color, $shade, $opacity: 1) {
 	$oklch-values: (
 		100: 97% 0.02,
