@@ -104,10 +104,10 @@
 @function oklch-color-shade($color, $shade, $opacity: 1) {
 	$lightness: math.percentage(math.div(1000 - $shade, 1000));
 	@if $shade >= 500 {
-		$chroma: (0.22 - 0.05) * math.div(900 - $shade, 400) + 0.05;
+		$chroma: (0.17 - 0.05) * math.div(900 - $shade, 400) + 0.05;
 		@return oklch(from $color $lightness $chroma h / $opacity);
 	} @else {
-		$chroma: (0.05 - 0.22) * math.div(500 - $shade, 400) + 0.22;
+		$chroma: (0.05 - 0.17) * math.div(500 - $shade, 400) + 0.17;
 		@return oklch(from $color $lightness $chroma h / $opacity);
 	}
 }
@@ -194,8 +194,8 @@
 		@supports (color: oklch(from white l c h)) {
 			&:is(&, p):is(&, .oklch) {
 				color: oklch-color-shade(var(--color), 100);
-				border-color: oklch-color-shade(var(--color), 540);
-				background: oklch-color-shade(var(--color), 640);
+				border-color: oklch-color-shade(var(--color), 500);
+				background: oklch-color-shade(var(--color), 600);
 			}
 			&:is(&, .oklch) ::selection {
 				color: oklch-color-shade(var(--color), 100);
