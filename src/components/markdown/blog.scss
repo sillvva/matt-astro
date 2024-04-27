@@ -138,14 +138,11 @@
 
 @function rgb-color-shade($color, $shade, $opacity: 1) {
 	@if $shade >= 500 {
-		@return rgb(
-			from $color calc(r * (1000 - $shade) / 500) calc(g * (1000 - $shade) / 500) calc(b * (1000 - $shade) / 500) / $opacity
-		);
+		$calc: math.div((10 - math.div($shade, 100)), 5);
+		@return rgb(from $color calc(r * $calc) calc(g * $calc) calc(b * $calc) / $opacity);
 	} @else {
-		@return rgb(
-			from $color calc((255 - r) * (500 - $shade) / 500 + r) calc((255 - g) * (500 - $shade) / 500 + g)
-				calc((255 - b) * (500 - $shade) / 500 + b) / $opacity
-		);
+		$calc: math.div((5 - math.div($shade, 100)), 5);
+		@return rgb(from $color calc((255 - r) * $calc + r) calc((255 - g) * $calc + g) calc((255 - b) * $calc + b) / $opacity);
 	}
 }
 
