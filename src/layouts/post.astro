@@ -28,6 +28,7 @@ const baseLevel = headings[0]?.depth ?? 1;
 	{title}
 	{description}
 	image={typeof image === "string" ? image : image.src}
+	{toc}
 	articleMeta={{
 		published_date: date.toISOString(),
 		...(updated && { modified_date: updated.toISOString() })
@@ -38,8 +39,8 @@ const baseLevel = headings[0]?.depth ?? 1;
 	}}
 	noBg
 >
-	<div class="post mx-auto flex min-w-0 justify-center gap-8">
-		<article class="min-w-0 max-w-screen-md flex-1 2xl:mx-0">
+	<div class="post mx-auto flex min-w-0 flex-1 justify-center gap-8">
+		<article class={cn("min-w-0 flex-1 2xl:mx-0", toc.length >= 2 && "max-w-screen-md")}>
 			<section class="mb-8 flex flex-col gap-2 md:gap-4" transition:name={slugify(`image ${slug}`)}>
 				<p
 					class={cn(
