@@ -15,6 +15,7 @@ tags:
   - UI
 ---
 import TabbedCode from "$/components/markdown/code/tabbed.astro";
+import Codepen from "$/components/markdown/codepen.astro";
 
 ## Table of Contents
 
@@ -35,7 +36,7 @@ As of this writing, Firefox does not support relative `oklch()` and `rgb()` func
 </div>
 
 <TabbedCode>
-<Fragment slot="tab-1">SCSS</Fragment>
+<Fragment slot="tab-1">alert-box.scss</Fragment>
 <Fragment slot="panel-1">
 ```scss
 @use "sass:math";
@@ -173,3 +174,45 @@ As of this writing, Firefox does not support relative `oklch()` and `rgb()` func
 ```
 </Fragment>
 </TabbedCode>
+
+## Light Mode Example
+
+<Codepen defaultTab="css,result" height="700" editable="true" title="Light Mode" hash="eYooNOb" user="Sillvva" />
+
+```scss
+@supports (color: oklch(from white l c h)) {
+	&:is(&, p):is(.oklch) {
+		color: oklch-color-shade(var(--color, black), 600);
+		border-color: oklch-color-shade(var(--color, black), 250);
+		background: oklch-color-shade(var(--color, black), 50);
+	}
+	&:is(.oklch) ::selection {
+		color: oklch-color-shade(var(--color, black), 600);
+		background: oklch-color-shade(var(--color, black), 300);
+	}
+}
+
+@supports (color: rgb(from white r g b)) {
+	&:is(&, p):is(.rgb) {
+		color: rgb-color-shade(var(--color, black), 800);
+		border-color: rgb-color-shade(var(--color, black), 300);
+		background: rgb-color-shade(var(--color, black), 100);
+	}
+	&:is(.rgb) ::selection {
+		color: rgb-color-shade(var(--color, black), 900);
+		background: rgb-color-shade(var(--color, black), 300);
+	}
+}
+
+@supports (color: color-mix(in srgb, red 0%, white)) {
+	&:is(&, p):is(.color-mix) {
+		color: srgb-color-mix(var(--color, black), 800);
+		border-color: srgb-color-mix(var(--color, black), 300);
+		background: srgb-color-mix(var(--color, black), 100);
+	}
+	&:is(.color-mix) ::selection {
+		color: srgb-color-mix(var(--color, black), 900);
+		background: srgb-color-mix(var(--color, black), 300);
+	}
+}
+```
