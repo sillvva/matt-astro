@@ -104,10 +104,10 @@
 @function oklch-color-shade($color, $shade, $opacity: 1) {
 	$lightness: math.percentage(math.div(1000 - $shade, 1000));
 	@if $shade >= 500 {
-		$chroma: (0.17 - 0.05) * math.div(900 - $shade, 400) + 0.05;
+		$chroma: (0.14 - 0.05) * math.div(900 - $shade, 400) + 0.05;
 		@return oklch(from $color $lightness $chroma h / $opacity);
 	} @else {
-		$chroma: (0.05 - 0.17) * math.div(500 - $shade, 400) + 0.17;
+		$chroma: (0.05 - 0.14) * math.div(500 - $shade, 400) + 0.14;
 		@return oklch(from $color $lightness $chroma h / $opacity);
 	}
 }
@@ -197,30 +197,6 @@
 			mask-size: 100% 100%;
 		}
 
-		@supports (color: oklch(from white l c h)) {
-			&:is(&, p):is(&, .oklch) {
-				color: oklch-color-shade(var(--color), 100);
-				border-color: oklch-color-shade(var(--color), 500);
-				background: oklch-color-shade(var(--color), 600);
-			}
-			&:is(&, .oklch) ::selection {
-				color: oklch-color-shade(var(--color), 100);
-				background: oklch-color-shade(var(--color), 500);
-			}
-		}
-
-		@supports (color: rgb(from white r g b)) {
-			&:is(&, p):is(&, .rgb) {
-				color: rgb-color-shade(var(--color, black), 100);
-				border-color: rgb-color-shade(var(--color, black), 700);
-				background: rgb-color-shade(var(--color, black), 800);
-			}
-			&:is(&, .rgb) ::selection {
-				color: rgb-color-shade(var(--color, black), 100);
-				background: rgb-color-shade(var(--color, black), 600);
-			}
-		}
-
 		@supports (color: color-mix(in srgb, red 0%, white)) {
 			&:is(&, p):is(&, .color-mix) {
 				color: srgb-color-mix(var(--color, black), 100);
@@ -230,6 +206,30 @@
 			&:is(&, .color-mix) ::selection {
 				color: srgb-color-mix(var(--color, black), 100);
 				background: srgb-color-mix(var(--color, black), 600);
+			}
+		}
+
+		@supports (color: oklch(from white l c h)) {
+			&:is(&, p):is(.oklch) {
+				color: oklch-color-shade(var(--color), 100);
+				border-color: oklch-color-shade(var(--color), 500);
+				background: oklch-color-shade(var(--color), 600);
+			}
+			&:is(.oklch) ::selection {
+				color: oklch-color-shade(var(--color), 100);
+				background: oklch-color-shade(var(--color), 500);
+			}
+		}
+
+		@supports (color: rgb(from white r g b)) {
+			&:is(&, p):is(.rgb) {
+				color: rgb-color-shade(var(--color, black), 100);
+				border-color: rgb-color-shade(var(--color, black), 700);
+				background: rgb-color-shade(var(--color, black), 800);
+			}
+			&:is(.rgb) ::selection {
+				color: rgb-color-shade(var(--color, black), 100);
+				background: rgb-color-shade(var(--color, black), 600);
 			}
 		}
 	}
