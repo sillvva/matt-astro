@@ -143,12 +143,18 @@
 		color: grey;
 		padding: 1rem;
 		padding-left: 3.5rem;
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
 
+		& > * {
+			margin-top: 0;
+			margin-bottom: 0 !important;
+		}
 		a {
 			color: white !important;
 		}
 		p {
-			margin: 0;
 			font-size: 1rem;
 			line-height: 1.5rem;
 		}

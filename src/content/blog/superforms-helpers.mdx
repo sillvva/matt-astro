@@ -13,7 +13,8 @@ import Collapsible from "$/components/markdown/collapsible.astro";
 
 ## Superforms Types
 
-The types in this post were created mostly by Andreas Söderlund, the creator of [sveltekit-superforms](https://github.com/ciscoheat/sveltekit-superforms), and are useable under the MIT license which must be included with all copies.
+<div class="alert-box warning">
+The code in this post was written mostly by Andreas Söderlund, the creator of [sveltekit-superforms](https://github.com/ciscoheat/sveltekit-superforms), and is useable under the MIT license which must be included with all copies.
 
 <Collapsible title="MIT License">
 Copyright (c) 2023 Andreas Söderlund
@@ -36,6 +37,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 </Collapsible>
+</div>
 
 ### SuperStruct
 
@@ -359,6 +361,8 @@ type LogDateLeaves = FormPathLeaves<LogData, Date>;
 ## Examples
 
 These functions are used to get and set nested values in an object. They are not from the Superforms library, but rather showcases how some of the above types can be used. They work very similarly to [lodash.get](https://lodash.com/docs/4.17.15#get) and [lodash.set](https://lodash.com/docs/4.17.15#set), but with stronger type safety. See the [playground](#formpathleaves) for examples.
+
+These example functions were wrtten by me.
 
 ### Get
 
