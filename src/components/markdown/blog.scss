@@ -205,7 +205,7 @@
 			}
 			&:is(&, .oklch) ::selection {
 				color: oklch-color-shade(var(--color), 100);
-				background: oklch-color-shade(var(--color), 600);
+				background: oklch-color-shade(var(--color), 500);
 			}
 		}
 
