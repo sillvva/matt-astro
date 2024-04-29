@@ -143,6 +143,19 @@ Keep in mind that this is type faith, not type safe. You can also [use a schema 
 	</aside>
 </div>
 
+#### Prettifying Nested Objects
+
+Going even further, you can use the `PrettifyNested` type to prettify nested object types. The `Record<PropertyKey, unknown>` type extends basic objects, but not classes like `Date`, `Map`, `Set`, etc.
+
+<div class="button-row">
+	[Playground](btn::https://www.typescriptlang.org/play/?#code/C4TwDgpgBACgThYwCWAzEAeAKgPigXigG8AoKKAbQGkpkA7KAawhAHtUosBdALk+q4BuEgF8oAMmIjhJUJFgIkaEADkIAZ2AQAJtjyFS5arQbM2HbnywCoEAB5a629VABKEAMas4u+K0hwoFQsADRQAK50jHSsAO50eAD8Cogo6GqaOtgCeFYCwmKSRNIksuDQAELhyAA2wACSdADyAEYAVp7ABFAAIgCGWlAAPm4QAOYAonZgw1AAyogYfXQgeCMAsn1gSythy6uzAOoQfYwLwDsHI8enm9v7eytrCqwAtsjqEJfPE3Bw3rMAIJ-PogKqoVAQOCzOYACz6CG0wLgoPBkOhI0awAAHMjQbMAKr0HF4kCE4nYgDCNT6r0gSJBZMxdGAAEYAGyk8ksjlc5nAADMACY+VAiSzhaKAGI1VgDSWM2YyuXAdkAFlJMjk0DuYHoY26dwwmjg+rCdHCrxaUJwMm0nhpCCgXjomigAH13S0UU4+JFkABHcLQdQgK2sGpleQVH26Cr6YiUT3e5baXhQCpQERRyqxrJYMLx7pYCQZ2MYeOlbWwBEQFndQxMFh8ADk-hQrDoAFpWS3RFXylBKbDatoG2QmyBW+3kJ2u0KW8JyGBayy+DBV8Al1BXls+Lr9duWtU6vQ+FVag1mu1OkfY+e87oTWaoAAiGOp1+2icIuB8fpaBQQj9jmUAqN4u41N08CpMoGDDqO34APRIeQUAAHqJKBGRaGOhAwUo6QaLh8EjjU2g4CQKFoZhQA)
+</div>
+
+```ts
+type PrettifyNested<T> = {
+  [K in keyof T]: T[K] extends Record<PropertyKey, unknown> ? PrettifyNested<T[K]> : T[K];
+} & {};
+```
 
 ### Merge Union Types
 
