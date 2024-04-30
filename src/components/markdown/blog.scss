@@ -1,12 +1,15 @@
 @use "sass:math";
 
 @mixin code() {
+	.prose :where(code):not(:where([class~="not-prose"] *, pre *)) {
+		background-color: theme("backgroundColor.white/0.15") !important;
+	}
 	.code-block {
 		pre {
 			position: relative;
 			tab-size: 2;
 			line-height: 1.25rem;
-			background-color: rgb(23 23 23 / 1) !important;
+			background-color: theme("backgroundColor.code-block") !important;
 			code {
 				&:has(.line.diff) {
 					.line:not(.diff) {

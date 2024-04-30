@@ -23,7 +23,7 @@ const dev = import.meta.env.DEV || null;
 	<head>
 		<Head {title} {description} {image} {articleMeta} />
 	</head>
-	<body data-theme="black" class={cn("min-h-screen bg-cover bg-left-bottom bg-no-repeat", noBg ? "bg-base-100" : "bg-img")}>
+	<body data-theme="black" class={cn("min-h-screen bg-cover bg-left-bottom bg-no-repeat", noBg ? "bg-base-300" : "bg-img")}>
 		<Drawer>
 			<header
 				class={cn(

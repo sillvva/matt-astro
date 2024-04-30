@@ -106,15 +106,15 @@ const {
 			position="top"
 			url={{ next, prev, format: tag ? `/blog/${slugify(tag)}/:page` : `/blog/:page` }}
 		/>
-		<div class="grid w-full grid-cols-[repeat(auto-fill,minmax(16rem,1fr))] gap-5">
+		<div class="max-3xl:grid-cols-[repeat(auto-fill,minmax(16rem,1fr))] 3xl:grid-cols-6 grid w-full gap-5">
 			{
 				data.map((post) => (
 					<a
 						href={`/blog/${post.slug}`}
 						tabindex="0"
 						class={cn(
-							"blog-card card min-w-[15rem] rounded-lg bg-base-200 transition-all hover:bg-base-300 motion-safe:hover:scale-105",
-							"shadow-md shadow-black/15 hover:shadow-lg hover:shadow-black/25"
+							"blog-card card min-w-[15rem] rounded-lg bg-base-200 transition-all hover:bg-neutral-900 motion-safe:hover:scale-105",
+							"shadow-lg shadow-black/50 hover:shadow-lg hover:shadow-black/25"
 						)}
 						transition:name={slugify(`image ${post.slug}`)}
 					>

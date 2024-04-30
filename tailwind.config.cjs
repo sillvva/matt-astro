@@ -1,6 +1,7 @@
 import { icons as mdi } from "@iconify-json/mdi";
 const plugin = require("tailwindcss/plugin");
 const themes = require("daisyui/src/theming/themes");
+const colors = require("tailwindcss/colors");
 
 const buildMemberSelector = (modifier) => `.member${modifier ? `\\/${modifier}` : ""}`;
 
@@ -50,6 +51,10 @@ module.exports = {
 				dscreen: "100dvh"
 			}
 		},
+		colors: {
+			...colors,
+			"code-block": "#1d1e22"
+		},
 		screens: {
 			"3xs": "360px",
 			"2xs": "430px",
@@ -58,7 +63,8 @@ module.exports = {
 			md: "768px",
 			lg: "1024px",
 			xl: "1280px",
-			"2xl": "1500px"
+			"2xl": "1500px",
+			"3xl": "1800px"
 		}
 	},
 	plugins: [

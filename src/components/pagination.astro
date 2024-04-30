@@ -38,14 +38,14 @@ const pages = Array.from(range(first, last, 1));
 						href={url.prev}
 						tabindex="0"
 						aria-label="Previous Page"
-						class="btn join-item btn-sm px-1 text-lg text-white sm:btn-md sm:px-2"
+						class="btn join-item btn-sm bg-base-100 px-1 text-lg text-white sm:btn-md sm:px-2"
 					>
 						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
 							<path fill="currentColor" d="M15.41 16.58L10.83 12l4.58-4.59L14 6l-6 6l6 6l1.41-1.42Z" />
 						</svg>
 					</a>
 				) : (
-					<span class="btn btn-disabled join-item btn-sm px-1 text-lg text-white sm:btn-md sm:px-2">
+					<span class="btn btn-disabled join-item btn-sm bg-base-100 px-1 text-lg text-white sm:btn-md sm:px-2">
 						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
 							<path fill="currentColor" d="M15.41 16.58L10.83 12l4.58-4.59L14 6l-6 6l6 6l1.41-1.42Z" />
 						</svg>
@@ -55,19 +55,21 @@ const pages = Array.from(range(first, last, 1));
 					<a
 						href={url.format.replace(":page", "")}
 						tabindex="0"
-						class="btn join-item btn-sm text-lg text-white sm:btn-md max-sm:hidden"
+						class="btn join-item btn-sm bg-base-100 text-lg text-white sm:btn-md max-sm:hidden"
 					>
 						1
 					</a>
 				)}
-				{currentPage > 4 && <span class="btn btn-disabled join-item btn-sm text-lg text-white sm:btn-md max-sm:hidden">...</span>}
+				{currentPage > 4 && (
+					<span class="btn btn-disabled join-item btn-sm bg-base-100 text-lg text-white sm:btn-md max-sm:hidden">...</span>
+				)}
 				{pages.map((p) => (
 					<a
 						href={url.format.replace(":page", p == 1 ? "" : p.toString())}
 						tabindex="0"
 						class={cn(
 							"btn join-item btn-sm text-lg sm:btn-md",
-							p === currentPage && "btn-primary text-white",
+							p === currentPage ? "btn-primary text-white" : "bg-base-100",
 							Math.abs(p - currentPage) > 1 && currentPage !== 1 && currentPage !== lastPage && "max-sm:hidden"
 						)}
 					>
@@ -75,13 +77,13 @@ const pages = Array.from(range(first, last, 1));
 					</a>
 				))}
 				{lastPage - currentPage > 3 && (
-					<span class="btn btn-disabled join-item btn-sm text-lg text-white sm:btn-md max-sm:hidden">...</span>
+					<span class="btn btn-disabled join-item btn-sm bg-base-100 text-lg text-white sm:btn-md max-sm:hidden">...</span>
 				)}
 				{lastPage - currentPage > 2 && (
 					<a
 						href={url.format.replace(":page", lastPage.toString())}
 						tabindex="0"
-						class="btn join-item btn-sm text-lg text-white sm:btn-md max-sm:hidden"
+						class="btn join-item btn-sm bg-base-100 text-lg text-white sm:btn-md max-sm:hidden"
 					>
 						{lastPage}
 					</a>
@@ -91,14 +93,14 @@ const pages = Array.from(range(first, last, 1));
 						href={url.next}
 						tabindex="0"
 						aria-label="Next Page"
-						class="btn join-item btn-sm px-1 text-lg text-white sm:btn-md sm:px-2"
+						class="btn join-item btn-sm bg-base-100 px-1 text-lg text-white sm:btn-md sm:px-2"
 					>
 						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
 							<path fill="currentColor" d="M8.59 16.58L13.17 12L8.59 7.41L10 6l6 6l-6 6l-1.41-1.42Z" />
 						</svg>
 					</a>
 				) : (
-					<span class="btn btn-disabled join-item btn-sm px-1 text-lg text-white sm:btn-md sm:px-2">
+					<span class="btn btn-disabled join-item btn-sm bg-base-100 px-1 text-lg text-white sm:btn-md sm:px-2">
 						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
 							<path fill="currentColor" d="M8.59 16.58L13.17 12L8.59 7.41L10 6l6 6l-6 6l-1.41-1.42Z" />
 						</svg>
@@ -112,12 +114,12 @@ const pages = Array.from(range(first, last, 1));
 	{
 		tags && tagPathFormat && (
 			<div class={cn("dropdown dropdown-end", position == "bottom" && "dropdown-top")}>
-				<button tabindex="0" class="btn btn-sm text-lg capitalize text-white sm:btn-md">
+				<button tabindex="0" class="btn btn-sm bg-base-100 text-lg capitalize text-white sm:btn-md">
 					Tags
 				</button>
 				<ul
 					tabindex="0"
-					class="menu dropdown-content z-[1] max-h-80 flex-nowrap overflow-y-auto rounded-box bg-base-200 p-2 shadow"
+					class="menu dropdown-content z-[1] max-h-80 flex-nowrap overflow-y-auto rounded-box bg-base-100 p-2 shadow"
 				>
 					<li>
 						<a
