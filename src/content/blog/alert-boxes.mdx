@@ -60,10 +60,10 @@ As of this writing, Firefox does not support relative `oklch()` and `rgb()` func
 
 @function rgb-color-shade($color, $shade, $opacity: 1) {
 	@if $shade >= 500 {
-		$calc: math.div((10 - math.div($shade, 100)), 5);
+		$calc: math.div(1000 - $shade, 500);
 		@return rgb(from $color calc(r * $calc) calc(g * $calc) calc(b * $calc) / $opacity);
 	} @else {
-		$calc: math.div((5 - math.div($shade, 100)), 5);
+		$calc: math.div(500 - $shade, 500);
 		@return rgb(from $color calc((255 - r) * $calc + r) calc((255 - g) * $calc + g) calc((255 - b) * $calc + b) / $opacity);
 	}
 }
