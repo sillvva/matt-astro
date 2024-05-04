@@ -2,7 +2,7 @@
 title: Useful TypeScript Helpers
 description: Useful functions and type helpers for TypeScript
 date: 2023-09-07T03:18:13.471Z
-updated: 2024-05-04T18:00:30.634Z
+updated: 2024-04-29T23:38:36.942Z
 image: $/assets/images/typescript.png
 tags:
   - TypeScript
@@ -118,7 +118,7 @@ Keep in mind that this is type faith, not type safe. You can also [use a schema 
 <div class="tweet-block">
 	<div>
 		### Combine/Prettify Two Object Types
-
+		
 		The `Prettify` type is a simple type which takes an object type with intersections and combines them to make them easier to read. The `Combine` type is a simple type which takes 2 object types and combines them into one.
 
 		<div class="button-row">
@@ -156,36 +156,6 @@ Going even further, you can use the `PrettifyNested` type to prettify nested obj
 type PrettifyNested<T> = {
   [K in keyof T]: T[K] extends Record<PropertyKey, unknown> ? PrettifyNested<T[K]> : T[K];
 } & {};
-```
-
-#### Merging Nested Objects
-
-<div class="button-row">
-	[Playground](btn::https://www.typescriptlang.org/play/?#code/C4TwDgpgBAyglgWzAGzgMxAHgCoD4oC8UA3gFBQVQDaA0lHAHZQDWEIA9mlNgLoBc3Wj1IBfKADIoAVwbMG7AO4MA3KVIB6AFSbymqAAFUsqAAtgwMAGc+69QHM4wE1IBGAOgDG7BOrguGyACGDABOEOqgkJa66qSR0ACyECF2EJjksOxSIR7QEAAewBAMACaWUOwuAFYQHsAANBnYgSkQwFAFRaXllTV1pPhE8EioGOkUZJTUNGz0TKwcXDBZOdCB5TMgHYXFZSxsnNwtqcAZUwD8UAwQAG7JZ5QCm-yZ2bm0bDyqFGKSk5QfLaMfaLI6tdrrKCbbZdPYLQ7LN4QB4US7XO4hFFQJ6fATNcGAr4ZX4kB6AuYghErXISSlcfEnF6I1aEmG7HrVWqnKaosEnVmddkVTn9HmUS5JVqYZnvZ71PltQm4LEUPHHRXPLFqgnPb5QEQDVRxcDQACChBIV0CCAgAkswBCjDsyiggVSdodTpdgRKJTClmslrglgA+h5HCABC52OxkBBgvr9ap4lAAEIW4hWm0ex0MZ2u91XKQIFzJb2+-2BzNeGQOyNQe25uyJkRGlPYCD2i2S1KYU3y1PK2xTAB65yAA)
-	[Source](btn::https://github.com/ibnlanre/types)
-</div>
-
-```ts
-type Merge<
-  Source extends object,
-  Target extends object
-> = Simplify<
-  {
-    [Key in keyof Source as Key extends keyof Target
-      ? never
-      : Key]: Source[Key];
-  } & {
-    [Key in keyof Target as Key extends keyof Source
-      ? never
-      : Key]: Target[Key];
-  } & {
-    [Key in keyof Source & keyof Target]: Source[Key] extends object
-      ? Target[Key] extends object
-        ? Merge<Source[Key], Target[Key]>
-        : Target[Key]
-      : Target[Key];
-  }
->;
 ```
 
 ### Numeric Range
