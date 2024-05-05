@@ -135,7 +135,7 @@ type LogErrors = SuperStructArray<LogData, string[]>;
 The `FormPathLeaves` type is a utility type that takes an object type and returns a union of all the leaf paths of the object. It has an optional second parameter to specify the type (ex. `Date` or `number`) of paths to return. This is also used by [sveltekit-superforms](https://github.com/ciscoheat/sveltekit-superforms).
 
 <div class="button-row">
-	[Playground](btn::https://www.typescriptlang.org/play/?#code/PTAEBUFEGV2goeAXAngBwKagDIHsDmAIgIZLGgC8oA3vKKAJYAmAXKAHYCuAtgEYYAnANx1Q3DAGcJxfBjYSkAhu3wj6TUnNAkkGNaE4TBAfja169Zmy59B++u2Lj5i5atEBffWXwSXSlQBtAF0RL0QAY1x2BVAAGwIdYjY8IlJyKnNGVlAARgAaUXEpGS0AIjLC9U1rDAB3bU0ACgBKKoMjATN4AEgrPMKex2dQMoAxAWJ2CIYJMs92nz9QQLLiXgiy4PgPRFRMHAJsDGIAN0lKUDHcAW4ABVIAC2OzyQAeVKSAPhEQCwA9YzIdBYVLQVwqF7nCSXa63B5IZ4naEfRLpfKgBQBfA-eB-eiA4EHVIAOR4-AEUIuVDh9yeVIkqLSZAxNgpuPxoEJ+1BaN0DNhNzpiIZTKSGJ0GA5YAJQPgRiQADViHFOBgmglmcQMWUNLpKhx6o1dE0ygAmAAMZoAzABaK323JlFotEQK5Wq9Wa8WjJaBC3BA1lXQKZ0iKIxXBxDAAOk1Gr5xFd8owSpVaoTWp1eowQctZoALI7HWHItFYspTirmABxVOXWRITM+srMIPgSRIUsR2JVuK1+tURvN9GjYrSWTtzvd8tR2PxvsDpDJvFgADCAHlCJBEH9wI8pgBrGFIXCgR5IJBoPwgBTECKH3DnAQAMwSdRjUW4wGIwAA7H+BYAKy5NaABsf7-haAAcACcBZElgACSEgAILsCgbzgF8ly8Lgc5TKAGAAB66OwTAwk04BEaRGDkTC7AYM+oDGKAihqqAbAviqRgtCxbECBxXE8XoiAkWgNxIGxIKgKhcRxAA0hgKCMthlzUSRZEURA-GHspuAvjptTPiIiGgHcDAPuAIJYRiCk0VpMJyYpymqV8OFUBptH0TQKyHow7CgApwRsMoL6CKASG6NwoAePxUUYDFxl2LuYD7keJ5nheV43sATBMTGp7AKqMxTBswCcOwDDRLaPK2uIAj4G4trKLVIISBEShoEgtqwSq8DiZJ0kHAAsoIsgAKpVdEWEeTQvSBPZyiyfJSkqbNIXmZZh7WZgtlBbi4R4gAVEREj9uwPVMLM6zRqAAACPIdV1PWSBdSDAOwuC2uJ-YzD1UwoKAx3AANxESQIUkvpVERINVgUSGg-ZIAijxNGgTz+G4fG0D0AippwAiBRjiK9D0hW4OC2KtGTMaI8jTTAIEgQADrBDGwQANTAC0tMvgwcS6AITTo3xFA4Wgya7GDENQzDcPRGI40YKj6OY6ATRYm4oAAD4cOSEV6xIKB8FGLQhDjvT40ghPE08Mb40wnAROqTT3hEWMqKymlizhuM9D2Ul6UDVBU24TSMaRyY9H0hlNDyBmGqRlAUFQZRsoIZS63rwD-CzTCcwAJMAhWdk0wcuqA7ugJzVAAAaBIX1DBx4wR1yIMcYHERiMHHACE7t8dXtegMHHc9F3PfD-XMZNy37eIDH1u21XEQRB3Hg6qW0s8qAABCnAC0gSHsBuvAAFYYLDMJUJKuugNAqZvJVh5fXU7A4XrYwC6JJ3HXQp1sCzCQDCFUcRQAk0eDCZahFcAXyvlJYgMItYqFXi7KQNwJAxgAaDQakNhpYFpKjLCDk6LaTgZfWGGJdpYCoIDOaKD8CgAAGS9DDioYh4AMTUFAPzQWgg2AAHIwGCKEKAChqE0CYHIslYQED1aCNEQQtgNDYq4j-gAnAwD5GImgYFWB8DYZV2QRCJh7tJASEwRiXgnApLRDiEDOoDBEQcBqhQhBoDQFrwsQwXgd00ACFwJgSGDBJDYOBg-Bg3ABbEAEGxM8iIsDRleHoqurj8oCQwBgDEDBDIoFwJweI+F-KkDYo8LA7ijFILSYoLJmJ2Kw0JrGHBMshq7yIfSZE7wvKOXEYYpA1CZJ0Iwgw0xLC2GmM4dw3hR8BGgEEck6ESiJFSLIbIsRkChFKJ5ComSHh1HAGOv-CJQDYiQNSQYyhiCTHYjQRYqxoAbF2PYA40ATiXFfXYLaSpIDjF3KkL4-xgTglwzCZouSliAoRFVPlE85TQAAH1BCBIEDCfmXcmC8JuH0q5oDyJVwEJMFS4SQatPwe0oUqMGQAHVnGPEgISzBJDNJkJhD8wZBxhkoFGbc1hPR2H4Cmb5PhQshGLMkMsi+kjpE5EEUixlqKlGbPmdskEuyDj7NMoc45gDtFgIJUSi5gUfl-MYf8yxqKSW4PBm0mSHTESoUJcQdaPTWU4oQRy2hVcRmXDNXygVQqeEirmcIp1KlJXn2lWsw0JkdGPC2WInZEA9nqN3muaIERSBvFRqQnyjCMQkk0rm7SjC5p1ybqjDwFanjFphBUfi9a2BlBjGUKt1BC2kQ8AvMyAangbm6vDG+80ejBq6KMWJhqs56zKOKuY981jyTKB3FZMrPZML1oxEyvRlWMI7kmwGYRTK7yQi+N4-aFYxFrQ-SZfaB3lgxHcR2V7g6J3PYOjE0BOAX2oeU9gGJIDd2yaAD0ao5pvvLIER9GAmDBCvZ+i+vRWLgZiKsHkWwr2bsEGTVi+46JkzYCBrALKfLIYkKhkEWwyY9Bw7+qjsjehsAA0YI9Mle2IjeL0V1Pl2W9FI3Bm9iI+OZDJqOptYCl1kxXdGzDwgybKoqOPJNMmN7wDmlx7SB8j4nzPrixDkVT2kZ1KOoMs6p3jsXRiUjqxIFbG9s+ahXwGM6WI9pJoYUIoTXNtsGOQIY4xz1ies9d6Yg6ik+RA0+bQDpumFmqzZQbPBEs8FsjZQwtMC2F8OzggHNUZ6AFgzyWjOzIEEGCdzq53TvE0li9KWEtZYEDlvzeWNYkmiGSeSt0MBvAmjhFzbL+m5Z89e7ExDBt+da+wdrcROvdcy2NmO-smt+dE6AOLxnQjzZjmltgcW0tbHHktmOyry3UDiwljwjdqAZwEK3Beh2-NJri2hjb92ei7Hu45w7bBAuGdGMZnUpn51VdACds7TwtgXabtd279WHO8xjt0Jri0AqgEgKRSYsM3jOTWm5DEpbNoTamzN8Ai1gi9e8uQgbS3fOHfy0FmroWpWrPC3j0xGJouZqQPTwd1nweJdW8l1Ye2yew4gKTz7tPQCE84B1vxXWSfBXJ70tz7BwpxM8yEMbNPJc-cK394rpWw0VfM3EA0HPYuC-i3zuymWY3ZbF4rzbesmjS9l9GWbV6X5v3YJr17Q3dcM-1-wkrOoysqTMwu037OM0W5q7zxEtmQdNwUpDq7Bsbtt1tzJ6h4vNsI6l21mX025ce76+62Gef-doQwlhcXV72IYEr0N83XOwcJ-5ydlPl3oeZ6bz0b7BXA9lH+ybs3MfW+W7q0n6gXeofp9u1npi9uetN4H9z+9QehYma6cbyPY+YsT7j1b9vGJO+p573XRf9nQA9fh-d53rvi-u561en5lfWJsceBxv343C9u66z1oMD-j0Itj-itmtgbi9sAT0NtgLkfsLgdj-sqi3uvihsfo8Inmft3vPpnogX7o9pbs9ngfdu9j-hLq9rInfk1t9tXphArmTvXoJI3vdqxCgW3hgfzgpOQdQXnnTk3oZk3sPgbkAX7nviIa9mwZPtbgdOIfdl7rgO-FevQfxJIUflPlwZxHbg1k3vQXnvQNwUtnrJ-t-j-o-sTuLrIYdqAa9uAZbutsQYdrAbtkzjKvtn3sgePqgbVtIVwQ4UtgQUfkQU3qQfdvoYNmvr9kIcHtvikhHsDqoTzugYnlwaLvQbiH5hdmjooPeFztjq5LNKztiF8BtmSlJBSvCE8DQvtHcFeqWpcDUWXi+oZOAHpiTncN5mwA0RTgxOnthhAPhuZFenXLPNQO5nEgAEqdhdpUasT2qPBVFmEl7YQYiTEKDkGdFDFz62AZ5NxjGgCrFIDTFNasSLHu5qRl4q5q435eaDazGUqVE2QTQrGdgGFmABSLhMAIqQK5CdFiI0IqKxS5YbFl4nZ7Gz6jGq4RQHFHHHFBTPr6SGSnHy4GHUZXD3GIgLF-5P7Imk7PFrFjZsBzFVFcL7EvHhGDEgm7GQlxIp4jF7HQl1xa5wmNEIkF6TZF7E4omolEk2RImzS4mkn4n3ZsB8nnHdEax7Ea7eYsFokVEYmPF4lIBcn96+SVjVifGQJmi-HJqYAAkhF+bAnikNxUlXEp7swmlQlTGMkyn2Rl7XabY4ZXqXEeY3F+53FynzEKmClKl55vFqn9galPDWjan-E6T6nUEUlGlbEUgwkymilK5urOnq6uluk36V5+nsAfFfFPAFghlqphm+mRm9JNFslE5LHKlDbxmQbSkUFFluonbQ7Wk-4nFYmclOmSkpnNlpnQEZlZmQJAR5m6kFnAG9nqnZmIhgSDlaDUThn55dG9IVAOn9G1nzlup5EuoVmsRjSNQYBTTwz8ntGFk8L+nMDjmPB-hTl6mmR4JyzTAXqYipiEbf7qYwiTFRACBMBvBmobrp4YjyHvxzY9Crk+RzGijLG9CKhXo8l7Qkl3COZfBNC9AUIqKDDKp3CDB9hqgEbwCWwBzlhSRoCnJSRUCQK0z0zOKMzMxswczcx34xijoiwMC+wEKJwMCgB9ypyjCVT5T8yMTpYsLMKMDsWcUVB0XcDEBoCMXMVuYSAkjEAkgu7p5uaVysRsUilKVMUuimR4UxBSTTYKBrSXCEXAIxgSSSXRy5Iaz6VICGWpxUDcUYC8XQZ8SIiBINCMQNAMooqmgnwfFxotorg6VnK4DKBCxGVEUOzQbOyuzuw8Ay6kA3BsBvk3Cfnfn6zbF-nsCvwKEfwYgRCEz4yXSEZrr3zXbMX+yWVuxrxxXTangCCBD5WEp0RpieiwZ2UGDkSOXKDOVoI1UJX1WNWFUtVqhtU0DhBLwExEy9XcDxV1UNUFXNWEawbVLJUflfljI-kZUdXZUAUbwYgUKBWVV9wahII2XKQo4SShWCCVyuUKGGieUKo+WZnqn+UQCPCzCMAwj9h6SvJOxYCnhpLRIAqoJh4BT5TEQBUdyVWXWXSCCBDWVrSwbMKCUJyGQw1Czw2nWI3CVUCo2gCYUYB363XuVGheU3BNB1y+UvUE0EIxio7gwILQagBNx43o1w0I3KTBBxRPKgD4C4BSQs0giJwE0eAxh1zRzbohWw31Uc0oCjUE0dzLxTUUJhBiQ2r4LQx3nwy81PycZXqrWpUbXpUUiZU7W5W9DAXaSgU74FEQVQXomekwUPrwWIUwEXwoXbrqzoW9A8WEamDAY4XzT0CBwQJEVGVPBkVIwUVMyszsxcw8x8zFZSWUA4R41sUcVpwOVOX8XI1CUZ2jDOi0ziWSXKUp0SmyXyWKXbHKV8SqWaFkjV2aWBUh2y3hUmVmWtBQ1xyt3tVZ3dVMB8RK2BR918XaUh1s1xIkURWOzRUiyxUzW1WJWknvmG23KbUm3bXe626DWLXphaBpVlVl0VVxzz2zU3DzVNVFV71tWcUj09Wn2L0DULVX2tWXDUDjV4yTX6LVUL39UX1DVLV-IG3rVr3G327-kfx7U4qHX9wnUGXnXLQT2VzH0ay+172D1f2gBoOeh-KKjjyTxYBD0dU8X90qY9BWyYMT2Y3wNy1-LQXy7O1hBAA)
+	[Playground](btn::https://www.typescriptlang.org/play/?#code/PTAEBUFEGV2goAJgUwMYBsCGAnZpUD2AdgM4AuoA+pQEbaZGIBcoArkQJYCOreJAngFsaBdAG54ZfgAc8AIXqMAPHIB8oALygA3qADa1Og0QBdFnNABfCcgAe0gtgpTZoBceSIl4ADRv1WuCgAGRuil5qEvB2Dk6gLngAkoiaYR5e5NgcRADmfgBEyfmqUQmgADIEOQAimGSYqdrwoKAczKDJEi2CyCQkmDnILJnZOV2giHVDoLVkyOOsJMjYAPwsTS0tbSydzZtEmD3DZFm5EgCQA9NErMLL49Z79Tkkx6c5eiYSj-CEpBToKqzTAsSo1OoNLQbVrtfKAnIAWja+VAmBIHUQPj2PT6VxY+XyWJakzmLCIyAA7jMpgAKACURLYS2w63g522oHyi2WSMQKLRGKx5wOR05ADFFKgOCRCWy8aAAIwADj2lkZz1e+nymBoqHyJnglngkhkeDB5WQmAAbr1UmLHIIAAp1AAWFutvSUYOBJXgIE2AD0VibXGDoCdRu6beitPbsE7XVHPd6IX4Rrlff6WkGQ2aqgA5W40ZZJmOgOMJshuy3Rr1A1OgG53bCZsDZ4NlFNzUt2h3Oquluvg+p+WbIVuB4PwJZkABqmHQvBp8OBBRJyEJjcp1LmNPyACYAAz7gDMCOP54V+TpdIkM-ni+Qy-rI85Gr0h5Mm-yc3I14kfwkKIyAAHTws+w6YLe07IHOC5LiuDb5Ou35HvuAAsl6Xv+xqARQVoLm0ADisGpIMZAQaunI4v0gzfuAvRkDhgHAWBVQ0gR6DEbB0F4a0RCcdxFBaORlFIciBQMX+0F+mAADCADy1SQMa-rgC6DAANbomQBCgC6ZBkNIrwgOQmCoJpBA2tgABmgIUiBhCCMAmDAAA7G56EAKwKieABsbnuYeSoAJzobmHQkAAgkQ-DeAEoAiMBDCgHYcyMOiNJBGlyAZVu1mgCs8TYLwoAsDZC5LHShXFaV5WVfMxoxI4zimqAUXoOgADSyD8CQ8WpNltjpYg6JBEVmm9QQNkQGV+X3MaZSOhwFngKa3h+F1qXDblo3tZ1PV9fFCVDSN6K6Homn8aAXVmPxNnLB0cyCFYNWJM9c3ktZURqRpRDafEekGUZJnACgVogbpwCLlKDC6sA7AcMQCIJAiPTYDkoxIkQKOmiQqBZNIZAIiFC7RPYLXxG1ACyyyDAAqpwxADVCbJ6Ft2T7d1vX9eAqh3ctq3rb4N2+j8wAAFSpSQXFEMTiDSjq6B4AAAgk+OE8TvSy2QwBEAQCIxFxUrEww-CgBLwDk7EFA2ewqBkEjRCgCQ0hcWQ-YujS0ium8ozVU05y4GQrDYM7PtVmy5yQwQ4bvPSUcga77s0sAeh6AAOiYIEmAA1MAdKJzZHDoHM2A0t71UaOo0jQUa1uU3bRAO07oDo4Mnve77oA0umOSgAAPo2RaPUPAjCKIdKfAHbLB6H4euiBuCIKwqBPjS5moH7uR+OSw1V+ogfnHxk3m1ocejDSe9kNB5zsjNNIJNNW7DZoGhaPkTbFtgKID0PwABgzogXOAASYAkNGI0lPjeVEqBUCgFzloAABnoEB2hT6WBMEgi45xkDoCWK0B+ABCTe1VN4IK0KfHBeCCHkMQaAJBIE0EYOwcaO+c8w6wNQBcNUnIcL1zKNUFaZAFLYCitgegZ9QAACU0COC8I6bABBZBOH4IdPw7BNL6wpEQdQQ9NHaKIJ8H6EsJbNCluUaUZB0QLnQKACOLp0ScxSgQGgAArNAFABR9y4b0IC2ASAgXMVbZqcQygVk9t4baZ1QCuI8Q7Pwa1XBaDNglHxwQ2QX1yJEkWuhi6l2WPiWx+QxCxPcVFaQshGBkmQN9ex3cCSlISCwJJeBLC+j9KY8xFQrH1KrE452Lj3GeNROiHxm8-GOBIH4GgrAKDEHQObCkHAqyNmRnEzxNibFwL8RwGgyt7FKJUY7XoQSLagGgBwQQJccCA3iC6PAysPQDNRGslAxVkDID8BwGa-ACCsFAICAgV06j3LwBsh2ozXknE+S7E4q8Q64DOZbBuYS2oRMTDWT0p1droghWQRJbUUmxTSRGXIIRMlkpyDkvweSS5l3xE86MJSyluIqVU9oX17h9JdPiFlzSIBtXaSYsx5zLHkB5S8oZ8SvFjKpb4voUyZlzNiUQRZoBlmrP1jjfFWyFUkD2Qc6QRzlgnMCd0jqQF+IYFYCgHSDyqDLCUQE0Axc8EpBso4VlmzUSMFRBIzAfVkUhIpmi1wGKBxYpIAAdRWS6SAEiplRJynlfFhLkm+v4KS94FLzhZOpa6DaOhXX0sKZyJlvQWVxPZbtfElAnVTJZQ4vlTTTQtKFR0yWoqLG9Nsf6yRUrnb4qheMnZiqAnBtRa1cNfZXTiIHcmnaqbhkJMFRm1JqR0mUveDS4t+SGWchwAOqt5TKm1vmtgUpza+GttkO21wwrFptTksQVAdQlCe2ibiuF7w-D5jSl+vKfcEpILQZ7SwYHXSAb2gSGqsH8QgXyBB7Q-7hqWFYRFfNnsFJEydmWQO+6y3agDX1X+5ao1ke1J1EpbJq1nuqT+0Yg8L0XGvX3C4AqzbfFKG1RINklBshw47Yg6IU17Sw66ITeGhSKM8NB9Ep9n5SZE0KaArB3FCnUrlIUkB8FfLZA+XgWIErKdIHoWTph5MXPU24tkRVTMkD0D+U0+orNcuwFHIqWmiBRxYIZvAYn0QOacwkfUUdzheYeT5u+5wanWTZCwXTSweOuAk1WAT5wcXLplUKBzVm0sujy6zO+hGWSHuozgujHK4sLTvtexpUcBXuZ4cZwaVmaTZAetgUA9Mp4Ggi+FoefGlAOYKFV3am4+5+Bfc3d9wX8gOP1H4eb43GD6lULvWpyxEmqEGx0fjo3OSle-EewNMpmNUfQJuebi2TCbesjtvbNJ8zEELJ1JWyAlD03UIFmYwjRHzsDeFu+RUCsZZizFl7RA3tYH2Z977QoId3yPkj84pWWDzeO18YHEPVvtBW6ejl+ocGo+vaB7QN3XT6ksKg7QX9liYNYaju+Ar5uhex8zo0qPdtI52Ad3DKmjulp-gUCt52h6Xc3OTynVZqe0-p9gRn93tsQFUIXWLOhwvs2upAYa9AHZKA6tzI6fM0xUv5iwKHMOPveHZiYH7S69pCIdgDkjwPgyo6G-z4TpAxuE4m2b39oAZtvrICNgXZmFtU7u6AAnbL6N8nt8r7AiS7c86R0PK3rB3tw9t7dB3MSOtEC6z1vrOOPee-2+Hn30yhcFJF4ekj4vytXem6+ubEfHNR9lzHrqG2L2p-zzju+Q9nuvez7D5WX2C-foMQQHRnxh8xaKsNw7+RjsFFO6Ri7xS2+zbDzLl0S2GFoK6jTtBCvGf9-c4P+3S+76W-Hznqf32rPO5EWIt3zPl+RRinFcAaeVm8KyA9+P+IeHeNeTmt2fg5OZ+8uI8iuWC6e3+Guq+neBQG+Lem44BB+neUB0eMBp+5+dOCBV+yefg32oBqB3u0mdeZc34YulGu+we7euBkB3eR+MesBxBl+SB5BPWauS+o+Wez+8OM+eU7+rukioBoOVKkSVB5wIhk+YhiOKBKOKB6OseeB6+wuxOCh5weOGO2heOehKBMW16OB1eeG+BPehB2gcBF+pBSBJOKBrO2h7OLhnOVByBqONW2A6uEOOw0UsUee9uQBJUIBqORUlhh+x+few+TA9+Xu4O3+o2VBOh9esoZhkuqhzOMR2h0BosuRqOc+OiVmABt0NU+R7BhRfen0W2KeVBFR-WzOLQPhEOQ8YOVBShNuzRG2VB6hzOmhmOuhHOZhhhWh7BJhYxKBFhrBVhImNhnBm0voZh5wbh7BHhVBXOrRoAPhfOCxvudBywDBFGO+1Ge+oehxXetR1+DRt+qx5wNOuuJw5kYeRuh0vM-ewG2OU6VMM68YnsrSRajoVmwGqQoJv2imM04AdmEA5m-WLAkJju6ICunmEAvmoAyJMSjCaCnWj0si5A6G4WRUEaLowJPRuepuMijEyBSJVm5OvBeJxeBJjExJEORUlJU+fM7W+J3WvWi+SOpJs6VYwJ9MfghJZA7R6w-EgkiAlADiCoSJpSrSLSVgwO9Jv25OfJN0xBOpkp7JHJN0Vm0JoAXJn2fMw+wpgJroFJT+yh8UduEptJCR5YIp5Jwszp5A0pWJDJzJJeZ+TC2g+pbJSCVpxpUJU0M05p8US+1plYHpsgSgMZfMTpNJ3pS+j+0OE+vR4he0ReJeApLRURbpNpop604p6ZUp9+Mp2QcpCpro+4ypa60wQQOxgRvpWptOOpZ+2c-prJRJYZzORUW0v2aJ3+XmvJLJ-JZeKB8ZQJFZXp1ZKBtZAkhE8pDiJ4zZqps07ZvOnZKJJ+JBzYhpw5Zp9puZU5hZs5c5PWVBq59ZDi6E25bau5oBmph5ppKZ7RQp552ZohjpjoxZzOH5OJjhJ5Q5ZhnJF5VJeZmUOpRZ+hRU9M+hD565DZVYXkL5d6b5axaFXEG5rofk2FrZ6pIFB5MSBI9+XmNZFF36HxPMsZt5tMGMyAjMTsgFwF+5ugdZ6FDibkJFapPwoSts9sPuLssE-mGWWWe0sihA2AGQ8qQ8CuGi-0hi-R5w2J36ZJg4puBmVmZJwJIsjou2qgNItG7iLSQo16joQonEvAfm8AM8x8ImFA0g4qwkPKicycKyqc6cWcOc+cARIEpWFcHAB8-xyAz8HAoARC78nI7AKAxc5IfIIQoQMVcVH814icggmA0gYVEVHWJA+YmA+Yz2CBHWMCRUMVluFV4VN4UQLl-wgKaIZAh0qQ7lViIEDg+Vt8PyPcWA5A7V78WgiVyAyVng1UVYSiVI5IVICazqe4iQa5BFPKiGMkTVEqDg2QZcHVHlS8ngq868m8tw2edQjgLAcl8iSgPiylCBqlWi8+uifgqAocuAcs-m28-cd1zYEVR8-VG8cCp1WAuk2Aegr1EiuUcEj4Jgb8o1jA412Qk1XCwN51YNEN710NvAsNUIjw7CsE88KNggZ1oN4Nb1UN-msNAoV1ClN1Slw8zYD16lLWrKG1ANRCy4rV7VnM21csywMC018+W481ia5chQK1bQa1EALo0orQ6IXEk06qK8eAukry1yfQTGW+-EKAtg61FwANvNZcegg1bVvUsNwQoQT8M0htywxtXNZtsV8VVtoA9lyAARgts124C1jgNISCy1cpLt8EKtpoIEoAuusgDscmaCztNtYNJth0JglgiUKqOQBAFA0dpoz8rtlgIESCt8bIsddtQ1DtWgrtFwHCQ67i3wTUoaolzc4l5E0lVmNNilOaP138TNT1GlWleUOlUa8UQos4Bl7pRlfgJl8AZlFlbiVlBd3ctlbISV-mawoAs4TlmuLQfEnVEqWgDi3lbsvlacmc2cecBcRcwuBVmg6gztGV8VXICNE1qVFtrQjtWVwVuV+VlVl9Pc0oJVZVhYzYlV1U1Vc0-938gDG1fE8dvUe1XVPV9I+tD8UDZ88VY1D91UFdbA99SNiAjVm9BAO1j0O9+1y8R1FcJ1xNINF1NJ8lrdTG7dKupRz1+A5NH1QdX1zGCuf1UcAN5DJNjgZNkNrDMNcNmDSV2DZCQNFDaNAjmNlNjQeNQcBNnCvDlD6NLDWNyAVN6ILddNbdDNHdmDj1OiqxvCcSbNxCnNxd5sPN+DfN-hzl98Pci9Qd6DSjzszjj4UKs41CemoAGDqD2DPCbIs8bj9itjRtSDWjpZCZo9WJYsQAA)
   [Source](btn::https://github.com/ciscoheat/sveltekit-superforms/blob/main/src/lib/stringPath.ts)
 </div>
 
@@ -171,33 +171,33 @@ export function mergePath(path: (string | number | symbol)[]) {
 	}, "");
 }
 
-type BuiltInObjects = Date | Set<unknown> | File;
+type DictOrArray = Record<PropertyKey, unknown> | unknown[];
 
 /**
  * Lists all paths in an object as string accessors.
  */
 export type FormPath<T extends object, Type = any> = string &
-	StringPath<T, { filter: 'all'; objAppend: never; path: ''; type: Type }>;
+	StringPath<T, { filter: "all"; objAppend: never; path: ""; type: Type }>;
 
 /**
  * List paths in an object as string accessors, but only with non-objects as accessible properties.
  * Similar to the leaves in a node tree, if you look at the object as a tree structure.
  */
 export type FormPathLeaves<T extends object, Type = any> = string &
-	StringPath<T, { filter: 'leaves'; objAppend: never; path: ''; type: Type }>;
+	StringPath<T, { filter: "leaves"; objAppend: never; path: ""; type: Type }>;
 
 /**
  * List paths in an object as string accessors, but only with non-objects as accessible properties.
  * Also includes the _errors field for objects and arrays.
  */
 export type FormPathLeavesWithErrors<T extends object, Type = any> = string &
-	StringPath<T, { filter: 'leaves'; objAppend: '_errors'; path: ''; type: Type }>;
+	StringPath<T, { filter: "leaves"; objAppend: "_errors"; path: ""; type: Type }>;
 
 /**
  * List all arrays in an object as string accessors.
  */
 export type FormPathArrays<T extends object, Type = any> = string &
-	StringPath<T, { filter: 'arrays'; objAppend: never; path: ''; type: Type }>;
+	StringPath<T, { filter: "arrays"; objAppend: never; path: ""; type: Type }>;
 
 type Concat<Path extends string, Next extends string> = `${Path}${Path extends "" ? "" : "."}${Next}`;
 
@@ -208,7 +208,14 @@ type StringPathOptions = {
 	type: any;
 };
 
-type If<Options extends StringPathOptions, Pred extends keyof Options, Subj, Then, Else, Value> = Options[Pred] extends Subj
+type If<
+	Options extends StringPathOptions,
+	Pred extends keyof Options,
+	Subj,
+	Then,
+	Else,
+	Value,
+> = Options[Pred] extends Subj
 	? Options["type"] extends never
 		? Then
 		: Value extends Options["type"]
@@ -223,71 +230,69 @@ type StringPath<
 		objAppend: never;
 		path: "";
 		type: never;
-	}
-> = T extends BuiltInObjects
-	? If<Options, "filter", "leaves" | "all", Options["path"], never, T>
-	: T extends (infer U)[]
-		?
-				| If<Options, "objAppend", string, Concat<Options["path"], Options["objAppend"]>, never, T>
-				| If<Options, "filter", "arrays" | "all", Options["path"], never, T>
-				| (NonNullable<U> extends object
-						? StringPath<
-								NonNullable<U>,
-								{
-									filter: Options["filter"];
-									objAppend: Options["objAppend"];
-									path: `${Options["path"]}[${number}]`;
-									type: Options["type"];
-								}
-							>
-						: If<Options, "filter", "leaves" | "all", `${Options["path"]}[${number}]`, never, T>)
-		: {
-				[K in Extract<AllKeys<T>, string>]: NonNullable<T[K]> extends object
+	},
+> = T extends (infer U)[]
+	?
+			| If<Options, "objAppend", string, Concat<Options["path"], Options["objAppend"]>, never, T>
+			| If<Options, "filter", "arrays" | "all", Options["path"], never, T>
+			| (NonNullable<U> extends DictOrArray
+					? StringPath<
+							NonNullable<U>,
+							{
+								filter: Options["filter"];
+								objAppend: Options["objAppend"];
+								path: `${Options["path"]}[${number}]`;
+								type: Options["type"];
+							}
+						>
+					: If<Options, "filter", "leaves" | "all", `${Options["path"]}[${number}]`, never, T>)
+	: {
+			[K in Extract<AllKeys<T>, string>]: NonNullable<T[K]> extends DictOrArray
+				?
+						| If<Options, "objAppend", string, Concat<Options["path"], Options["objAppend"]>, never, T[K]>
+						| NonNullable<T[K]> extends (infer U)[]
 					?
-							| If<Options, "objAppend", string, Concat<Options["path"], Options["objAppend"]>, never, T[K]>
-							| NonNullable<T[K]> extends (infer U)[]
-						?
-								| If<Options, "filter", "arrays" | "all", Concat<Options["path"], K>, never, T[K]>
-								| (NonNullable<U> extends unknown[]
-										? If<Options, "filter", "arrays" | "all", Concat<Options["path"], `${K}[${number}]`>, never, T[K]>
-										: NonNullable<U> extends object
-											? IsAny<T[K]> extends true
-												? Concat<Options["path"], `${K}[${number}]`>
-												: If<Options, "filter", "all", Concat<Options["path"], `${K}[${number}]`>, never, U>
-											: If<Options, "filter", "leaves" | "all", Concat<Options["path"], `${K}[${number}]`>, never, U>)
-								| (NonNullable<U> extends object
-										? StringPath<
-												NonNullable<U>,
-												{
-													filter: Options["filter"];
-													objAppend: Options["objAppend"];
-													path: Concat<Options["path"], `${K}[${number}]`>;
-													type: Options["type"];
-												}
-											>
-										: never)
-						: IsAny<T[K]> extends true
-							? Concat<Options["path"], K>
-							:
-									| If<
-											Options,
-											"filter",
-											"all",
-											Concat<Options["path"], K>,
-											unknown extends T[K] ? Concat<Options["path"], K> : never,
-											T[K]
-									  >
-									| StringPath<
-											NonNullable<T[K]>,
+							| If<Options, "filter", "arrays" | "all", Concat<Options["path"], K>, never, T[K]>
+							| (NonNullable<U> extends unknown[]
+									? If<Options, "filter", "arrays" | "all", Concat<Options["path"], `${K}[${number}]`>, never, T[K]>
+									: NonNullable<U> extends DictOrArray
+										? IsAny<T[K]> extends true
+											? Concat<Options["path"], `${K}[${number}]`>
+											: If<Options, "filter", "all", Concat<Options["path"], `${K}[${number}]`>, never, U>
+										: If<Options, "filter", "leaves" | "all", Concat<Options["path"], `${K}[${number}]`>, never, U>)
+							| (NonNullable<U> extends DictOrArray
+									? StringPath<
+											NonNullable<U>,
 											{
 												filter: Options["filter"];
 												objAppend: Options["objAppend"];
-												path: Concat<Options["path"], K>;
+												path: Concat<Options["path"], `${K}[${number}]`>;
 												type: Options["type"];
 											}
-									  >
-					: If<Options, "filter", "leaves" | "all", Concat<Options["path"], K>, never, T[K]>;
-			}[Extract<AllKeys<T>, string>];
+										>
+									: never)
+					: IsAny<T[K]> extends true
+						? Concat<Options["path"], K>
+						:
+								| If<
+										Options,
+										"filter",
+										"all",
+										Concat<Options["path"], K>,
+										unknown extends T[K] ? Concat<Options["path"], K> : never,
+										T[K]
+								  >
+								| StringPath<
+										NonNullable<T[K]>,
+										{
+											filter: Options["filter"];
+											objAppend: Options["objAppend"];
+											path: Concat<Options["path"], K>;
+											type: Options["type"];
+										}
+								  >
+				: If<Options, "filter", "leaves" | "all", Concat<Options["path"], K>, never, T[K]>;
+		}[Extract<AllKeys<T>, string>];
 
 export type FormPathType<T, P extends string> = P extends keyof T
 	? T[P]
@@ -334,28 +339,38 @@ export type FormPathType<T, P extends string> = P extends keyof T
 
 #### Example
 
-Given the following object type, we can see the different types of paths that can be generated.
+Given the following object type, we can see the different types of paths that can be generated. Even branded types are supported.
 
 ```ts
+declare const __brand: unique symbol;
+type Brand<B> = { [__brand]: B };
+export type Branded<T, B> = T & Brand<B>;
+
+// Branded types are supported
+export type Id = Branded<string, "Id">;
+
 type LogData = {
-  id: number;
+  id: Id;
   message: string;
   date: Date;
   user: {
-    id: number;
+    id: Id;
     name: string;
+		age: number;
   };
   tags: string[];
 }
 
 type LogLeaves = FormPathLeaves<LogData>;
-//   ^? "id" | "message" | "date" | "user.id" | "user.name" | `tags[${number}]`
+//   ^? "id" | "message" | "date" | "user.id" | "user.name" | "user.age" | `tags[${number}]`
 type LogStringLeaves = FormPathLeaves<LogData, string>;
-//   ^? "message" | "user.name" | `tags[${number}]`
+//   ^? "id" | "message" | "user.id" | "user.name" | `tags[${number}]`
 type LogNumberLeaves = FormPathLeaves<LogData, number>;
-//   ^? "id" | "user.id"
+//   ^? "user.age"
 type LogDateLeaves = FormPathLeaves<LogData, Date>;
 //   ^? "date"
+type LogBrandedLeaves = FormPathLeaves<LogData, Id>;
+//   ^? "id" | "user.id"
 ```
 
 ## Examples
