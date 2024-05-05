@@ -15,6 +15,7 @@ Object.entries(Astro.slots).forEach(([name]) => {
 		index += 1;
 		tabs.push(name);
 		classes.push(`.tabbed:has(.radio-${index}:checked) .panel-${index}`);
+		classes.push(`.tabbed:has(.radio-${index}:checked) .lang-${index}`);
 		classes.push(`.tabbed:has(.radio-${index}:checked) .copy-${index}`);
 		classes.push(`.tabbed:has(.radio-${index}:checked):has(.panel-${index} .line:nth-child(30)) .expand-${index}`);
 	} else if (name.startsWith("panel")) {
@@ -55,12 +56,12 @@ const inlineStyles = classes.join(", ") + " { visibility: visible; display: inli
 			panels.length ? (
 				panels.map(async (name, index) => (
 					<div
-						class={cn(`panel-${index + 1}`, "m-0 hidden w-full rounded bg-neutral-900 text-sm text-neutral-content")}
+						class={cn(`panel panel-${index + 1}`, "m-0 hidden w-full rounded bg-neutral-900 text-sm text-neutral-content")}
 						set:html={await Astro.slots.render(name)}
 					/>
 				))
 			) : (
-				<div class="panel-0 m-0 w-full rounded bg-neutral-900 text-sm text-neutral-content">
+				<div class="panel panel-0 m-0 w-full rounded bg-neutral-900 text-sm text-neutral-content">
 					<slot />
 				</div>
 			)

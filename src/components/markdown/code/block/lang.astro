@@ -3,9 +3,24 @@ import { cn } from "$/util";
 export interface Props extends astroHTML.JSX.HTMLAttributes {}
 ---
 
+<script>
+	document.addEventListener("astro:page-load", () => {
+		const langs = document.querySelectorAll(".code-block.tabbed .lang");
+		langs.forEach((lang) => {
+			const panel = lang.closest(".panel");
+			const num = Array.from(panel?.classList || []);
+			const index = num.find((cls) => cls.startsWith("panel-"))?.split("-")[1];
+			if (!index) return;
+			lang.classList.add(`lang-${index}`);
+			const block = lang.closest(".code-block.tabbed");
+			block?.appendChild(lang);
+		});
+	});
+</script>
+
 <span
 	class={cn(
-		"absolute right-0 top-[calc(2.75rem+1px)] z-10 inline-block",
+		"lang absolute right-0 top-[calc(2.75rem+1px)] z-10 inline-block",
 		"bg-neutral-900 px-2 py-1 text-xs uppercase text-neutral-content",
 		Astro.props.class
 	)}
