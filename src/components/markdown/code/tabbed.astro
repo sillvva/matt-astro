@@ -16,7 +16,7 @@ Object.entries(Astro.slots).forEach(([name]) => {
 		tabs.push(name);
 		classes.push(`.tabbed:has(.radio-${index}:checked) .panel-${index}`);
 		classes.push(`.tabbed:has(.radio-${index}:checked) .copy-${index}`);
-		classes.push(`.tabbed:has(.radio-${index}:checked):has(.panel-${index} .line:nth-child(29)) .expand-${index}`);
+		classes.push(`.tabbed:has(.radio-${index}:checked):has(.panel-${index} .line:nth-child(30)) .expand-${index}`);
 	} else if (name.startsWith("panel")) {
 		panels.push(name);
 	}
