@@ -153,7 +153,7 @@ module.exports = {
 				(rawValue, { modifier }) => {
 					const value = rawValue || "&";
 					const selector = buildMemberSelector(modifier);
-					return `&:has(${selector}:is(${value.replaceAll("&", selector)})) { & }`;
+					return `&:has(${selector}:is(${value.replaceAll("&", "*")})) { & }`;
 				},
 				{
 					values
@@ -165,7 +165,7 @@ module.exports = {
 				(rawValue, { modifier }) => {
 					const value = rawValue || "&";
 					const selector = buildMemberSelector(modifier);
-					return `&:has(${selector}):not(:has(${selector}:is(${value.replaceAll("&", selector)}))) { & }`;
+					return `&:has(${selector}:not(${value.replaceAll("&", "*")})) { & }`;
 				},
 				{
 					values
