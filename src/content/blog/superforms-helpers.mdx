@@ -214,7 +214,7 @@ type If<
 	Subj,
 	Then,
 	Else,
-	Value,
+	Value
 > = Options[Pred] extends Subj
 	? Options["type"] extends never
 		? Then
@@ -230,7 +230,7 @@ type StringPath<
 		objAppend: never;
 		path: "";
 		type: never;
-	},
+	}
 > = T extends (infer U)[]
 	?
 			| If<Options, "objAppend", string, Concat<Options["path"], Options["objAppend"]>, never, T>
