@@ -208,32 +208,3 @@ export const actions = { // [!code focus]
 ```
 </Fragment>
 </TabbedCode>
-
-## Accounting for Branded Types
-
-### What Are Branded Types?
-
-Branded types are types that are created by using a unique symbol as a property key. This allows you to create types that are compatible with other types but are distinct from them. For example, you can create a branded type for a string that represents a URL and use it in place of a regular string.
-
-This [article](https://egghead.io/blog/using-branded-types-in-typescript) provides a detailed explanation of branded types in TypeScript. 
-
-```ts
-declare const __brand: unique symbol
-type Brand<B> = { [__brand]: B }
-export type Branded<T, B> = T & Brand<B>
-
-type CarBrand = Brand<string, "CarBrand">
-type EngineType = Brand<string, "EngineType">
-type CarModel = Brand<string, "CarModel">
-type CarColor = Brand<string, "CarColor">
-
-function createCar(carBrand: CarBrand, carModel: CarModel, engineType: EngineType, color: CarColor): Car {
-  // ...
-}
-const car = createCar("Toyota", "Corolla", "Diesel", "Red")
-// "Diesel" is not of type "EngineType"
-```
-
-I have created a set of wrapper types that identify `.length` paths and check whether they are branded types. If they are, the wrapper type will return the correct branded path instead.
-
-You can read about these helpers in this separate [post](/blog/superforms-branded-leaves).
