@@ -176,27 +176,27 @@ type DictOrArray = Record<PropertyKey, unknown> | unknown[];
 /**
  * Lists all paths in an object as string accessors.
  */
-export type FormPath<T extends object, Type = any> = string &
+export type FormPath<T extends DictOrArray, Type = any> = string &
 	StringPath<T, { filter: "all"; objAppend: never; path: ""; type: Type }>;
 
 /**
  * List paths in an object as string accessors, but only with non-objects as accessible properties.
  * Similar to the leaves in a node tree, if you look at the object as a tree structure.
  */
-export type FormPathLeaves<T extends object, Type = any> = string &
+export type FormPathLeaves<T extends DictOrArray, Type = any> = string &
 	StringPath<T, { filter: "leaves"; objAppend: never; path: ""; type: Type }>;
 
 /**
  * List paths in an object as string accessors, but only with non-objects as accessible properties.
  * Also includes the _errors field for objects and arrays.
  */
-export type FormPathLeavesWithErrors<T extends object, Type = any> = string &
+export type FormPathLeavesWithErrors<T extends DictOrArray, Type = any> = string &
 	StringPath<T, { filter: "leaves"; objAppend: "_errors"; path: ""; type: Type }>;
 
 /**
  * List all arrays in an object as string accessors.
  */
-export type FormPathArrays<T extends object, Type = any> = string &
+export type FormPathArrays<T extends DictOrArray, Type = any> = string &
 	StringPath<T, { filter: "arrays"; objAppend: never; path: ""; type: Type }>;
 
 type Concat<Path extends string, Next extends string> = `${Path}${Path extends "" ? "" : "."}${Next}`;
@@ -268,7 +268,7 @@ type StringPath<
 										If<Options, "filter", "arrays" | "all", Concat<Options["path"], `${K}[${number}]`>, never, T[K]>
 									: // Otherwise, if U is a record
 										NonNullable<U> extends DictOrArray
-										? // If T[K], which is an array, is any
+										? // If T[K], which is an array of records, is any
 											IsAny<T[K]> extends true
 											? // Return the path with the key and index appended
 												Concat<Options["path"], `${K}[${number}]`>
