@@ -1,5 +1,5 @@
 ---
-title: Alternative to `extends object`
+title: Don't use `extends object`
 description: A better way to extend an object in TypeScript
 date: 2024-05-08T14:46:50.778Z
 image: $/assets/images/typescript.png
@@ -23,9 +23,11 @@ type NonPrimitive = object;
 
 This is less than ideal if you want to avoid extending built-in classes like `Date` or `Blob`. It also extends branded primitives such as `string & Brand<"brand">`, because [brand types](https://egghead.io/blog/using-branded-types-in-typescript) are objects. The `object` type is a bit of a catch-all, and it's not always clear what you're extending.
 
-## An Alternative
+In other words, you should only extend the `object` type if you're looking to match *any* non-primitive type.
 
-If your objective is to only extend dictionaries, you can use the `Record<PropertyKey, unknown>` type. A record is a type of object that is essentially a dictionary of key-value pairs. The `PropertyKey` type is a union of all possible property keys, and the `unknown` type represents any value.
+## Dictionaries
+
+A dictionary (or record) is a type of object that is made up of key-value pairs. If your objective is to only extend dictionaries, you can instead extend the `Record<PropertyKey, unknown>` type.
 
 <div class="button-row">
   [Playground](btn::https://www.typescriptlang.org/play/?#code/C4TwDgpgBAkgzgEQJYGNhIPYDsCGAnEAHgBUoIAPYCLAEzigwCMArCNAPigF4pSKra9AEpsMeGoQAKeDJDygA0hBAAaKAFcsAaywYA7lk4B+KMDzroALigAzHABs4EANwAoV6EhQAwgAs2Wgg4VNywiKjo2PhEQVTsbgD0CVApAHpGHuDQfgEA8ixswKHwyGiYuASE+awciclpGZ7Z-iiBEeXRxeFlUZUA3lA41ljqALaMEHhqjNZwZkhYAOZQAL7xrkkpUOlAA)
