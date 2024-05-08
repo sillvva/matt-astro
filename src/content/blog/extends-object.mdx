@@ -1,0 +1,43 @@
+---
+title: Alternative to `extends object`
+description: A better way to extend an object in TypeScript
+date: 2024-05-08T14:46:50.778Z
+image: $/assets/images/typescript.png
+tags:
+  - TypeScript
+---
+
+## Table of Contents
+
+## What is the `object` type?
+
+Marius Schulz gives a great explanation of the `object` type in his article [here](https://mariusschulz.com/blog/the-object-type-in-typescript). Essentially, the `object` type represents any non-primitive type.
+
+```ts
+// All primitive types
+type Primitive = string | boolean | number | bigint | symbol | null | undefined;
+
+// All non-primitive types
+type NonPrimitive = object;
+```
+
+This is less than ideal if you want to avoid extending built-in classes like `Date` or `Blob`. It also extends branded primitives such as `string & Brand<"brand">`, because [brand types](https://egghead.io/blog/using-branded-types-in-typescript) are objects. The `object` type is a bit of a catch-all, and it's not always clear what you're extending.
+
+## An Alternative
+
+If your objective is to only extend dictionaries, you can use the `Record<PropertyKey, unknown>` type. A record is a type of object that is essentially a dictionary of key-value pairs. The `PropertyKey` type is a union of all possible property keys, and the `unknown` type represents any value.
+
+<div class="button-row">
+  [Playground](btn::https://www.typescriptlang.org/play/?#code/C4TwDgpgBAkgzgEQJYGNhIPYDsCGAnEAHgBUoIAPYCLAEzigwCMArCNAPigF4pSKra9AEpsMeGoQAKeDJDygA0hBAAaKAFcsAaywYA7lk4B+KMDzroALigAzHABs4EANwAoV6EhQAwgAs2Wgg4VNywiKjo2PhEQVTsbgD0CVApAHpGHuDQfgEA8ixswKHwyGiYuASE+awciclpGZ7Z-iiBEeXRxeFlUZUA3lA41ljqALaMEHhqjNZwZkhYAOZQAL7xrkkpUOlAA)
+</div>
+
+```ts
+type IsDictionary<T extends object> = T extends Record<PropertyKey, unknown> ? true : false;
+
+type CheckDate = IsDictionary<Date>;
+//   ^? type CheckDate = false
+type CheckObject = IsDictionary<Object>;
+//   ^? type CheckObject = false
+type CheckDictionary = IsDictionary<{ a: number, b: string }>;
+//   ^? type CheckDictionary = true
+```
