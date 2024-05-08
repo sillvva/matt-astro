@@ -149,12 +149,12 @@ Keep in mind that this is type faith, not type safe. You can also [use a schema 
 Going even further, you can use the `PrettifyNested` type to prettify nested object types. The `Record<PropertyKey, unknown>` type extends basic objects, but not classes like `Date`, `Map`, `Set`, etc.
 
 <div class="button-row">
-	[Playground](btn::https://www.typescriptlang.org/play/?#code/C4TwDgpgBACgThYwCWAzEAeAKgPigXigG8AoKKAbQGkpkA7KAawhAHtUosBdALk+q4BuEgF8oAMmIjhJUJFgIkaEADkIAZ2AQAJtjyFS5arQbM2HbnywCoEAB5a629VABKEAMas4u+K0hwoFQsADRQAK50jHSsAO50eAD8Cogo6GqaOtgCeFYCwmKSRNIksuDQAELhyAA2wACSdADyAEYAVp7ABFAAIgCGWlAAPm4QAOYAonZgw1AAyogYfXQgeCMAsn1gSythy6uzAOoQfYwLwDsHI8enm9v7eytrCqwAtsjqEJfPE3Bw3rMAIJ-PogKqoVAQOCzOYACz6CG0wLgoPBkOhI0awAAHMjQbMAKr0HF4kCE4nYgDCNT6r0gSJBZMxdGAAEYAGyk8ksjlc5nAADMACY+VAiSzhaKAGI1VgDSWM2YyuXAdkAFlJMjk0DuYHoY26dwwmjg+rCdHCrxaUJwMm0nhpCCgXjomigAH13S0UU4+JFkABHcLQdQgK2sGpleQVH26Cr6YiUT3e5baXhQCpQERRyqxrJYMLx7pYCQZ2MYeOlbWwBEQFndQxQBB9bSsOg1MlmPgAcn8KDbAFpWd3RFXylBKbDatoG2QmydW+3Oywe33kIOhd3hOQwLWWXwYHvgNuoK8tnxdfqTy1qnV6Ik+FVag1mu1OtfY4+87oTWaoAAiGNU3-W05wROA+H6LQKCEUccygFRvDPGpungVJlAwSdp1AgB6HDyCgAA9RJ4IyLQZ0INClHSDRyMwqcam0HASDwgjiKAA)
+	[Playground](btn::https://www.typescriptlang.org/play/?ssl=6&ssc=72&pln=6&pc=60#code/C4TwDgpgBACgThYwCWAzEAeAKgPigXigG8AoKKAbQGkpkA7KAawhAHtUosBdALk+q4BuEgF8oAMmIjhJUJFgIkaEADkIAZ2AQAJtjyFS5arQbM2HbnywCoEAB5a629VABKEAMas4u+K0hwoFQsADRQAK50jHSsAO50eAA+EVEx8RRcUAD8Cogo6GqaOtgCeFYCwmKSRNIksuDQAELhyAA2wACSdADyAEYAVp7ABFAAIgCGWlDJ7gDmAKJ2YNNQAMqIGON0IElQALLjYJvbYVs7KwDqEOOM68DH58lXNwdHZ6fbu34AtsjqEA9dvM4HBvCsAIIg8YgZqoVAQOArVYAC3GCG0kLg0Nh8MRyS6wAAHJjoSsAKr0IkkkDkymEgDCrXG30gGKhNPxdGAAEYAGzU2lcvkCznAADMACYRVAKVzJdKAGKtViTeXslZKlXAXkAFmpMjk0FeYHosxGrwwmjgprCdHC316CJwMm0niZCCgXjomigAH1fb0sU4+JFkABHcLQdQgB2sVr1eSNIO6Rr6YiUf2BrbaXhQRpQEQJprJ4pYMKpkZYCR55MYVN1Q2wNEQLkjQxQBDjbSsOitGlmPgAcn8KB7AFpuYPRA2GlB6ci2to22QO9du73+ywhyPkOOJYPhOQwM2uXwYCfgBlD1Bvoc+MbTdfei12vQsnxmm1Oj0BkMn8mPxLXQrRtKAACIk2zMDnRXNE4D4CYtCvaciygFRvFvVoRngPJlAwedFxggB6IjyCgAA9LJUMKLQl0IHClAKDRaPwhdWm0HASBIsjKKAA)
 </div>
 
 ```ts
 type PrettifyNested<T> = {
-  [K in keyof T]: T[K] extends Record<PropertyKey, unknown> ? PrettifyNested<T[K]> : T[K];
+  [K in keyof T]: T[K] extends Record<PropertyKey, unknown> | unknown[] ? PrettifyNested<T[K]> : T[K];
 } & {};
 ```
 
