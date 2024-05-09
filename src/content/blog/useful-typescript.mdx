@@ -180,15 +180,17 @@ type NumericRange<TStart extends number, TEnd extends number> =
 
 ### IsAny
 
-You can (ab)use the fact that any is both a subtype and a supertype of almost everything (except for never). So the inner [(Distributive) Conditional Type](https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types) resolves to a Union of `true | false (=boolean)` instead of either of them.
+As explained in the source link below:
+
+> The type constraint `0 extends 1` is not satisfied (`0` is not assignable to `1`). Therefore, it should be impossible for `0 extends (1 & T)` to be satisfied either, since `(1 & T)` should be even narrower than `1`. However, when `T` is `any`, it reduces to `0 extends any`, which is satisfied. That's because `any` is intentionally unsound and acts as both a supertype and subtype of almost every other type (except for `never`).
 
 <div class="button-row">
-	[Playground](btn::https://www.typescriptlang.org/play?#code/C4TwDgpgBAkgzgQQHYgDwBUB8UC8UBGA9oQDYQCGSUEAHsBEgCZxQAU61dDzUSEAbhABOUAPxRgQgK7QAXFABm5EnAgBKMROlzFy1QG4AsACgToSFAS5YiFKkohMJgPTOo7gHqiz4aACFreGQ0JCkAW3xhJ2NXdygvHwsAYUDbNCkkAGskQgB3JGjYz29jc2gAEVTg1D5BIUK3YsToAFEqu35CAEtGBriE0t8oADF2tABvAF8+psGLAHEx1EJ8ACsIAGNgGfiSsqgACSWMxggFLr5el0bd5tgl0JISHa8gA)
-  [Source](btn::https://stackoverflow.com/a/77451367/70894)
+	[Playground](btn::https://www.typescriptlang.org/play/?#code/C4TwDgpgBAkgzgQQHYgDwBUB8UC8UAMUEAHsBEgCZxQAUAjFAGRToCUUA-FMAE4Cu0AFxQAZgEMANnAgBuALAAoRaEhQEuWIhSoxKTIoD0BqCYB6HZeGgAhDfGRokfALYAjCD30KjJqOcuqAMJ2Wmh8SADWSAD2AO5IXj5mFgoq0AAiIQ6oSBAAbh6JxskB0ACiWdp50QCWFEW+-qlWUABilWgA3gC+DSXNqgDiHajRrgBWEADGwH1+KWlQABIj4RQQIjW59YbF86WwI04SEnPmQA)
+  [Source](btn::https://stackoverflow.com/questions/49927523/disallow-call-with-any/49928360#49928360)
 </div>
 
 ```ts
-type IsAny<T> = boolean extends (T extends never ? true : false) ? true : false;
+type IsAny<T> = 0 extends (1 & T) ? true : false;
 ```
 
 ### Satisfies
