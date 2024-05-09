@@ -180,7 +180,7 @@ type NumericRange<TStart extends number, TEnd extends number> =
 
 ### IsAny
 
-As explained in the source link below:
+There are a few ways to check if a type if any. One example is to use an interection. As explained in the source link below:
 
 > The type constraint `0 extends 1` is not satisfied (`0` is not assignable to `1`). Therefore, it should be impossible for `0 extends (1 & T)` to be satisfied either, since `(1 & T)` should be even narrower than `1`. However, when `T` is `any`, it reduces to `0 extends any`, which is satisfied. That's because `any` is intentionally unsound and acts as both a supertype and subtype of almost every other type (except for `never`).
 
@@ -191,6 +191,12 @@ As explained in the source link below:
 
 ```ts
 type IsAny<T> = 0 extends (1 & T) ? true : false;
+```
+
+Another method is to use the fact that it's both a subtype and supertype of almost every other type by extending `never`. When `any extends never`, it results in a union of `true | false` or `boolean`. `boolean` extends `boolean`, but not `true` or `false` individually.
+
+```ts
+type IsAny<T> = boolean extends (T extends never ? true : false) ? true : false;
 ```
 
 ### Satisfies
