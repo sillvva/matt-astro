@@ -2,6 +2,7 @@
 title: Don't use `extends object`
 description: A better way to extend an object in TypeScript
 date: 2024-05-08T14:46:50.778Z
+updated: 2024-05-09T14:27:28.283Z
 image: $/assets/images/typescript.png
 tags:
   - TypeScript
@@ -43,3 +44,31 @@ type CheckObject = IsDictionary<Object>;
 type CheckDictionary = IsDictionary<{ a: number, b: string }>;
 //   ^? type CheckDictionary = true
 ```
+
+## The Difference Between `{}`, `object`, and `Record<PropertyKey, unknown>`
+
+This table shows the types of values that are assignable to `{}`, `object`, and `Record<PropertyKey, unknown>`.
+
+- You can assign anything to `{}`, except for null and undefined.
+- You can assign anything that's not a primitive to `object`. Primitives are strings, booleans, numbers, big integers, symbols, null and undefined.
+- You can only assign dictionaries to `Record<PropertyKey, unknown>`.
+
+<div class="button-row">
+  [Playground](btn::https://www.typescriptlang.org/play/?target=7#code/PTAEE0HsFdQYwIYDtQIM5oJYHMXIJ4AuAFpktqIZKAAYDeAvjQDSgBUApgB5wcAOhNqABmkAE60k0ADbSaqJABNa0JR2FkOimgDoAsACg4kJGkKoAXKACCYsQnwAeRgD5QAXlABtQ6D+gAIjMxMmwA5l9-QjFoDgiDf1AAFgAmeMTUpHT-AGV8AFsAI0hpAAoASmy-LwBGVhSAXSrvJsi-OlFIKwDChDEAhmbGZoqPN2HDNtApWWbVRXVNRXiGgG5JgxAIGHhkVAwcPCQiUnJKYgRCAHI0diRIcwRQPhD8zEJMADcOISpaSEKACsOHBCLpDFsAAqvd5fDi3PocUDBUJoVjFEocZBo6bQIocMQ4wo4UBkQgcbAEnFoArFaQ4mgzOQKZQ0eaLJBacFGExmUCFKy2exOAHA0FuTw+BL+Wr1VrS6ryxIdSBdQK9fqDKYTBWgUbucZa3VTILRULhKbRWLNVI2lJZKZ5IolCrNJlzNQaTnLQxrDZbKCwRAoEzSfD7LC4diikGENC-ag0ABKIPEikcKPIrFUAGt7gB3JAubnGUzmOCCuwORwp4xidOZ7DZpB5yCFlwS7zazrdDUDIZGxImxsW3VWuJTW2T+3NJ1011Td1TdlerTNWWgRrrpX+fWGlarIA)
+</div>
+
+| Value is assignable to | `{}` | `object` | `Record<PropertyKey, unknown>` |
+| --- | --- | --- | --- |
+| `null` | No | No | No |
+| `undefined` | No | No | No |
+| `"string"` | Yes | No | No |
+| `true` | Yes | No | No |
+| `42` | Yes | No | No |
+| `42n` | Yes | No | No |
+| `Symbol()` | Yes | No | No |
+| `Date` | Yes | Yes | No |
+| `() => {}` | Yes | Yes | No |
+| `[1, 2]` | Yes | Yes | No |
+| `[]` | Yes | Yes | No |
+| `{foo: "bar"}` | Yes | Yes | Yes |
+| `{}` | Yes | Yes | Yes |
