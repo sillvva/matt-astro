@@ -91,7 +91,7 @@
 				opacity: 0;
 				animation: scroll-fade-in linear forwards;
 				animation-timeline: view();
-				animation-range: 0 200px;
+				animation-range: entry 25% entry 75%;
 			}
 			@keyframes scroll-fade-in {
 				to {
