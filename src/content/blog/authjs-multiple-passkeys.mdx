@@ -1,0 +1,390 @@
+---
+title: Passkeys in Sveltekit with AuthJS
+description: A step-by-step process to allow multiple passkeys in Sveltekit
+date: 2024-05-20T16:42:13.816Z
+image: $/assets/images/passkeys.jpg
+tags:
+  - Auth
+  - Database
+---
+import Collapsible from "$/components/markdown/collapsible.astro";
+import TabbedCode from "$/components/markdown/code/tabbed.astro";
+
+## Table of Contents
+
+## Introduction
+
+Auth.js has recently added support for Passkeys via WebAuthn specification. However, at the time of this writing, the Auth.js guide does not have a working example of how to implement passkeys in Sveltekit. The current [official guide](https://authjs.dev/getting-started/providers/passkey) is for Next.js. It uses the `Passkey` provider, which is not compatible with the Sveltekit implementation. For Sveltekit, you will need to use the `WebAuthn` provider.
+
+This guide will walk you through the process of setting up passkeys in Sveltekit using Auth.js. In addition, it also includes instructions on supporting multiple passkeys. For this guide, I'll also be using PostgreSQL and Drizzle as the Database and ORM of choice. There will be differences from the in the Auth.js documentation, as this guide will include steps for allowing users to add multiple passkeys.
+
+## 1. Install peer dependencies
+
+The `@simplewebauthn/browser` peer dependency is only required for custom signin pages. If you're using the Auth.js default pages, you can skip installing that peer dependency.
+
+```bash
+pnpm add @simplewebauthn/browser@9.0.1 @simplewebauthn/server@9.0.3
+```
+
+## 2. Setup the database table
+
+I am using a slightly modified table definition from the Drizzle adapter to allow for multiple named passkeys for each user. The `name` column is added to the `authenticator` table, and a unique constraint is added to ensure that each user can only have one passkey with the same name.
+
+<TabbedCode>
+<Fragment slot="tab-1">src/server/db/schema.ts</Fragment>
+<Fragment slot="panel-1">
+```ts
+export type Authenticator = InferModel<typeof authenticators>;
+export type InsertAuthenticator = InferInsertModel<typeof authenticators>;
+export type UpdateAuthenticator = Partial<Authenticator>;
+export const authenticators = pgTable(
+	"authenticator",
+	{
+		credentialID: text("credentialID").notNull().unique(),
+		userId: text("userId")
+			.notNull()
+			.references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
+		providerAccountId: text("providerAccountId").notNull(),
+    // Add a name column to store the name of the passkey
+    // The default value is an empty string. This will be
+    // important later when we add the rename passkey feature.
+		name: text("name") // [!code highlight]
+			.notNull() // [!code highlight]
+			.$defaultFn(() => ""), // [!code highlight]
+		credentialPublicKey: text("credentialPublicKey").notNull(),
+		counter: integer("counter").notNull(),
+		credentialDeviceType: text("credentialDeviceType").notNull(),
+		credentialBackedUp: boolean("credentialBackedUp").notNull(),
+		transports: text("transports")
+	},
+	(table) => ({
+		compositePK: primaryKey({
+			columns: [table.userId, table.credentialID]
+		}),
+    // At the database level, add onDelete and onUpdate cascades to the foreign key
+		accountFK: foreignKey({ // [!code highlight]
+			columns: [table.userId, table.providerAccountId], // [!code highlight]
+			foreignColumns: [accounts.userId, accounts.providerAccountId], // [!code highlight]
+			name: "public_authenticator_userId_providerAccountId_fkey" // [!code highlight]
+		}), // [!code highlight]
+    // Add a unique constraint on the userId and name to avoid duplicate passkey names
+		uniqueName: unique("authenticator_userId_name_key").on(table.userId, table.name) // [!code highlight]
+	})
+);
+```
+</Fragment>
+</TabbedCode>
+
+In addition, you should add a unique index on the `userId` and `providerAccountId` columns of the `account` table. This is necessary to have a foreign key constraint pointing to thse columns on the `authenticator` table.
+
+<TabbedCode>
+<Fragment slot="tab-1">src/server/db/schema.ts</Fragment>
+<Fragment slot="panel-1">
+```ts
+export type Account = typeof accounts.$inferSelect;
+export type InsertAccount = InferInsertModel<typeof accounts>;
+export type UpdateAccount = Partial<Account>;
+export const accounts = pgTable(
+	"account",
+	{
+		providerAccountId: text("providerAccountId").notNull(), // [!code focus]
+		provider: text("provider").notNull(),
+		type: text("type").$type<ProviderType>().notNull(),
+		userId: text("userId") // [!code focus]
+			.notNull() // [!code focus]
+			.references(() => users.id, { onUpdate: "cascade", onDelete: "cascade" }) // [!code focus]
+			.$type<UserId>(), // [!code focus]
+		refresh_token: text("refresh_token"),
+		access_token: text("access_token"),
+		expires_at: integer("expires_at"),
+		token_type: text("token_type"),
+		scope: text("scope"),
+		id_token: text("id_token"),
+		session_state: text("session_state"),
+		lastLogin: timestamp("last_login", { mode: "date", withTimezone: true })
+	},
+	(table) => { // [!code focus]
+		return { // [!code focus]
+			userIdIdx: index("Account_userId_idx").on(table.userId),
+			webAuthnIdx: unique("account_userId_providerAccountId_key").on(table.userId, table.providerAccountId) // [!code focus] // [!code ++]
+		}; // [!code focus]
+	} // [!code focus]
+);
+```
+</Fragment>
+</TabbedCode>
+
+## 3. Update Auth.js configuration
+
+Add the WebAuthn provider to your configuration. You will need to have at least one other provider, because Passkey registration requires a user to be signed in.
+
+<TabbedCode>
+<Fragment slot="tab-1">src/hooks.server.ts</Fragment>
+<Fragment slot="panel-1">
+```ts
+import { accounts, authenticators, sessions, users } from "$server/db/schema";
+import WebAuthn from "@auth/core/providers/webauthn"; // [!code ++]
+import { DrizzleAdapter } from "@auth/drizzle-adapter";
+import { SvelteKitAuth, type SvelteKitAuthConfig } from "@auth/sveltekit";
+
+const auth = SvelteKitAuth(async (event) => {
+	return {
+		secret: privateEnv.AUTH_SECRET,
+		adapter: DrizzleAdapter(db, {
+      usersTable: users,
+      accountsTable: accounts,
+      sessionsTable: sessions,
+      authenticatorsTable: authenticators // [!code ++]
+    }),
+		experimental: { // [!code ++]
+			enableWebAuthn: true // [!code ++]
+		}, // [!code ++]
+		providers: [
+      // Other providers
+      WebAuthn // [!code ++]
+    ]
+	} satisfies SvelteKitAuthConfig;
+});
+```
+</Fragment>
+</TabbedCode>
+
+## 4. Pass the registered authenticator entries to the UI
+
+By passing the `authenticators` to the layout, we can display the list of registered passkeys to the user. It will be accessible in the built-in `$page.data.authenticators` store.
+
+<TabbedCode>
+<Fragment slot="tab-1">src/routes/+layout.svelte</Fragment>
+<Fragment slot="panel-1">
+```ts
+import { db } from "$server/db";
+import type { Authenticator } from "$server/db/schema";
+
+export const load = async (event) => {
+  const session = event.locals.session;
+
+	let authenticators: Authenticator[] = [];
+	if (session?.user) {
+		const userId = session.user.id;
+		authenticators = await db.query.authenticators.findMany({
+			where: (authenticators, { eq }) => eq(authenticators.userId, userId),
+      columns: {
+        credentialID: true,
+        name: true
+      }
+		});
+	}
+
+	return {
+		authenticators,
+    session
+	};
+};
+```
+</Fragment>
+</TabbedCode>
+
+## 5. Create a `renameWebAuthn` endpoint
+
+This API endpoint will be used in the next step to rename a passkey after it has been registered.
+
+<TabbedCode>
+<Fragment slot="tab-1">src/routes/(api)/renameWebAuthn/+server.ts</Fragment>
+<Fragment slot="panel-1">
+```ts
+import { db } from "$server/db";
+import { authenticators } from "$server/db/schema";
+import { json } from "@sveltejs/kit";
+import { and, eq } from "drizzle-orm";
+
+export async function POST({ request, locals }) {
+	const session = locals.session;
+	if (!session?.user?.id) return json({ error: "Unauthorized" }, { status: 401 });
+
+	let { name, id } = (await request.json()) as { name: string; id?: string };
+
+	try {
+		const auth = await db.query.authenticators.findFirst({
+			where: (table, { eq, and }) => and(eq(table.userId, session.user.id), id ? eq(table.credentialID, id) : eq(table.name, ""))
+		});
+
+		if (!auth) throw new Error("No passkey found");
+		if (!name.trim()) name = auth.name || auth.credentialID.replace(/[^a-z0-9]/gi, "").slice(-8);
+
+		await db
+			.update(authenticators)
+			.set({ name })
+			.where(and(eq(authenticators.userId, auth.userId), eq(authenticators.providerAccountId, auth.providerAccountId)));
+
+		return json({ success: true, name });
+	} catch (e) {
+		if (e instanceof Error) return json({ success: false, error: e.message });
+		else {
+			console.error(e);
+			return json({ success: false, error: "Unknown error" });
+		}
+	}
+}
+```
+</Fragment>
+</TabbedCode>
+
+## 6. Add the passkey list and registration button
+
+Registering a passkey requires the user to be signed in, so the registration should be somewhere in the user settings.
+
+In this example, when the user clicks the "Add Passkey" button, the `passkey` function is called with the `action` set to `register`. This will trigger the registration flow. The `redirect` option is set to `false` to prevent the user from being redirected after the registration is complete. 
+
+Instead, the user will be directed to create a name for the new passkey using the `renameWebAuthn` function. After the rename flow is complete, the `invalidateAll` function is called to rerun the `load` functions that belong to the current page.
+
+<TabbedCode>
+<Fragment slot="tab-1">lib/components/passkeys.ts</Fragment>
+<Fragment slot="panel-1">
+```svelte
+<script lang="ts">
+import { invalidateAll } from "$app/navigation";
+import { page } from "$app/stores";
+import type { Authenticator } from "$server/db/schema";
+import { signIn as passkey } from "@auth/sveltekit/webauthn";
+
+$: authenticators = $page.data.authenticators as Authenticator[];
+
+const renameWebAuthn = async (id?: string, currentName = "") => {
+  const name = prompt("Enter a name for this passkey", currentName) || "";
+  await fetch("/renameWebAuthn", {
+    method: "POST",
+    body: JSON.stringify({ name, id })
+  })
+    .then((resp) => resp.json() as Promise<{ success: true; name: string } | { success: false; error: string }>)
+    .then((value) => {
+      if (value.success) {
+        if (currentName) {
+          successToast(`Passkey "${currentName}" renamed to "${value.name}"`);
+        } else {
+          successToast(`Passkey "${value.name}" created`);
+        }
+        invalidateAll();
+      } else {
+        errorToast(value.error);
+      }
+    });
+};
+</script>
+
+<ul class="menu menu-lg w-full px-0 [&_li>*]:px-2">
+  <li class="menu-title">
+    <span class="font-bold">Paaskeys</span>
+  </li>
+  {#each authenticators as authenticator}
+    <li>
+      <label class="flex gap-2">
+        <span class="iconify h-6 w-6 material-symbols--passkey"></span>
+        <span>{authenticator.name || authenticator.credentialID.replace(/[^a-z0-9]/gi, "").slice(-8)}</span>
+        <span class="flex-1"></span>
+        <span class="flex items-center">
+          <button
+            class="btn btn-square btn-primary btn-sm"
+            type="button"
+            on:click={() =>
+              renameWebAuthn(
+                authenticator.credentialID,
+                authenticator.name || authenticator.credentialID.replace(/[^a-z0-9]/gi, "").slice(-8)
+              )}
+          >
+            <span class="iconify h-5 w-5 mdi--pencil" />
+          </button>
+        </span>
+      </label>
+    </li>
+  {/each}
+  <li>
+    <button
+      type="button"
+      on:click={() => passkey("webauthn", { action: "register", redirect: false }).then(() => renameWebAuthn())}
+    >
+      <span class="iconify h-6 w-6 mdi--plus"></span>
+      <span>Add Passkey</span>
+    </button>
+  </li>
+</ul>
+```
+</Fragment>
+</TabbedCode>
+
+## 7. Add the sign in flow
+
+The sign in flow is similar to the registration flow. You call the same `passkey` function with the `action` set to `authenticate` instead. The `callbackUrl` option is set to the URL of the page you want to redirect to after the sign in is complete.
+
+```svelte
+<script lang="ts">
+  import { page } from "$app/stores";
+	import { signIn as passkey } from "@auth/sveltekit/webauthn";
+</script>
+
+<button
+  class="flex h-16 items-center gap-4 rounded-lg bg-base-200 px-8 py-4 text-base-content transition-colors hover:bg-base-300"
+  on:click={() =>
+    passkey("webauthn", {
+      callbackUrl: $page.url.searchParams.get("redirect") || "/characters",
+      action: "authenticate"
+    })}
+  aria-label="Sign in with Passkey"
+>
+  <span class="iconify h-8 w-8 material-symbols--passkey"></span>
+  <span class="flex h-full flex-1 items-center justify-center text-xl font-semibold">Sign In with Passkey</span>
+</button>
+<span class="max-w-72 text-balance text-center text-xs text-base-content">
+  You must create an account and enable Passkey in settings before you can sign in with this.
+</span>
+```
+
+### Making the passkey sign in flow automatic
+
+If you wish to have the sign in flow automatically initiate when the login page is loaded, you can call the `passkey` function programatically. If you do this, it would be a good idea to set a `localStorage` variable when the user is signed in if they have registered a passkey. Then on the login page only initiate the sign in flow if the user has a passkey registered.
+
+Using the same global layout from [step 4](#4-pass-the-registered-authenticator-entries-to-the-ui), you can create such a local variable.
+
+<TabbedCode>
+<Fragment slot="tab-1">src/routes/+layout.svelte</Fragment>
+<Fragment slot="panel-1">
+```svelte
+<script lang="ts">
+  import { browser } from "$app/environment";
+
+  export let data;
+
+	$: if (browser && data.session?.user) {
+		if (data.authenticators.length) {
+			localStorage.setItem("webauthn-enabled", "true");
+		} else {
+			localStorage.removeItem("webauthn-enabled");
+		}
+	}
+</script>
+```
+</Fragment>
+</TabbedCode>
+
+Then on your login page, initiate the sign in flow only if the local storage variable is set.
+
+<TabbedCode>
+<Fragment slot="tab-1">src/routes/(home)/+page.svelte</Fragment>
+<Fragment slot="panel-1">
+```svelte
+<script lang="ts">
+  import { browser } from "$app/environment";
+  import { page } from "$app/stores";
+	import { signIn as passkey } from "@auth/sveltekit/webauthn";
+
+  $: if (browser) {
+		if (localStorage.getItem("webauthn-enabled")) {
+			passkey("webauthn", {
+				callbackUrl: $page.url.searchParams.get("redirect") || "/characters",
+				action: "authenticate"
+			});
+		}
+	}
+</script>
+```
+</Fragment>
+</TabbedCode>
