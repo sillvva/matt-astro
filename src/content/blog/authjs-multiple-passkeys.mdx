@@ -14,7 +14,7 @@ import TabbedCode from "$/components/markdown/code/tabbed.astro";
 
 ## Introduction
 
-Auth.js has recently added support for Passkeys via WebAuthn specification. However, at the time of this writing, the Auth.js guide does not have a working example of how to implement passkeys in Sveltekit. The current [official guide](https://authjs.dev/getting-started/providers/passkey) is for Next.js. It uses the `Passkey` provider, which is not compatible with the Sveltekit implementation. For Sveltekit, you will need to use the `WebAuthn` provider.
+Auth.js has recently added support for Passkeys via WebAuthn specification. However, at the time of this writing, the Auth.js guide does not have a working example of how to implement passkeys in Sveltekit. The current [official guide](https://authjs.dev/getting-started/providers/passkey) is for Next.js. It uses the `Passkey` provider, which is not compatible with the Sveltekit implementation. For Sveltekit, you will need to use the `WebAuthn` provider, which is not documented.
 
 This guide will walk you through the process of setting up passkeys in Sveltekit using Auth.js. In addition, it also includes instructions on supporting multiple passkeys. For this guide, I'll also be using PostgreSQL and Drizzle as the Database and ORM of choice. There will be differences from the in the Auth.js documentation, as this guide will include steps for allowing users to add multiple passkeys.
 
