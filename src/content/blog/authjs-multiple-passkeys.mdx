@@ -205,12 +205,16 @@ export async function POST({ request, locals }) {
 	let { name, id } = (await request.json()) as { name: string; id?: string };
 
 	try {
-		const auth = await db.query.authenticators.findFirst({
-			where: (table, { eq, and }) => and(eq(table.userId, session.user.id), id ? eq(table.credentialID, id) : eq(table.name, ""))
+		const passkeys = await q.authenticators.findMany({
+			where: (table, { eq, and }) => and(eq(table.userId, session.user.id))
 		});
 
+		const auth = passkeys.find((a) => (id ? a.credentialID === id : a.name === ""));
 		if (!auth) throw new Error("No passkey found");
-		if (!name.trim()) name = auth.name || auth.credentialID.replace(/[^a-z0-9]/gi, "").slice(-8);
+		if (!name.trim()) name = authName(auth);
+
+		const existing = passkeys.find((a) => a.name === name);
+		if ((!auth.name && existing) || (id && existing?.credentialID !== id)) throw new Error("Name already exists");
 
 		await db
 			.update(authenticators)
