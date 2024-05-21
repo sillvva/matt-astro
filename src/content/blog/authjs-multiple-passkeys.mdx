@@ -198,6 +198,7 @@ import { authenticators } from "$server/db/schema";
 import { json } from "@sveltejs/kit";
 import { and, eq } from "drizzle-orm";
 
+export type RenameWebAuthnResponse = { success: true; name: string } | { success: false; error: string };
 export async function POST({ request, locals }) {
 	const session = locals.session;
 	if (!session?.user?.id) return json({ error: "Unauthorized" }, { status: 401 });
@@ -231,6 +232,7 @@ export async function POST({ request, locals }) {
 	}
 }
 
+export type DeleteWebAuthnResponse = { success: true } | { success: false; error: string };
 export async function DELETE({ request, locals }) {
 	try {
 		const session = locals.session;
@@ -287,7 +289,7 @@ const renameWebAuthn = async (id?: string, currentName = "") => {
     body: JSON.stringify({ name, id })
   });
 
-  const value = (await response.json()) as { success: true; name: string } | { success: false; error: string };
+  const value = (await response.json()) as RenameWebAuthnResponse;
 
   if (value.success) {
     if (currentName) {
@@ -310,7 +312,7 @@ async function deleteWebAuthn(id: string) {
       body: JSON.stringify({ id })
     });
 
-    const value = (await response.json()) as { success: true } | { success: false; error: string };
+    const value = (await response.json()) as DeleteWebAuthnResponse;
 
     if (value.success) {
       successToast(`Passkey "${authName(auth)}" deleted`);
