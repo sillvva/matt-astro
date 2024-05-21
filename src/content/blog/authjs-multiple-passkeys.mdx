@@ -190,7 +190,7 @@ export const load = async (event) => {
 This API endpoint will be used in the next step to rename a passkey after it has been registered.
 
 <TabbedCode>
-<Fragment slot="tab-1">src/routes/(api)/renameWebAuthn/+server.ts</Fragment>
+<Fragment slot="tab-1">src/routes/(api)/webAuthn/+server.ts</Fragment>
 <Fragment slot="panel-1">
 ```ts
 import { db } from "$server/db";
@@ -211,10 +211,10 @@ export async function POST({ request, locals }) {
 
 		const auth = passkeys.find((a) => (id ? a.credentialID === id : a.name === ""));
 		if (!auth) throw new Error("No passkey found");
-		if (!name.trim()) name = authName(auth);
+		if (!name.trim()) name = auth.name || auth.credentialID.replace(/[^a-z0-9]/gi, "").slice(-8)
 
 		const existing = passkeys.find((a) => a.name === name);
-		if ((!auth.name && existing) || (id && existing?.credentialID !== id)) throw new Error("Name already exists");
+    if ((!auth.name && existing) || (id && existing && existing.credentialID !== id)) throw new Error("Name already exists");
 
 		await db
 			.update(authenticators)
@@ -222,6 +222,32 @@ export async function POST({ request, locals }) {
 			.where(and(eq(authenticators.userId, auth.userId), eq(authenticators.providerAccountId, auth.providerAccountId)));
 
 		return json({ success: true, name });
+	} catch (e) {
+		if (e instanceof Error) return json({ success: false, error: e.message });
+		else {
+			console.error(e);
+			return json({ success: false, error: "Unknown error" });
+		}
+	}
+}
+
+export async function DELETE({ request, locals }) {
+	try {
+		const session = locals.session;
+		if (!session?.user?.id) return json({ error: "Unauthorized" }, { status: 401 });
+
+		const { id } = (await request.json()) as { id: string };
+		const auth = await q.authenticators.findFirst({
+			where: (table, { eq }) => eq(table.userId, session.user.id) && eq(table.credentialID, id)
+		});
+
+		if (!auth) throw new Error("No passkey found");
+
+		await db
+			.delete(accounts)
+			.where(and(eq(accounts.userId, auth.userId), eq(accounts.providerAccountId, auth.providerAccountId)));
+
+		return json({ success: true });
 	} catch (e) {
 		if (e instanceof Error) return json({ success: false, error: e.message });
 		else {
@@ -256,24 +282,44 @@ $: authenticators = $page.data.authenticators as AuthClient[];
 
 const renameWebAuthn = async (id?: string, currentName = "") => {
   const name = prompt("Enter a name for this passkey", currentName) || "";
-  await fetch("/renameWebAuthn", {
+  const response =await fetch("/webAuthn", {
     method: "POST",
     body: JSON.stringify({ name, id })
-  })
-    .then((resp) => resp.json() as Promise<{ success: true; name: string } | { success: false; error: string }>)
-    .then((value) => {
-      if (value.success) {
-        if (currentName) {
-          successToast(`Passkey "${currentName}" renamed to "${value.name}"`);
-        } else {
-          successToast(`Passkey "${value.name}" created`);
-        }
-        invalidateAll();
-      } else {
-        errorToast(value.error);
-      }
-    });
+  });
+
+  const value = (await response.json()) as { success: true; name: string } | { success: false; error: string };
+
+  if (value.success) {
+    if (currentName) {
+      successToast(`Passkey "${currentName}" renamed to "${value.name}"`);
+    } else {
+      successToast(`Passkey "${value.name}" created`);
+    }
+    invalidateAll();
+  } else {
+    errorToast(value.error);
+  }
 };
+
+async function deleteWebAuthn(id: string) {
+  const auth = authenticators.find((a) => a.credentialID === id);
+  if (!auth) return;
+  if (confirm(`Are you sure you want to delete "${authName(auth)}"?`)) {
+    const response = await fetch("/webAuthn", {
+      method: "DELETE",
+      body: JSON.stringify({ id })
+    });
+
+    const value = (await response.json()) as { success: true } | { success: false; error: string };
+
+    if (value.success) {
+      successToast(`Passkey "${authName(auth)}" deleted`);
+      invalidateAll();
+    } else {
+      errorToast(value.error);
+    }
+  }
+}
 </script>
 
 <ul class="menu menu-lg w-full px-0 [&_li>*]:px-2">
@@ -281,31 +327,32 @@ const renameWebAuthn = async (id?: string, currentName = "") => {
     <span class="font-bold">Paaskeys</span>
   </li>
   {#each authenticators as authenticator}
+    {@const name = authenticator.name || authenticator.credentialID.replace(/[^a-z0-9]/gi, "").slice(-8)}
     <li>
-      <label class="flex gap-2">
-        <span class="iconify h-6 w-6 material-symbols--passkey"></span>
-        <span>{authenticator.name || authenticator.credentialID.replace(/[^a-z0-9]/gi, "").slice(-8)}</span>
-        <span class="flex-1"></span>
-        <span class="flex items-center">
-          <button
-            class="btn btn-square btn-primary btn-sm"
-            type="button"
-            on:click={() =>
-              renameWebAuthn(
-                authenticator.credentialID,
-                authenticator.name || authenticator.credentialID.replace(/[^a-z0-9]/gi, "").slice(-8)
-              )}
-          >
-            <span class="iconify h-5 w-5 mdi--pencil" />
-          </button>
+      <button class="flex gap-2" on:click={() => renameWebAuthn(authenticator.credentialID, name)}>
+        <span class="iconify size-6 material-symbols--passkey"></span>
+        <span class="w-44 flex-1 overflow-hidden text-ellipsis whitespace-nowrap">
+          {name}
         </span>
-      </label>
+        <button
+          class="btn btn-square btn-error btn-sm"
+          on:click|stopPropagation={() => deleteWebAuthn(authenticator.credentialID)}
+        >
+          <span class="iconify size-5 mdi--delete" />
+        </button>
+      </button>
     </li>
   {/each}
   <li>
     <button
       type="button"
-      on:click={() => passkey("webauthn", { action: "register", redirect: false }).then(() => renameWebAuthn())}
+      on:click={() =>
+        passkey("webauthn", { action: "register", redirect: false })
+          .then((resp) => {
+            if (resp?.ok) renameWebAuthn();
+            else errorToast("Failed to register passkey");
+          })
+          .catch(console.error)}
     >
       <span class="iconify h-6 w-6 mdi--plus"></span>
       <span>Add Passkey</span>
