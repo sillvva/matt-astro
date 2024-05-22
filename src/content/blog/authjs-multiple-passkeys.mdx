@@ -193,12 +193,13 @@ This API endpoint will be used in the next step to rename a passkey after it has
 <Fragment slot="tab-1">src/routes/(api)/webAuthn/+server.ts</Fragment>
 <Fragment slot="panel-1">
 ```ts
-import { db } from "$server/db";
-import { authenticators } from "$server/db/schema";
+import { authName } from "$lib/util.js";
+import { db, q } from "$server/db/index.js";
+import { accounts, authenticators } from "$server/db/schema.js";
 import { json } from "@sveltejs/kit";
 import { and, eq } from "drizzle-orm";
 
-export type RenameWebAuthnResponse = { success: true; name: string } | { success: false; error: string };
+export type RenameWebAuthnResponse = { success: true; name: string } | { success: false; error: string; throw?: boolean };
 export async function POST({ request, locals }) {
 	const session = locals.session;
 	if (!session?.user?.id) return json({ error: "Unauthorized" }, { status: 401 });
@@ -211,11 +212,11 @@ export async function POST({ request, locals }) {
 		});
 
 		const auth = passkeys.find((a) => (id ? a.credentialID === id : a.name === ""));
-		if (!auth) throw new Error("No passkey found");
-		if (!name.trim()) name = auth.name || auth.credentialID.replace(/[^a-z0-9]/gi, "").slice(-8)
+		if (!auth) return json({ success: false, error: "No passkey found", throw: true });
+		if (!name.trim()) name = authName(auth);
 
 		const existing = passkeys.find((a) => a.name === name);
-    if ((!auth.name && existing) || (id && existing && existing.credentialID !== id)) throw new Error("Name already exists");
+		if ((!auth.name && existing) || (id && existing && existing.credentialID !== id)) throw new Error("Name already exists");
 
 		await db
 			.update(authenticators)
@@ -275,92 +276,178 @@ Instead, the user will be directed to create a name for the new passkey using th
 <Fragment slot="panel-1">
 ```svelte
 <script lang="ts">
-import { invalidateAll } from "$app/navigation";
-import { page } from "$app/stores";
-import type { AuthClient } from "$server/db/schema";
-import { signIn as passkey } from "@auth/sveltekit/webauthn";
+	import { invalidateAll } from "$app/navigation";
+	import { page } from "$app/stores";
+	import { errorToast, successToast } from "$lib/factories";
+	import { authName } from "$lib/util";
+	import type { AuthClient } from "$server/db/schema";
+	import type { DeleteWebAuthnResponse, RenameWebAuthnResponse } from "$src/routes/(api)/webAuthn/+server";
+	import { signIn } from "@auth/sveltekit/webauthn";
+	import { hotkey } from "@svelteuidev/composables";
+	import { tick } from "svelte";
+	import { scale } from "svelte/transition";
+	import Control from "./forms/Control.svelte";
 
-$: authenticators = $page.data.authenticators as AuthClient[];
+	$: authenticators = $page.data.authenticators as AuthClient[];
 
-const renameWebAuthn = async (id?: string, currentName = "") => {
-  const name = prompt("Enter a name for this passkey", currentName) || "";
-  const response =await fetch("/webAuthn", {
-    method: "POST",
-    body: JSON.stringify({ name, id })
-  });
+	let renaming = false;
+	let defaultName = "";
+	let renameId: string | undefined;
+	let renameName = "";
+	let renameError = "";
+	let renameRef: HTMLInputElement | undefined;
 
-  const value = (await response.json()) as RenameWebAuthnResponse;
+	async function initRename(id?: string, currentName = "", error = "") {
+		if (!error) defaultName = currentName;
 
-  if (value.success) {
-    if (currentName) {
-      successToast(`Passkey "${currentName}" renamed to "${value.name}"`);
-    } else {
-      successToast(`Passkey "${value.name}" created`);
-    }
-    invalidateAll();
-  } else {
-    errorToast(value.error);
-  }
-};
+		renameId = id;
+		renameName = currentName;
+		renameError = error;
+		renaming = true;
 
-async function deleteWebAuthn(id: string) {
-  const auth = authenticators.find((a) => a.credentialID === id);
-  if (!auth) return;
-  if (confirm(`Are you sure you want to delete "${authName(auth)}"?`)) {
-    const response = await fetch("/webAuthn", {
-      method: "DELETE",
-      body: JSON.stringify({ id })
-    });
+		await tick();
+		if (renameRef) renameRef.focus();
+	}
 
-    const value = (await response.json()) as DeleteWebAuthnResponse;
+	async function renameWebAuthn(isDefault = false) {
+		if (isDefault && defaultName) {
+			renaming = false;
+			return;
+		}
 
-    if (value.success) {
-      successToast(`Passkey "${authName(auth)}" deleted`);
-      invalidateAll();
-    } else {
-      errorToast(value.error);
-    }
-  }
-}
+		const id = renameId;
+		const name = isDefault ? "" : renameName;
+		const response = await fetch("/webAuthn", {
+			method: "POST",
+			body: JSON.stringify({ name, id })
+		});
+
+		const value = (await response.json()) as RenameWebAuthnResponse;
+
+		if (value.success) {
+			if (defaultName) {
+				successToast(`Passkey "${defaultName}" renamed to "${value.name}"`);
+			} else {
+				successToast(`Passkey "${value.name}" created`);
+			}
+			invalidateAll();
+			renaming = false;
+		} else {
+			if (value.throw) {
+				errorToast(value.error);
+				renaming = false;
+			} else initRename(id, name, value.error);
+		}
+	}
+
+	async function deleteWebAuthn(id: string) {
+		const auth = authenticators.find((a) => a.credentialID === id);
+		if (!auth) return;
+		if (confirm(`Are you sure you want to delete "${authName(auth)}"?`)) {
+			const response = await fetch("/webAuthn", {
+				method: "DELETE",
+				body: JSON.stringify({ id })
+			});
+
+			const value = (await response.json()) as DeleteWebAuthnResponse;
+
+			if (value.success) {
+				successToast(`Passkey "${authName(auth)}" deleted`);
+				invalidateAll();
+			} else {
+				errorToast(value.error);
+			}
+		}
+	}
 </script>
 
 <ul class="menu menu-lg w-full px-0 [&_li>*]:px-2">
-  <li class="menu-title">
-    <span class="font-bold">Paaskeys</span>
-  </li>
-  {#each authenticators as authenticator}
-    {@const name = authenticator.name || authenticator.credentialID.replace(/[^a-z0-9]/gi, "").slice(-8)}
-    <li>
-      <button class="flex gap-2" on:click={() => renameWebAuthn(authenticator.credentialID, name)}>
-        <span class="iconify size-6 material-symbols--passkey"></span>
-        <span class="w-44 flex-1 overflow-hidden text-ellipsis whitespace-nowrap">
-          {name}
-        </span>
-        <button
-          class="btn btn-square btn-error btn-sm"
-          on:click|stopPropagation={() => deleteWebAuthn(authenticator.credentialID)}
-        >
-          <span class="iconify size-5 mdi--delete" />
-        </button>
-      </button>
-    </li>
-  {/each}
-  <li>
-    <button
-      type="button"
-      on:click={() =>
-        passkey("webauthn", { action: "register", redirect: false })
-          .then((resp) => {
-            if (resp?.ok) renameWebAuthn();
-            else errorToast("Failed to register passkey");
-          })
-          .catch(console.error)}
-    >
-      <span class="iconify h-6 w-6 mdi--plus"></span>
-      <span>Add Passkey</span>
-    </button>
-  </li>
+	<li class="menu-title">
+		<span class="font-bold">Paaskeys</span>
+	</li>
+	{#each authenticators as authenticator}
+		{@const name = authName(authenticator)}
+		<li>
+			<button class="flex gap-2" on:click={() => initRename(authenticator.credentialID, name)}>
+				<span class="iconify size-6 material-symbols--passkey"></span>
+				<span class="w-44 flex-1 overflow-hidden text-ellipsis whitespace-nowrap">{name}</span>
+				<button
+					class="btn btn-square btn-error btn-sm"
+					on:click|stopPropagation={() => deleteWebAuthn(authenticator.credentialID)}
+				>
+					<span class="iconify size-5 mdi--delete" />
+				</button>
+			</button>
+		</li>
+	{/each}
+	<li>
+		<button
+			type="button"
+			on:click={() =>
+				signIn("webauthn", { action: "register", redirect: false })
+					.then((resp) => {
+						if (resp?.ok) initRename();
+						else errorToast("Failed to register passkey");
+					})
+					.catch(console.error)}
+		>
+			<span class="iconify size-6 mdi--plus"></span>
+			<span>Add Passkey</span>
+		</button>
+	</li>
 </ul>
+
+<dialog
+	class="modal !bg-base-300/75"
+	open={renaming}
+	aria-labelledby="modal-title"
+	aria-describedby="modal-content"
+	use:hotkey={[
+		[
+			"Escape",
+			() => {
+				if (renaming) renameWebAuthn(true);
+			}
+		]
+	]}
+>
+	{#if renaming}
+		<div
+			class="modal-box relative cursor-default bg-base-100 drop-shadow-lg"
+			transition:scale={{ duration: 500, opacity: 0.5, start: 0.75 }}
+		>
+			<button class="btn btn-circle btn-ghost btn-sm absolute right-2 top-2" on:click={() => renameWebAuthn(true)}>
+				<span class="iconify mdi--close"></span>
+			</button>
+			<h3 id="modal-title" class="cursor-text text-lg font-bold text-black dark:text-white">Rename Passkey</h3>
+			<form on:submit|preventDefault={() => renameWebAuthn()}>
+				<Control>
+					<label for="passkeyName" class="label">
+						<span class="label-text">Passkey Name</span>
+					</label>
+					<input
+						type="text"
+						id="passkeyName"
+						bind:value={renameName}
+						bind:this={renameRef}
+						class="input input-bordered w-full focus:border-primary"
+						maxlength="20"
+					/>
+					{#if renameError}
+						<label for="passkeyName" class="label">
+							<span class="label-text-alt text-error">{renameError}</span>
+						</label>
+					{/if}
+				</Control>
+				<div class="modal-action">
+					<button class="btn btn-primary">Save</button>
+				</div>
+			</form>
+		</div>
+
+		<button class="modal-backdrop" on:click={() => history.back()}>✕</button>
+	{/if}
+</dialog>
 ```
 </Fragment>
 </TabbedCode>
