@@ -283,10 +283,8 @@ Instead, the user will be directed to create a name for the new passkey using th
 	import type { AuthClient } from "$server/db/schema";
 	import type { DeleteWebAuthnResponse, RenameWebAuthnResponse } from "$src/routes/(api)/webAuthn/+server";
 	import { signIn } from "@auth/sveltekit/webauthn";
-	import { hotkey } from "@svelteuidev/composables";
 	import { tick } from "svelte";
 	import { scale } from "svelte/transition";
-	import Control from "./forms/Control.svelte";
 
 	$: authenticators = $page.data.authenticators as AuthClient[];
 
@@ -402,14 +400,6 @@ Instead, the user will be directed to create a name for the new passkey using th
 	open={renaming}
 	aria-labelledby="modal-title"
 	aria-describedby="modal-content"
-	use:hotkey={[
-		[
-			"Escape",
-			() => {
-				if (renaming) renameWebAuthn(true);
-			}
-		]
-	]}
 >
 	{#if renaming}
 		<div
@@ -421,24 +411,22 @@ Instead, the user will be directed to create a name for the new passkey using th
 			</button>
 			<h3 id="modal-title" class="cursor-text text-lg font-bold text-black dark:text-white">Rename Passkey</h3>
 			<form on:submit|preventDefault={() => renameWebAuthn()}>
-				<Control>
-					<label for="passkeyName" class="label">
-						<span class="label-text">Passkey Name</span>
-					</label>
-					<input
-						type="text"
-						id="passkeyName"
-						bind:value={renameName}
-						bind:this={renameRef}
-						class="input input-bordered w-full focus:border-primary"
-						maxlength="20"
-					/>
-					{#if renameError}
-						<label for="passkeyName" class="label">
-							<span class="label-text-alt text-error">{renameError}</span>
-						</label>
-					{/if}
-				</Control>
+        <label for="passkeyName" class="label">
+          <span class="label-text">Passkey Name</span>
+        </label>
+        <input
+          type="text"
+          id="passkeyName"
+          bind:value={renameName}
+          bind:this={renameRef}
+          class="input input-bordered w-full focus:border-primary"
+          maxlength="20"
+        />
+        {#if renameError}
+          <label for="passkeyName" class="label">
+            <span class="label-text-alt text-error">{renameError}</span>
+          </label>
+        {/if}
 				<div class="modal-action">
 					<button class="btn btn-primary">Save</button>
 				</div>
