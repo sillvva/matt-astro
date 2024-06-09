@@ -1,7 +1,6 @@
 import { icons as mdi } from "@iconify-json/mdi";
 const plugin = require("tailwindcss/plugin");
 const themes = require("daisyui/src/theming/themes");
-const colors = require("tailwindcss/colors");
 
 const buildMemberSelector = (modifier) => `.member${modifier ? `\\/${modifier}` : ""}`;
 
@@ -49,11 +48,10 @@ module.exports = {
 			},
 			maxHeight: {
 				dscreen: "100dvh"
+			},
+			colors: {
+				"code-block": "#1d1e22"
 			}
-		},
-		colors: {
-			...colors,
-			"code-block": "#1d1e22"
 		},
 		screens: {
 			"3xs": "360px",
