@@ -1,6 +1,8 @@
 {
 	"extends": "astro/tsconfigs/strict",
 	"compilerOptions": {
+		"module": "NodeNext",
+		"moduleResolution": "NodeNext",
 		"baseUrl": ".",
 		"paths": {
 			"$/*": ["src/*"]
