@@ -1,6 +1,6 @@
 import mdx from "@astrojs/mdx";
+import node from "@astrojs/node";
 import tailwind from "@astrojs/tailwind";
-import vercel from "@astrojs/vercel/serverless";
 import {
 	transformerNotationDiff,
 	transformerNotationErrorLevel,
@@ -15,13 +15,8 @@ import theme from "./src/theme.json";
 // https://astro.build/config
 export default defineConfig({
 	output: "hybrid",
-	adapter: vercel({
-		webAnalytics: {
-			enabled: true
-		},
-		speedInsights: {
-			enabled: true
-		}
+	adapter: node({
+		mode: "standalone"
 	}),
 	integrations: [tailwind(), mdx()],
 	markdown: {
