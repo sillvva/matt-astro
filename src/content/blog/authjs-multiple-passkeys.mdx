@@ -76,7 +76,7 @@ export const authenticators = pgTable(
 </Fragment>
 </TabbedCode>
 
-In addition, you should add a unique index on the `userId` and `providerAccountId` columns of the `account` table. This is necessary to have a foreign key constraint pointing to thse columns on the `authenticator` table.
+In addition, you should add a unique index on the `userId` and `providerAccountId` columns of the `account` table. This is necessary to have a foreign key constraint pointing to these columns on the `authenticator` table.
 
 <TabbedCode>
 <Fragment slot="tab-1">src/server/db/schema.ts</Fragment>
