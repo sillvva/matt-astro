@@ -58,17 +58,17 @@ This table shows the types of values that are assignable to `{}`, `object`, and 
 </div>
 
 | Value is assignable to | `{}` | `object` | `Record<PropertyKey, unknown>` |
-| --- | --- | --- | --- |
-| `null` | No | No | No |
-| `undefined` | No | No | No |
-| `"string"` | Yes | No | No |
-| `true` | Yes | No | No |
-| `42` | Yes | No | No |
-| `42n` | Yes | No | No |
-| `Symbol()` | Yes | No | No |
-| `Date` | Yes | Yes | No |
-| `() => {}` | Yes | Yes | No |
-| `[1, 2]` | Yes | Yes | No |
-| `[]` | Yes | Yes | No |
-| `{foo: "bar"}` | Yes | Yes | Yes |
-| `{}` | Yes | Yes | Yes |
+| ---------------------- | ---- | -------- | ------------------------------ |
+| `null`                 | No   | No       | No                             |
+| `undefined`            | No   | No       | No                             |
+| `"string"`             | Yes  | No       | No                             |
+| `true`                 | Yes  | No       | No                             |
+| `42`                   | Yes  | No       | No                             |
+| `42n`                  | Yes  | No       | No                             |
+| `Symbol()`             | Yes  | No       | No                             |
+| `Date`                 | Yes  | Yes      | No                             |
+| `() => {}`             | Yes  | Yes      | No                             |
+| `[1, 2]`               | Yes  | Yes      | No                             |
+| `[]`                   | Yes  | Yes      | No                             |
+| `{foo: "bar"}`         | Yes  | Yes      | Yes                            |
+| `{}`                   | Yes  | Yes      | Yes                            |
