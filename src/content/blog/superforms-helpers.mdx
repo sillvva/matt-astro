@@ -213,102 +213,99 @@ type If<
 	: Else;
 
 type StringPath<
-	T extends object,
+	T extends DictOrArray,
 	Options extends StringPathOptions = {
-		filter: 'all';
+		filter: "all";
 		objAppend: never;
-		path: '';
+		path: "";
 		type: never;
 	}
+	// If T is an array, infer U
 > = T extends (infer U)[]
-	?
-			| If<Options, 'objAppend', string, Concat<Options['path'], Options['objAppend']>, never, T>
-			| If<Options, 'filter', 'arrays' | 'all', Options['path'], never, T>
+	? // If objAppend is a string, return the path with objAppend appended, or never
+			| If<Options, "objAppend", string, Concat<Options["path"], Options["objAppend"]>, never, T>
+			// If filter is "arrays" or "all", return the path as is, or never
+			| If<Options, "filter", "arrays" | "all", Options["path"], never, T>
+			// If U is a record or array
 			| (NonNullable<U> extends DictOrArray
-					? StringPath<
+					? // Recursively call StringPath on U
+						StringPath<
 							NonNullable<U>,
 							{
-								filter: Options['filter'];
-								objAppend: Options['objAppend'];
-								path: `${Options['path']}[${number}]`;
-								type: Options['type'];
+								filter: Options["filter"];
+								objAppend: Options["objAppend"];
+								path: `${Options["path"]}[${number}]`;
+								type: Options["type"];
 							}
 						>
-					: If<Options, 'filter', 'leaves' | 'all', `${Options['path']}[${number}]`, never, T>)
-	: {
+					: // Otherwise, if the filter is "leaves" or "all", return the path with the array 
+						// index appended, or never
+						If<Options, "filter", "leaves" | "all", `${Options["path"]}[${number}]`, never, T>)
+	: // Otherwise, T is a record. Iterate over the keys of T
+		{
+			// If T[K] is a record or array
 			[K in Extract<AllKeys<T>, string>]: NonNullable<T[K]> extends DictOrArray
-				?
-						| If<
-								Options,
-								'objAppend',
-								string,
-								Concat<Options['path'], Options['objAppend']>,
-								never,
-								T[K]
-						  >
+				? // If objAppend is a string, return the path with objAppend appended, or never
+						| If<Options, "objAppend", string, Concat<Options["path"], Options["objAppend"]>, never, T[K]>
+						// If T[K] is an array, infer U
 						| NonNullable<T[K]> extends (infer U)[]
-					?
-							| If<Options, 'filter', 'arrays' | 'all', Concat<Options['path'], K>, never, T[K]>
+					? // If filter is "arrays" or "all", return the path with the key appended, or never
+							| If<Options, "filter", "arrays" | "all", Concat<Options["path"], K>, never, T[K]>
+							// If U, the array element, is also an array
 							| (NonNullable<U> extends unknown[]
-									? If<
-											Options,
-											'filter',
-											'arrays' | 'all',
-											Concat<Options['path'], `${K}[${number}]`>,
-											never,
-											T[K]
-										>
-									: NonNullable<U> extends DictOrArray
-										? IsAny<T[K]> extends true
-											? Concat<Options['path'], `${K}[${number}]`>
-											: If<
-													Options,
-													'filter',
-													'all',
-													Concat<Options['path'], `${K}[${number}]`>,
-													never,
-													U
-												>
-										: If<
-												Options,
-												'filter',
-												'leaves' | 'all',
-												Concat<Options['path'], `${K}[${number}]`>,
-												never,
-												U
-											>)
+									? // If filter is "arrays" or "all", return the path with the key and array index appended, or never
+										If<Options, "filter", "arrays" | "all", Concat<Options["path"], `${K}[${number}]`>, never, T[K]>
+									: // Otherwise, if U is a record
+										NonNullable<U> extends DictOrArray
+										? // If T[K], which is an array of records, is any
+											IsAny<T[K]> extends true
+											? // Return the path with the key and index appended
+												Concat<Options["path"], `${K}[${number}]`>
+											: // If filter is "all", return the path with the key and index appended, or never
+												If<Options, "filter", "all", Concat<Options["path"], `${K}[${number}]`>, never, U>
+										: // Otherwise, if U is not a record or array, and filter is "leaves" or "all",
+											// return the path with the key and index appended, or never
+											If<Options, "filter", "leaves" | "all", Concat<Options["path"], `${K}[${number}]`>, never, U>)
+							// If U is a record or array
 							| (NonNullable<U> extends DictOrArray
-									? StringPath<
+									? // Recursively call StringPath on U
+										StringPath<
 											NonNullable<U>,
 											{
-												filter: Options['filter'];
-												objAppend: Options['objAppend'];
-												path: Concat<Options['path'], `${K}[${number}]`>;
-												type: Options['type'];
+												filter: Options["filter"];
+												objAppend: Options["objAppend"];
+												path: Concat<Options["path"], `${K}[${number}]`>;
+												type: Options["type"];
 											}
 										>
 									: never)
-					: IsAny<T[K]> extends true
-						? Concat<Options['path'], K>
-						:
+					: // If T[K] is any
+						IsAny<T[K]> extends true
+						? // Append the key to the path
+							Concat<Options["path"], K>
+						: // Otherwise, if filter is "all", return the path with the key appended, or never
 								| If<
 										Options,
-										'filter',
-										'all',
-										Concat<Options['path'], K>,
-										unknown extends T[K] ? Concat<Options['path'], K> : never,
+										"filter",
+										"all",
+										Concat<Options["path"], K>,
+										unknown extends T[K] ? Concat<Options["path"], K> : never,
 										T[K]
 								  >
+								// And recursively call StringPath on T[K]
 								| StringPath<
 										NonNullable<T[K]>,
 										{
-											filter: Options['filter'];
-											objAppend: Options['objAppend'];
-											path: Concat<Options['path'], K>;
-											type: Options['type'];
+											filter: Options["filter"];
+											objAppend: Options["objAppend"];
+											path: Concat<Options["path"], K>;
+											type: Options["type"];
 										}
 								  >
-				: If<Options, 'filter', 'leaves' | 'all', Concat<Options['path'], K>, never, T[K]>;
+				: // Otherwise, if T[K] is not a record or array, and filter is "leaves" or "all",
+					// return the path with the key appended, or never
+					If<Options, "filter", "leaves" | "all", Concat<Options["path"], K>, never, T[K]>;
+			// Extract the values of the keys in the object
 		}[Extract<AllKeys<T>, string>];
 
 export type FormPathType<T, P extends string> = P extends keyof T
