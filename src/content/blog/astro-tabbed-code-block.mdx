@@ -67,17 +67,17 @@ const hasDots = tabs.length <= 2;
 		}
 		navigator.clipboard.writeText(pre.innerText);
 		document.querySelectorAll(".copy").forEach((btn) => {
-			btn.querySelector("i")?.classList.remove("mdi-check");
-			btn.querySelector("i")?.classList.add("mdi-content-copy");
+			btn.querySelector("i")?.classList.remove("mdi--check");
+			btn.querySelector("i")?.classList.add("mdi--content-copy");
 		});
-		el.querySelector("i")?.classList.add("mdi-check");
-		el.querySelector("i")?.classList.remove("mdi-content-copy");
+		el.querySelector("i")?.classList.add("mdi--check");
+		el.querySelector("i")?.classList.remove("mdi--content-copy");
 	}
 
 	function expandBlock(el: Element) {
 		el.closest(".code-block")?.classList.toggle("expanded");
-		el.querySelector("i")?.classList.toggle("mdi-arrow-expand-vertical");
-		el.querySelector("i")?.classList.toggle("mdi-arrow-collapse-vertical");
+		el.querySelector("i")?.classList.toggle("mdi--arrow-expand-vertical");
+		el.querySelector("i")?.classList.toggle("mdi--arrow-collapse-vertical");
 	}
 
 	document.addEventListener("astro:page-load", () => {
@@ -114,20 +114,20 @@ const hasDots = tabs.length <= 2;
 				tabs.map(async (_, idx) => (
 					<>
 						<button class={cn(`expand expand-${idx + 1}`, "hidden h-6 rounded-md text-neutral-100")} type="button">
-							<i class="iconify mdi-arrow-expand-vertical h-6 w-6" />
+							<i class="iconify mdi--arrow-expand-vertical h-6 w-6" />
 						</button>
 						<button class={cn(`copy copy-${idx + 1}`, "hidden h-6 rounded-md text-neutral-100")} data-idx={idx + 1} type="button">
-							<i class="iconify mdi-content-copy h-6 w-6" />
+							<i class="iconify mdi--content-copy h-6 w-6" />
 						</button>
 					</>
 				))
 			) : (
 				<>
 					<button class="expand hidden h-6 rounded-md text-neutral-100 group-has-[.line:nth-child(29)]:inline" type="button">
-						<i class="iconify h-6 w-6 mdi-arrow-expand-vertical" />
+						<i class="iconify h-6 w-6 mdi--arrow-expand-vertical" />
 					</button>
 					<button class="copy h-6 rounded-md text-neutral-100" type="button">
-						<i class="iconify h-6 w-6 mdi-content-copy" />
+						<i class="iconify h-6 w-6 mdi--content-copy" />
 					</button>
 				</>
 			)

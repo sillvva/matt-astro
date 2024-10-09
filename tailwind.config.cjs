@@ -1,4 +1,4 @@
-import { icons as mdi } from "@iconify-json/mdi";
+import { addIconSelectors } from "@iconify/tailwind";
 const plugin = require("tailwindcss/plugin");
 const themes = require("daisyui/src/theming/themes");
 
@@ -75,29 +75,7 @@ module.exports = {
 				}
 			});
 		}),
-		plugin(function ({ addComponents, addUtilities, theme }) {
-			addComponents({
-				".iconify": {
-					display: "inline-block",
-					width: theme("width.4"),
-					height: theme("height.4"),
-					backgroundColor: theme("colors.current"),
-					maskImage: "var(--svg)",
-					maskRepeat: "no-repeat",
-					maskSize: "100% 100%"
-				}
-			});
-
-			const mdiIcons = Object.entries(mdi.icons);
-			for (const [name, icon] of mdiIcons) {
-				const path = encodeURIComponent(icon.body.replace(` fill="currentColor"`, "")).replace(/%20/g, " ").replace(/%22/g, "'");
-				addUtilities({
-					[`.mdi-${name}`]: {
-						"--svg": `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E${path}%3C/svg%3E")`
-					}
-				});
-			}
-		}),
+		addIconSelectors(["mdi"]),
 		plugin(({ matchVariant }) => {
 			const values = {
 				// Default
