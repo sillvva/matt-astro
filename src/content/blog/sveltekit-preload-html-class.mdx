@@ -1,0 +1,74 @@
+---
+title: Preloading Custom HTML with SvelteKit Hooks
+description: A tutorial on how to preload custom HTML outside the Svelte root element using hooks.
+date: 2024-12-11T22:26:20.201Z
+image: $/assets/images/svelte.webp
+tags:
+  - SvelteKit
+---
+import TabbedCode from "$/components/markdown/code/tabbed.astro";
+
+## Table of Contents
+
+## The Problem
+
+Normally in Svelte, when you want to render dynamic content on the page, you would do so inside `+page.svelte` files. This doesn't work if you want to add a custom class or other attributes to the `<html>` or `<body>` tags during the SSR process.
+
+## The Solution
+
+Instead, you can create a custom hook to replace a specific string in your `app.html` file.
+
+<TabbedCode>
+<Fragment slot="tab-1">.../src/app.html</Fragment>
+<Fragment slot="panel-1">
+```html
+<!doctype html>
+<!-- Let's preload the theme class on the html tag -->
+<!-- [!code word:%theme%] -->
+<html lang="en" %theme%>
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" href="%sveltekit.assets%/favicon.png" />
+		<link rel="manifest" href="/manifest.json" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		%sveltekit.head%
+	</head>
+	<body data-sveltekit-preload-data="hover" data-sveltekit-preload-code="eager">
+		<div style="display: contents">%sveltekit.body%</div>
+	</body>
+</html>
+```
+</Fragment>
+</TabbedCode>
+
+A SvelteKit hooks' `resolve` method takes a `transformPageChunk` function that allows you to modify the HTML before it is sent to the client. This is useful for replacing strings in the HTML with dynamic values, that otherwise wouldn't be accessible to modify in the Svelte code.
+
+<TabbedCode>
+<Fragment slot="tab-1">.../src/hooks.server.ts</Fragment>
+<Fragment slot="panel-1">
+```ts
+import { type Handle } from "@sveltejs/kit";
+import { sequence } from "@sveltejs/kit/hooks";
+
+const preloadTheme: Handle = async ({ event, resolve }) => {
+	const app = serverGetCookie(event.cookies, "app", appDefaults);
+	const mode = app.settings.mode;
+	const theme = event.route.id?.startsWith("/(app)")
+		? app.settings.theme === "system" && app.settings.mode === "dark"
+			? "black"
+			: app.settings.theme
+		: app.settings.mode;
+
+	return await resolve(event, {
+		transformPageChunk: ({ html }) => {
+      // Replace %theme% with the theme class and data-theme attribute
+      // [!code word:%theme%]
+			return html.replace(/%theme%/g, `class="${mode}" data-theme="${theme}"`);
+		}
+	});
+};
+
+export const handle = sequence(/* other hooks */, preloadTheme);
+```
+</Fragment>
+</TabbedCode>
