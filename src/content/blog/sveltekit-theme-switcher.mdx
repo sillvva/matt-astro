@@ -379,7 +379,6 @@ import { appCookieSchema, appDefaults, type AppCookie } from "$lib/schemas";
  * Automatically persists changes to cookies and provides reactive updates.
  */
 class Global {
-	// Private reactive state using Svelte 5's $state rune
 	_app: AppCookie = $state(appDefaults);
 
 	constructor(app: AppCookie) {
@@ -391,7 +390,6 @@ class Global {
 		});
 	}
 
-	// Reactive getter/setter for the app state
 	get app() {
 		return this._app;
 	}
@@ -400,7 +398,6 @@ class Global {
 	}
 }
 
-// Context management with type safety
 const globalKey = Symbol();
 
 /**
@@ -440,11 +437,6 @@ Initialize the global context store in your application's root layout by loading
 import { serverGetCookie } from "$server/cookie.js";
 import { appCookieSchema } from "$lib/schemas";
 
-/**
- * Load user preferences from cookies during SSR.
- * This ensures the correct theme is applied immediately when the page loads,
- * preventing any flash of unstyled content.
- */
 export const load = async (event) => {
   // Retrieve existing cookie or create with default values
 	const app = serverGetCookie("app", appCookieSchema);
@@ -459,11 +451,8 @@ export const load = async (event) => {
 <script lang="ts">
 	import { createGlobal } from "$lib/stores.svelte";
 
-	// Destructure the server-loaded data
 	const { data } = $props();
 
-	// Initialize the global context store with server data
-	// This makes the store available to all child components
 	createGlobal(data.app);
 </script>
 
