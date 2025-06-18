@@ -6,6 +6,7 @@ import PortfolioLayout from "./portfolio.astro";
 import CodePen from "$/components/markdown/codepen.astro";
 import type { CollectionEntry } from "astro:content";
 import type { MarkdownHeading } from "astro";
+import type { JSX } from "astro/jsx-runtime";
 
 interface Props extends HeadProps {
 	data: CollectionEntry<"blog">["data"];
@@ -119,23 +120,46 @@ const baseLevel = headings[0]?.depth ?? 1;
 					<aside class="relative w-[250px] max-xl:hidden">
 						<div class="sticky top-4 max-h-dscreen overflow-auto">
 							<h2 class="mb-2 text-xl font-bold">Table of Contents</h2>
-							<ul class="flex flex-col gap-2">
-								{toc
-									.filter(({ depth }) => depth - 2 < 2)
-									.map(({ slug, depth, text }) => (
-										<li
-											class={cn(
-												depth > baseLevel && "text-sm",
-												depth == baseLevel + 1 && "pl-4",
-												depth == baseLevel + 2 && "pl-8"
-											)}
-										>
-											<a href={`#${slug}`} class="text-secondary">
-												{text}
-											</a>
-										</li>
-									))}
-							</ul>
+							{(() => {
+								const renderNestedToc = (tocItems: MarkdownHeading[], currentLevel: number = baseLevel): any => {
+									const result = [];
+									let i = 0;
+
+									while (i < tocItems.length) {
+										const item = tocItems[i];
+
+										if (item.depth === currentLevel) {
+											// Find all children of this item
+											const children = [];
+											let j = i + 1;
+
+											while (j < tocItems.length && tocItems[j].depth > currentLevel) {
+												children.push(tocItems[j]);
+												j++;
+											}
+
+											result.push(
+												<li class={cn(item.depth > baseLevel && "pl-4")}>
+													<a href={`#${item.slug}`} class={cn("text-secondary", item.depth > baseLevel && "text-sm")}>
+														{item.text.replace(":", "")}
+													</a>
+													{children.length > 0 && (
+														<ul class="mt-2 flex flex-col gap-2">{renderNestedToc(children, currentLevel + 1)}</ul>
+													)}
+												</li>
+											);
+
+											i = j;
+										} else {
+											i++;
+										}
+									}
+
+									return result;
+								};
+
+								return <ul class="flex flex-col gap-2">{renderNestedToc(toc.filter(({ depth }) => depth - 2 < 2))}</ul>;
+							})()}
 						</div>
 					</aside>
 				</>
