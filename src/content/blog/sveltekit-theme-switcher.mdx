@@ -1,6 +1,6 @@
 ---
 title: Theme Switcher for SvelteKit
-description: A global app context store for SvelteKit and a theme switcher example using DaisyUI.
+description: A comprehensive guide to building a global app context store for SvelteKit with a theme switcher example using DaisyUI and cookies for SSR compatibility.
 date: 2024-04-15T13:26:53.989Z
 updated: 2025-06-17T13:27:00.000Z
 image: $/assets/images/cookie-stack.jpg
@@ -14,17 +14,26 @@ import TabbedCode from "$/components/markdown/code/tabbed.astro";
 
 ## Table of Contents
 
+## Overview
+
+This guide demonstrates how to create a robust theme switching system for SvelteKit applications. We'll build a global context store that persists user preferences via cookies, ensuring themes load correctly on the server and preventing flash of unstyled content (FOUC). The implementation includes type-safe cookie management, server-side rendering support, and a complete theme switcher component using DaisyUI.
+
 ## Dependencies
 
-This script uses the `js-cookie` package to manage cookies and the `valibot` package to validate the cookie structure. The theme switcher example has additional dependencies. Cookies are used rather than local storage to prevent FOUC (Flash of Unstyled Content).
+This implementation requires two key packages for cookie management and data validation:
+
+- **`js-cookie`**: Provides a simple API for handling cookies in the browser
+- **`valibot`**: Ensures type safety and validates cookie data structure
 
 ```bash
 pnpm add js-cookie valibot
 ```
 
-The initial value should be set from the cookie if it already exists. Get the cookie from the server for SSR and set the initial value to the cookie value in the layout.
+**Why cookies over localStorage?** Cookies are accessible on both client and server, making them essential for SSR applications. This prevents FOUC by allowing the server to render the correct theme immediately, rather than waiting for client-side JavaScript to load and apply the theme from localStorage.
 
 ## Theme Definitions
+
+Define your available themes using DaisyUI's CSS plugin system. This approach allows you to customize existing themes or create entirely new ones with your brand colors and styling preferences.
 
 <TabbedCode>
 <Fragment slot="tab-1">app.css</Fragment>
@@ -34,6 +43,7 @@ The initial value should be set from the cookie if it already exists. Get the co
 
 @plugin "daisyui";
 
+/* Custom dark theme with brand colors */
 @plugin "daisyui/theme" {
 	name: "black";
 	default: false;
@@ -50,6 +60,7 @@ The initial value should be set from the cookie if it already exists. Get the co
 	--radius-selector: 0.5rem;
 }
 
+/* Default light theme with customizations */
 @plugin "daisyui/theme" {
 	name: "light";
 	default: true;
@@ -61,6 +72,7 @@ The initial value should be set from the cookie if it already exists. Get the co
 	--color-accent: oklch(52.78% 0 0);
 }
 
+/* Additional theme variations */
 @plugin "daisyui/theme" {
 	name: "dark";
 	default: false;
@@ -118,9 +130,16 @@ The initial value should be set from the cookie if it already exists. Get the co
 </Fragment>
 </TabbedCode>
 
-## Using Cookies
+Each theme definition includes:
+- **`name`**: The theme identifier used in your application
+- **`default`**: Whether this is the default theme (only one should be true)
+- **`prefersdark`**: Indicates if this theme should be used when system prefers dark mode
+- **`color-scheme`**: Tells the browser whether this is a light or dark theme
+- **Custom CSS variables**: Override default DaisyUI colors with your brand palette
 
-These helpers provide a unified API for setting and retrieving cookies both on the client (browser) and server in SvelteKit. They handle serialization, type safety, and support for http-only cookies, making it easier to manage user preferences and state securely across your app.
+## Cookie Management Utilities
+
+These utility functions provide a unified, type-safe API for managing cookies across both client and server environments in SvelteKit. They handle serialization, validation, and provide seamless integration with your app's state management.
 
 <TabbedCode>
 <Fragment slot="tab-1">cookies.ts</Fragment>
@@ -133,10 +152,13 @@ import * as v from "valibot";
 
 /**
  * Set a cookie from the browser using `js-cookie`.
+ * This function only works in the browser environment and automatically
+ * serializes complex objects to JSON.
  *
  * @param name Name of the cookie
- * @param value Value of the cookie
- * @param expires Expiration time of the cookie in milliseconds
+ * @param schema Valibot schema for type validation
+ * @param value Value to store in the cookie
+ * @param expires Expiration time in milliseconds (default: 1 year)
  */
 export function setCookie<TSchema extends v.BaseSchema<any, any, any>>(
 	name: string,
@@ -157,12 +179,13 @@ export function setCookie<TSchema extends v.BaseSchema<any, any, any>>(
 }
 
 /**
- * Get a cookie from the server.
+ * Get a cookie value from the server during SSR.
+ * Falls back to setting a default value if the cookie doesn't exist
+ * or contains invalid data.
  *
- * @param cookies Cookies object from the server
- * @param name Name of the cookie
- * @param schema Default value of the cookie
- * @returns The cookie value
+ * @param name Name of the cookie to retrieve
+ * @param schema Valibot schema for validation and default values
+ * @returns Parsed and validated cookie value
  */
 export function serverGetCookie<TSchema extends v.BaseSchema<any, any, any>>(name: string, schema: TSchema) {
 	try {
@@ -180,15 +203,16 @@ export function serverGetCookie<TSchema extends v.BaseSchema<any, any, any>>(nam
 }
 
 /**
- * Set a http-only cookie from the server.
+ * Set a cookie from the server during SSR.
+ * Supports both regular and HTTP-only cookies for enhanced security.
  *
- * @param cookies Cookies object from the server
  * @param name Name of the cookie
- * @param value Value of the cookie
- * @param options Options for the cookie
- * @param options.expires Expiration time of the cookie in milliseconds
- * @param options.httpOnly Whether the cookie should be http-only. This prevents the cookie from being accessed from the browser.
- * @returns The cookie value
+ * @param schema Valibot schema for validation
+ * @param value Value to store
+ * @param options Cookie configuration options
+ * @param options.expires Expiration time in milliseconds
+ * @param options.httpOnly Whether cookie should be HTTP-only (inaccessible to JavaScript)
+ * @returns Parsed and validated cookie value
  */
 export function serverSetCookie<TSchema extends v.BaseSchema<any, any, any>>(
 	name: string,
@@ -221,20 +245,36 @@ export function serverSetCookie<TSchema extends v.BaseSchema<any, any, any>>(
 </Fragment>
 </TabbedCode>
 
-### Cookie Definition
+### Key Features:
+- **Type Safety**: Uses Valibot schemas to ensure data integrity
+- **Universal API**: Works seamlessly on both client and server
+- **Error Handling**: Gracefully handles malformed or missing cookies
+- **Automatic Serialization**: Handles JSON serialization for complex objects
+- **Security Options**: Supports HTTP-only cookies for sensitive data
 
-In your `app.d.ts` file and `constants.ts` file, define the cookie structure and default values.
+### Schema and Constants Definition
+
+Define your application's data structure and available themes using TypeScript and Valibot for complete type safety. The following schema showcases the theme selector options, but is extensible for other user preferences as needed.
 
 <TabbedCode>
 <Fragment slot="tab-1">$lib/schemas.ts</Fragment>
 <Fragment slot="panel-1">
 ```ts
+import * as v from "valibot";
+import { themes, themeGroups } from "$lib/constants";
+
+/**
+ * Main application cookie schema that stores user preferences.
+ * Uses optional fields with sensible defaults to handle partial data gracefully.
+ */
 export type AppCookie = v.InferOutput<typeof appCookieSchema>;
 export const appCookieSchema = v.optional(
 	v.object({
 		settings: v.optional(
 			v.object({
+				// Theme can be any defined theme or "system" for auto-detection
 				theme: v.optional(v.picklist(themes.map((t) => t.value)), "system"),
+				// Mode tracks the resolved light/dark preference
 				mode: v.optional(v.picklist(themeGroups), "dark")
 			}),
 			{}
@@ -243,24 +283,35 @@ export const appCookieSchema = v.optional(
 	{}
 );
 
+// Default values parsed through the schema for consistency
 export const appDefaults = v.parse(appCookieSchema, {});
 ```
 </Fragment>
 <Fragment slot="tab-2">constants.ts</Fragment>
 <Fragment slot="panel-2">
 ```ts
+/**
+ * Theme configuration with metadata for grouping and system preference detection
+ */
 type Theme = {
-	name: string;
-	value: string;
-	group?: (typeof themeGroups)[number];
+	name: string;        // Display name for UI
+	value: string;       // CSS theme identifier
+	group?: (typeof themeGroups)[number]; // Light or dark classification
 };
 
+// Core theme categories for system preference detection
 export const themeGroups = ["dark", "light"] as const;
+
+/**
+ * Complete theme definitions including system theme for auto-detection.
+ * Themes are grouped by light/dark for easier organization in UI components.
+ */
 export const themes = [
 	{
-		name: "System",
+		name: "System",     // Automatically detects user's OS preference
 		value: "system"
 	},
+	// Light themes
 	{
 		name: "Light",
 		value: "light",
@@ -281,6 +332,7 @@ export const themes = [
 		value: "garden",
 		group: "light"
 	},
+	// Dark themes
 	{
 		name: "Dark",
 		value: "dark",
@@ -303,6 +355,7 @@ export const themes = [
 	}
 ] as const satisfies Theme[];
 
+// Type exports for use throughout the application
 export type Themes = (typeof themes)[number]["value"];
 export type ThemeGroups = (typeof themeGroups)[number];
 ```
@@ -311,25 +364,34 @@ export type ThemeGroups = (typeof themeGroups)[number];
 
 ## Global Context Store
 
-Once your cookie definitions are set up, you can create a global context store to manage your app's state. The global context store will be available in all pages and layouts. When the app state changes, the global context store will call `setCookie` to update the cookie.
+The global context store provides centralized state management for your application settings. Built with Svelte 5's runes system, it automatically persists changes to cookies and provides reactive updates throughout your app.
 
 <TabbedCode>
 <Fragment slot="tab-1">stores.svelte.ts</Fragment>
 <Fragment slot="panel-1">
 ```ts
+import { getContext, setContext } from "svelte";
+import { setCookie } from "$server/cookie";
 import { appCookieSchema, appDefaults, type AppCookie } from "$lib/schemas";
 
+/**
+ * Global application state store using Svelte 5 runes.
+ * Automatically persists changes to cookies and provides reactive updates.
+ */
 class Global {
+	// Private reactive state using Svelte 5's $state rune
 	_app: AppCookie = $state(appDefaults);
 
 	constructor(app: AppCookie) {
 		this._app = app;
 
+		// Automatically sync state changes to cookies
 		$effect(() => {
 			setCookie("app", appCookieSchema, this._app);
 		});
 	}
 
+	// Reactive getter/setter for the app state
 	get app() {
 		return this._app;
 	}
@@ -338,10 +400,21 @@ class Global {
 	}
 }
 
+// Context management with type safety
 const globalKey = Symbol();
+
+/**
+ * Retrieve the global context store instance.
+ * Must be called within a component that has access to the context.
+ */
 export function getGlobal() {
 	return getContext<Global>(globalKey);
 }
+
+/**
+ * Create and register the global context store.
+ * Should be called once in your root layout component.
+ */
 export function createGlobal(app: AppCookie) {
 	const global = new Global(app);
 	return setContext(globalKey, global);
@@ -350,9 +423,15 @@ export function createGlobal(app: AppCookie) {
 </Fragment>
 </TabbedCode>
 
-### Instantiating the Global Context Store
+### Key Features:
+- **Reactive State**: Uses Svelte 5's `$state` rune for fine-grained reactivity
+- **Automatic Persistence**: Changes are automatically saved to cookies via `$effect`
+- **Type Safety**: Full TypeScript support with proper type inference
+- **Context-Based**: Available throughout your component tree without prop drilling
 
-In your root `+layout.server.ts` loader, retrieve the cookie and pass it to the layout data. Then call `createGlobal` to create the global context store instance.
+### Setting Up the Global Store
+
+Initialize the global context store in your application's root layout by loading the cookie data server-side and creating the store instance.
 
 <TabbedCode>
 <Fragment slot="tab-1">+layout.server.ts</Fragment>
@@ -361,8 +440,13 @@ In your root `+layout.server.ts` loader, retrieve the cookie and pass it to the 
 import { serverGetCookie } from "$server/cookie.js";
 import { appCookieSchema } from "$lib/schemas";
 
+/**
+ * Load user preferences from cookies during SSR.
+ * This ensures the correct theme is applied immediately when the page loads,
+ * preventing any flash of unstyled content.
+ */
 export const load = async (event) => {
-  // Get cookie if it exists, otherwise use default settings
+  // Retrieve existing cookie or create with default values
 	const app = serverGetCookie("app", appCookieSchema);
 
   return { app };
@@ -375,17 +459,23 @@ export const load = async (event) => {
 <script lang="ts">
 	import { createGlobal } from "$lib/stores.svelte";
 
+	// Destructure the server-loaded data
 	const { data } = $props();
 
+	// Initialize the global context store with server data
+	// This makes the store available to all child components
 	createGlobal(data.app);
 </script>
+
+<!-- Your app content goes here -->
+<slot />
 ```
 </Fragment>
 </TabbedCode>
 
-## Theme Switcher
+## Theme Switcher Component
 
-The theme switcher uses the `getGlobal` function to retrieve the global context store instance. It also uses `derived` to create a reactive `mode` variable that depends on the current theme and the system preference. Finally, it uses `effect` to update the global context store when the theme or mode changes.
+The theme switcher component demonstrates how to use the global store to create a reactive UI that responds to both user selections and system preferences. It includes automatic mode detection and smooth theme transitions.
 
 <TabbedCode>
 <Fragment slot="tab-1">+layout.svelte</Fragment>
@@ -394,13 +484,23 @@ The theme switcher uses the `getGlobal` function to retrieve the global context 
 <script lang="ts">
 	import { themeGroups, themes } from "$lib/constants";
 	import { getGlobal } from "$lib/stores.svelte";
-	import { createTransition } from "$lib/util";
 	import { MediaQuery } from "svelte/reactivity";
 
+	// Access the global context store
 	const global = getGlobal();
 
+	// Local reactive state for the theme selector
 	let theme = $state(global.app.settings.theme);
+	
+	// Monitor system dark mode preference
 	const mq = new MediaQuery("(prefers-color-scheme: dark)");
+	
+	/**
+	 * Compute the effective mode (light/dark) based on:
+	 * 1. If "system" is selected, use the system preference
+	 * 2. Otherwise, use the theme's defined group
+	 * 3. Fall back to the stored mode preference
+	 */
 	const mode = $derived.by(() => {
 		const selected = themes.find((t) => t.value === theme);
 		if (selected) {
@@ -413,10 +513,17 @@ The theme switcher uses the `getGlobal` function to retrieve the global context 
 		return global.app.settings.mode;
 	});
 
+	/**
+	 * Apply theme changes to both the global store and the DOM.
+	 * This effect runs whenever theme or mode changes.
+	 */
 	$effect(() => {
 		if (theme !== global.app.settings.theme || mode !== global.app.settings.mode) {
+			// Update the global store (which triggers cookie persistence)
 			global.app.settings.theme = theme;
 			global.app.settings.mode = mode;
+			
+			// Apply changes to the DOM for immediate visual feedback
 			const opposite = mode === "dark" ? "light" : "dark";
 			document.documentElement.classList.replace(opposite, mode);
 			document.documentElement.dataset.theme = theme;
@@ -424,12 +531,15 @@ The theme switcher uses the `getGlobal` function to retrieve the global context 
 	});
 </script>
 
+<!-- Theme selector dropdown with grouped options -->
 <select class="select select-bordered select-sm flex-1 leading-4" bind:value={theme}>
 	<option value="system" selected={global.app.settings.theme === "system"}>System</option>
 	{#each themeGroups as group}
 		<hr />
 		{#each themes.filter((t) => "group" in t && t.group === group) as theme}
-			<option value={theme.value} selected={global.app.settings.theme === theme.value}>{theme.name}</option>
+			<option value={theme.value} selected={global.app.settings.theme === theme.value}>
+				{theme.name}
+			</option>
 		{/each}
 	{/each}
 </select>
@@ -437,14 +547,22 @@ The theme switcher uses the `getGlobal` function to retrieve the global context 
 </Fragment>
 </TabbedCode>
 
-## Preloading the Theme
+### Component Features:
+- **System Detection**: Automatically detects and responds to OS dark mode changes
+- **Immediate Updates**: Applies theme changes to the DOM instantly for smooth UX
+- **Grouped Options**: Organizes themes by light/dark categories in the dropdown
+- **Reactive State**: Automatically syncs with the global store and persists to cookies
+
+## Preventing FOUC with Server-Side Theme Preloading
+
+To eliminate flash of unstyled content, we need to apply the correct theme classes to the HTML document before any JavaScript runs. This is achieved by modifying the HTML template during server-side rendering.
 
 <TabbedCode>
 <Fragment slot="tab-1">app.html</Fragment>
 <Fragment slot="panel-1">
 ```html
 <!doctype html>
-<html lang="en" %theme%> <!-- [!code focus] --> <!-- [!code highlight] -->
+<html lang="en" %theme%> <!-- Theme placeholder for server replacement -->
 	<head>
 		<meta charset="utf-8" />
 		<link rel="icon" href="%sveltekit.assets%/favicon.png" />
@@ -465,19 +583,36 @@ import { type Handle } from "@sveltejs/kit";
 import { serverGetCookie } from "$server/cookie.js";
 import { appCookieSchema } from "$lib/schemas";
 
+/**
+ * Server hook that preloads theme information into the HTML document.
+ * This prevents FOUC by ensuring the correct theme is applied before
+ * any client-side JavaScript executes.
+ */
 const preloadTheme: Handle = async ({ event, resolve }) => {
+	// Load user's theme preferences from cookies
 	const app = serverGetCookie("app", appCookieSchema);
 	const mode = app.settings.mode;
+	
+	// Use specific theme for app routes, fallback to mode for others
 	const theme = event.route.id?.startsWith("/(app)") ? app.settings.theme : app.settings.mode;
 
 	return await resolve(event, {
 		transformPageChunk: ({ html }) => {
+			// Replace the %theme% placeholder with actual theme classes
 			return html.replace(/%theme%/g, `class="${mode}" data-theme="${theme}"`);
 		}
 	});
 };
 
-export const handle = preloadTheme;
+export const handle = sequence(preloadTheme);
 ```
 </Fragment>
 </TabbedCode>
+
+### How It Works:
+1. **Server-Side Detection**: The hook reads the user's theme preference from cookies during SSR
+2. **HTML Transformation**: Replaces the `%theme%` placeholder with the appropriate CSS classes
+3. **Immediate Application**: The correct theme is applied before any JavaScript loads
+4. **Route-Specific Logic**: Can apply different themes based on the current route
+
+This approach ensures that users see the correct theme immediately, without any flash or delay, providing a seamless user experience across all devices and connection speeds.
