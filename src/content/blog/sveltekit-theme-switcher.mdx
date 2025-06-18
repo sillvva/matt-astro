@@ -1,0 +1,483 @@
+---
+title: Theme Switcher for SvelteKit
+description: A global app context store for SvelteKit and a theme switcher example using DaisyUI.
+date: 2025-06-17T13:26:53.989Z
+updated: 2025-06-17T13:27:00.000Z
+image: $/assets/images/cookie-stack.jpg
+tags:
+  - TypeScript
+  - SvelteKit
+  - CSS
+  - UI
+---
+import TabbedCode from "$/components/markdown/code/tabbed.astro";
+
+## Table of Contents
+
+## Dependencies
+
+This script uses the `js-cookie` package to manage cookies and the `valibot` package to validate the cookie structure. The theme switcher example has additional dependencies. Cookies are used rather than local storage to prevent FOUC (Flash of Unstyled Content).
+
+```bash
+pnpm add js-cookie valibot
+```
+
+The initial value should be set from the cookie if it already exists. Get the cookie from the server for SSR and set the initial value to the cookie value in the layout.
+
+## Theme Definitions
+
+<TabbedCode>
+<Fragment slot="tab-1">app.css</Fragment>
+<Fragment slot="panel-1">
+```css
+@import tailwindcss;
+
+@plugin "daisyui";
+
+@plugin "daisyui/theme" {
+	name: "black";
+	default: false;
+	prefersdark: true;
+	color-scheme: dark;
+
+	--color-primary: oklch(48.38% 0.2633 287.85);
+	--color-secondary: oklch(72.67% 0.1872 308.45);
+	--color-secondary-content: oklch(0% 0 0);
+	--color-error: oklch(50.54% 0.1905 27.52);
+	--color-error-content: oklch(100% 0 0);
+	--radius-field: 0.5rem;
+	--radius-box: 0.5rem;
+	--radius-selector: 0.5rem;
+}
+
+@plugin "daisyui/theme" {
+	name: "light";
+	default: true;
+	prefersdark: false;
+	color-scheme: light;
+
+	--color-primary: oklch(52.26% 0.2175 262.65);
+	--color-secondary: oklch(56.59% 0.238 265.11);
+	--color-accent: oklch(52.78% 0 0);
+}
+
+@plugin "daisyui/theme" {
+	name: "dark";
+	default: false;
+	prefersdark: false;
+	color-scheme: dark;
+
+	--color-secondary: oklch(62.5% 0.241 354.308);
+}
+
+@plugin "daisyui/theme" {
+	name: "night";
+	default: false;
+	prefersdark: false;
+	color-scheme: dark;
+}
+
+@plugin "daisyui/theme" {
+	name: "halloween";
+	default: false;
+	prefersdark: false;
+	color-scheme: dark;
+
+	--color-secondary: oklch(58.8664% 0.104092 60.664655);
+	--color-secondary-content: oklch(100% 0 0);
+	--color-error: oklch(57.56% 0.1894 37.76);
+	--color-error-content: oklch(100% 0 0);
+}
+
+@plugin "daisyui/theme" {
+	name: "retro";
+	default: false;
+	prefersdark: false;
+	color-scheme: light;
+
+	--color-secondary: oklch(64.38% 0.2633 287.85);
+	--color-secondary-content: oklch(100% 0 0);
+}
+
+@plugin "daisyui/theme" {
+	name: "valentine";
+	default: false;
+	prefersdark: false;
+	color-scheme: light;
+
+	--color-secondary: oklch(48.38% 0.2633 287.85);
+}
+
+@plugin "daisyui/theme" {
+	name: "garden";
+	default: false;
+	prefersdark: false;
+	color-scheme: light;
+}
+```
+</Fragment>
+</TabbedCode>
+
+## Using Cookies
+
+These helpers provide a unified API for setting and retrieving cookies both on the client (browser) and server in SvelteKit. They handle serialization, type safety, and support for http-only cookies, making it easier to manage user preferences and state securely across your app.
+
+<TabbedCode>
+<Fragment slot="tab-1">cookies.ts</Fragment>
+<Fragment slot="panel-1">
+```ts
+import { browser } from "$app/environment";
+import { getRequestEvent } from "$app/server";
+import Cookie from "js-cookie";
+import * as v from "valibot";
+
+/**
+ * Set a cookie from the browser using `js-cookie`.
+ *
+ * @param name Name of the cookie
+ * @param value Value of the cookie
+ * @param expires Expiration time of the cookie in milliseconds
+ */
+export function setCookie<TSchema extends v.BaseSchema<any, any, any>>(
+	name: string,
+	schema: TSchema,
+	value: v.InferInput<TSchema>,
+	expires = 1000 * 60 * 60 * 24 * 365
+) {
+	if (!browser) return value;
+	if (typeof value === "undefined") throw new Error("Value is undefined");
+
+	const parsed = v.parse(schema, value);
+	Cookie.set(name, typeof parsed !== "string" ? JSON.stringify(parsed) : parsed, {
+		path: "/",
+		expires: new Date(Date.now() + expires)
+	});
+
+	return value;
+}
+
+/**
+ * Get a cookie from the server.
+ *
+ * @param cookies Cookies object from the server
+ * @param name Name of the cookie
+ * @param schema Default value of the cookie
+ * @returns The cookie value
+ */
+export function serverGetCookie<TSchema extends v.BaseSchema<any, any, any>>(name: string, schema: TSchema) {
+	try {
+		const event = getRequestEvent();
+		if (!event) throw new Error("No event");
+
+		const val = event.cookies.get(name);
+		const cookie = val && val !== "undefined" ? JSON.parse(val) : serverSetCookie(name, schema, undefined);
+
+		return v.parse(schema, cookie);
+	} catch (err) {
+		console.error(err);
+		return serverSetCookie(name, schema, undefined);
+	}
+}
+
+/**
+ * Set a http-only cookie from the server.
+ *
+ * @param cookies Cookies object from the server
+ * @param name Name of the cookie
+ * @param value Value of the cookie
+ * @param options Options for the cookie
+ * @param options.expires Expiration time of the cookie in milliseconds
+ * @param options.httpOnly Whether the cookie should be http-only. This prevents the cookie from being accessed from the browser.
+ * @returns The cookie value
+ */
+export function serverSetCookie<TSchema extends v.BaseSchema<any, any, any>>(
+	name: string,
+	schema: TSchema,
+	value: v.InferInput<TSchema>,
+	options?: {
+		expires?: number;
+		httpOnly?: boolean;
+	}
+) {
+	const opts = {
+		expires: 1000 * 60 * 60 * 24 * 365,
+		httpOnly: false,
+		...options
+	};
+
+	const event = getRequestEvent();
+	if (!event) throw new Error("No event");
+
+	const parsed = v.parse(schema, value);
+	event.cookies.set(name, JSON.stringify(parsed), {
+		path: "/",
+		expires: new Date(Date.now() + opts.expires),
+		httpOnly: opts.httpOnly
+	});
+
+	return parsed;
+}
+```
+</Fragment>
+</TabbedCode>
+
+### Cookie Definition
+
+In your `app.d.ts` file and `constants.ts` file, define the cookie structure and default values.
+
+<TabbedCode>
+<Fragment slot="tab-1">$lib/schemas.ts</Fragment>
+<Fragment slot="panel-1">
+```ts
+export type AppCookie = v.InferOutput<typeof appCookieSchema>;
+export const appCookieSchema = v.optional(
+	v.object({
+		settings: v.optional(
+			v.object({
+				theme: v.optional(v.picklist(themes.map((t) => t.value)), "system"),
+				mode: v.optional(v.picklist(themeGroups), "dark")
+			}),
+			{}
+		)
+	}),
+	{}
+);
+
+export const appDefaults = v.parse(appCookieSchema, {});
+```
+</Fragment>
+<Fragment slot="tab-2">constants.ts</Fragment>
+<Fragment slot="panel-2">
+```ts
+type Theme = {
+	name: string;
+	value: string;
+	group?: (typeof themeGroups)[number];
+};
+
+export const themeGroups = ["dark", "light"] as const;
+export const themes = [
+	{
+		name: "System",
+		value: "system"
+	},
+	{
+		name: "Light",
+		value: "light",
+		group: "light"
+	},
+	{
+		name: "Retro",
+		value: "retro",
+		group: "light"
+	},
+	{
+		name: "Valentine",
+		value: "valentine",
+		group: "light"
+	},
+	{
+		name: "Garden",
+		value: "garden",
+		group: "light"
+	},
+	{
+		name: "Dark",
+		value: "dark",
+		group: "dark"
+	},
+	{
+		name: "Black",
+		value: "black",
+		group: "dark"
+	},
+	{
+		name: "Halloween",
+		value: "halloween",
+		group: "dark"
+	},
+	{
+		name: "Night",
+		value: "night",
+		group: "dark"
+	}
+] as const satisfies Theme[];
+
+export type Themes = (typeof themes)[number]["value"];
+export type ThemeGroups = (typeof themeGroups)[number];
+```
+</Fragment>
+</TabbedCode>
+
+## Global Context Store
+
+Once your cookie definitions are set up, you can create a global context store to manage your app's state. The global context store will be available in all pages and layouts. When the app state changes, the global context store will call `setCookie` to update the cookie.
+
+<TabbedCode>
+<Fragment slot="tab-1">stores.svelte.ts</Fragment>
+<Fragment slot="panel-1">
+```ts
+import { appCookieSchema, appDefaults, type AppCookie } from "$lib/schemas";
+
+class Global {
+	_app: AppCookie = $state(appDefaults);
+
+	constructor(app: AppCookie) {
+		this._app = app;
+
+		$effect(() => {
+			setCookie("app", appCookieSchema, this._app);
+		});
+	}
+
+	get app() {
+		return this._app;
+	}
+	set app(value: AppCookie) {
+		this._app = value;
+	}
+}
+
+const globalKey = Symbol();
+export function getGlobal() {
+	return getContext<Global>(globalKey);
+}
+export function createGlobal(app: AppCookie) {
+	const global = new Global(app);
+	return setContext(globalKey, global);
+}
+```
+</Fragment>
+</TabbedCode>
+
+### Instantiating the Global Context Store
+
+In your root `+layout.server.ts` loader, retrieve the cookie and pass it to the layout data. Then call `createGlobal` to create the global context store instance.
+
+<TabbedCode>
+<Fragment slot="tab-1">+layout.server.ts</Fragment>
+<Fragment slot="panel-1">
+```ts
+import { serverGetCookie } from "$server/cookie.js";
+import { appCookieSchema } from "$lib/schemas";
+
+export const load = async (event) => {
+  // Get cookie if it exists, otherwise use default settings
+	const app = serverGetCookie("app", appCookieSchema);
+
+  return { app };
+};
+```
+</Fragment>
+<Fragment slot="tab-2">+layout.svelte</Fragment>
+<Fragment slot="panel-2">
+```svelte
+<script lang="ts">
+	import { createGlobal } from "$lib/stores.svelte";
+
+	const { data } = $props();
+
+	createGlobal(data.app);
+</script>
+```
+</Fragment>
+</TabbedCode>
+
+## Theme Switcher
+
+The theme switcher uses the `getGlobal` function to retrieve the global context store instance. It also uses `derived` to create a reactive `mode` variable that depends on the current theme and the system preference. Finally, it uses `effect` to update the global context store when the theme or mode changes.
+
+<TabbedCode>
+<Fragment slot="tab-1">+layout.svelte</Fragment>
+<Fragment slot="panel-1">
+```svelte
+<script lang="ts">
+	import { themeGroups, themes } from "$lib/constants";
+	import { getGlobal } from "$lib/stores.svelte";
+	import { createTransition } from "$lib/util";
+	import { MediaQuery } from "svelte/reactivity";
+
+	const global = getGlobal();
+
+	let theme = $state(global.app.settings.theme);
+	const mq = new MediaQuery("(prefers-color-scheme: dark)");
+	const mode = $derived.by(() => {
+		const selected = themes.find((t) => t.value === theme);
+		if (selected) {
+			if (selected.value === "system") {
+				return mq.current ? "dark" : "light";
+			} else {
+				return selected.group;
+			}
+		}
+		return global.app.settings.mode;
+	});
+
+	$effect(() => {
+		if (theme !== global.app.settings.theme || mode !== global.app.settings.mode) {
+			global.app.settings.theme = theme;
+			global.app.settings.mode = mode;
+			const opposite = mode === "dark" ? "light" : "dark";
+			document.documentElement.classList.replace(opposite, mode);
+			document.documentElement.dataset.theme = theme;
+		}
+	});
+</script>
+
+<select class="select select-bordered select-sm flex-1 leading-4" bind:value={theme}>
+	<option value="system" selected={global.app.settings.theme === "system"}>System</option>
+	{#each themeGroups as group}
+		<hr />
+		{#each themes.filter((t) => "group" in t && t.group === group) as theme}
+			<option value={theme.value} selected={global.app.settings.theme === theme.value}>{theme.name}</option>
+		{/each}
+	{/each}
+</select>
+```
+</Fragment>
+</TabbedCode>
+
+## Preloading the Theme
+
+<TabbedCode>
+<Fragment slot="tab-1">app.html</Fragment>
+<Fragment slot="panel-1">
+```html
+<!doctype html>
+<html lang="en" %theme%> <!-- [!code focus] --> <!-- [!code highlight] -->
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" href="%sveltekit.assets%/favicon.png" />
+		<link rel="manifest" href="/manifest.json" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		%sveltekit.head%
+	</head>
+	<body data-sveltekit-preload-data="hover" data-sveltekit-preload-code="eager">
+		<div style="display: contents">%sveltekit.body%</div>
+	</body>
+</html>
+```
+</Fragment>
+<Fragment slot="tab-2">hooks.server.ts</Fragment>
+<Fragment slot="panel-2">
+```ts
+import { type Handle } from "@sveltejs/kit";
+import { serverGetCookie } from "$server/cookie.js";
+import { appCookieSchema } from "$lib/schemas";
+
+const preloadTheme: Handle = async ({ event, resolve }) => {
+	const app = serverGetCookie("app", appCookieSchema);
+	const mode = app.settings.mode;
+	const theme = event.route.id?.startsWith("/(app)") ? app.settings.theme : app.settings.mode;
+
+	return await resolve(event, {
+		transformPageChunk: ({ html }) => {
+			return html.replace(/%theme%/g, `class="${mode}" data-theme="${theme}"`);
+		}
+	});
+};
+
+export const handle = preloadTheme;
+```
+</Fragment>
+</TabbedCode>
