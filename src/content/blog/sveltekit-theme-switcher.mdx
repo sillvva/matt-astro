@@ -142,7 +142,7 @@ Each theme definition includes:
 These utility functions provide a unified, type-safe API for managing cookies across both client and server environments in SvelteKit. They handle serialization, validation, and provide seamless integration with your app's state management.
 
 <TabbedCode>
-<Fragment slot="tab-1">cookies.ts</Fragment>
+<Fragment slot="tab-1">$server/cookies.ts</Fragment>
 <Fragment slot="panel-1">
 ```ts
 import { browser } from "$app/environment";
@@ -287,7 +287,7 @@ export const appCookieSchema = v.optional(
 export const appDefaults = v.parse(appCookieSchema, {});
 ```
 </Fragment>
-<Fragment slot="tab-2">constants.ts</Fragment>
+<Fragment slot="tab-2">$lib/constants.ts</Fragment>
 <Fragment slot="panel-2">
 ```ts
 /**
@@ -367,7 +367,7 @@ export type ThemeGroups = (typeof themeGroups)[number];
 The global context store provides centralized state management for your application settings. Built with Svelte 5's runes system, it automatically persists changes to cookies and provides reactive updates throughout your app.
 
 <TabbedCode>
-<Fragment slot="tab-1">stores.svelte.ts</Fragment>
+<Fragment slot="tab-1">$lib/stores.svelte.ts</Fragment>
 <Fragment slot="panel-1">
 ```ts
 import { getContext, setContext } from "svelte";
