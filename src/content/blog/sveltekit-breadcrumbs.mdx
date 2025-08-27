@@ -1,24 +1,28 @@
 ---
 title: Svelte Breadcrumbs Made Easy
-description: A method to create a single breadcrumbs component which uses route data to generate breadcrumbs.
+description: A collection of methods to create a single breadcrumbs component which uses route data to generate breadcrumbs.
 date: 2023-07-14T03:53:16.000Z
+updated: 2025-08-27T14:40:33.184Z
 image: $/assets/images/breadcrumbs.webp
 tags:
   - TypeScript
   - SvelteKit
   - UI
 ---
+
 import TabbedCode from "$/components/markdown/code/tabbed.astro";
 
 ## Table of Contents
 
-## Creating the Segments
+## Using Load Functions (SSR)
+
+### Creating the Segments
 
 Making breadcrumbs base on routes is straightforward. In SvelteKit, `+page.server.ts`, `+page.ts`, `+layout.server.ts`, and `+layout.ts` load functions have an event parameter with an async `parent()` method that returns data from parent `+layout.server.ts` and `+layout.ts` load functions.
 
 By placing a `breadcrumbs` array in the root layout, you can use `event.parent()` and `Array.concat` to append breadcrumbs at each route segment which requires a breadcrumb. And you can use data from that route segment to make the breadcrumb value and href dynamic.
 
-Here is an example used on my [Adventurers League Log Sheet](https://ddal.dekok.dev/) app.
+Here is an example used on my [Adventurers League Log Sheet](https://ddal.dekok.app/) app.
 
 #### Root layout
 
@@ -52,8 +56,10 @@ export const load = async (event) => {
             }
         )
     };
+
 };
-```
+
+````
 </Fragment>
 </TabbedCode>
 
@@ -82,7 +88,8 @@ export const load = async (event) => {
         )
     };
 };
-```
+````
+
 </Fragment>
 </TabbedCode>
 
@@ -90,12 +97,12 @@ Now the resulting array in `data.breadcrumbs` for `/characters/[characterId]` is
 
 ```js
 [
-  { name: 'Characters', href: '/characters' },
-  { name: 'Rimurus', href: '/characters/cl7gfkggq002009mluw41peqd' }
-]
+	{ name: "Characters", href: "/characters" },
+	{ name: "Rimurus", href: "/characters/cl7gfkggq002009mluw41peqd" }
+];
 ```
 
-## The Breadcrumbs Component
+### The Breadcrumbs Component
 
 From there, you can create a breadcrumbs component like this:
 
@@ -111,6 +118,7 @@ From there, you can create a breadcrumbs component like this:
         name: bc.name,
         href: !bc.href || i === $page.data.breadcrumbs.length - 1 ? null : bc.href,
     }));
+
 </script>
 
 <div class="breadcrumbs mb-4 hidden flex-1 text-sm sm:flex">
@@ -134,5 +142,84 @@ From there, you can create a breadcrumbs component like this:
     </ul>
 </div>
 ```
+</Fragment>
+</TabbedCode>
+
+## Using a Global Store (CSR)
+
+Leon Radley came up with a [clever way](https://leonradley.com/articles/svelte/2025-07-svelte-breadcrumbs) to use `$effect` to create a global store that automatically adds and removes segments as layouts mount and unmount.
+
+This method uses a `SvelteMap`, a reactive `Map` from Svelte, to hold the individual breadcrumb segments. When the `setBreadcrumb` function is called from a `+layout.svelte` file, the effect will insert the segment into the `SvelteMap`. When the layout unmounts during navigation, the effect cleanup function runs and the segment will be automatically removed.
+
+The `getBreadcrumbs` function returns an array of breadcrumbs sorted by the number of path segments in the path property.
+
+<TabbedCode>
+<Fragment slot="tab-1">$lib/stores.svelte.ts</Fragment>
+<Fragment slot="panel-1">
+```ts
+import { SvelteMap } from 'svelte/reactivity'
+
+export interface Breadcrumb {
+  path: string
+  name: string
+}
+
+export interface BreadcrumbInternal extends Breadcrumb {
+  count: number
+}
+
+const breadcrumbMap = new SvelteMap<string, BreadcrumbInternal>()
+
+const breadcrumbs: Breadcrumb[] = $derived.by(() =>
+Array.from(breadcrumbMap.values()).toSorted((a, b) => a.count - b.count),
+)
+export const getBreadcrumbs = (): Breadcrumb[] => breadcrumbs
+
+export function setBreadcrumb(item: Breadcrumb) {
+  $effect(() => {
+    breadcrumbMap.set(item.path, { ...item, count: item.path.split('/').length })
+    return () => {
+      breadcrumbMap.delete(item.path)
+    }
+  })
+}
+```
+</Fragment>
+<Fragment slot="tab-2">+layout.svelte</Fragment>
+<Fragment slot="panel-2">
+```svelte
+<script lang="ts">
+  import { setBreadcrumb } from '$lib/breadcrumb-state.svelte'
+  import type { LayoutProps } from './$types'
+
+const { children }: LayoutProps = $props()
+
+setBreadcrumb({
+name: 'Level 1',
+path: '/level-1/',
+})
+
+</script>
+
+{@render children()}
+
+````
+</Fragment>
+<Fragment slot="tab-3">Breadcrumbs.svelte</Fragment>
+<Fragment slot="panel-3">
+```svelte
+<script lang="ts">
+  import { getBreadcrumbs } from './breadcrumb-state.svelte'
+</script>
+
+<nav class="breadcrumbs text-sm">
+  <ul>
+    {#each getBreadcrumbs() as breadcrumb (breadcrumb.path)}
+      <li><a href={breadcrumb.path}>{breadcrumb.name}</a></li>
+    {/each}
+  </ul>
+</nav>
+````
+
 </Fragment>
 </TabbedCode>
