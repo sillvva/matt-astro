@@ -1,6 +1,6 @@
 ---
 import "$/styles/base.scss";
-import { ViewTransitions } from "astro:transitions";
+import { ClientRouter } from "astro:transitions";
 
 export interface Props {
 	title: string;
@@ -84,4 +84,4 @@ const articleProperties: Record<string, string> = {
 		return <link rel="stylesheet" href={href} />;
 	})
 }
-<ViewTransitions fallback="swap" />
+<ClientRouter fallback="swap" />

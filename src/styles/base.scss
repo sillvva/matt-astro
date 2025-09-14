@@ -1,9 +1,9 @@
+@use "src/components/hexmenu";
+@use "src/components/markdown/blog";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@import "../components/hex-menu.scss";
-@import "../components/markdown/blog.scss";
 
 @mixin dark-theme {
 	--scheme: dark;
@@ -104,11 +104,11 @@
 }
 
 @layer components {
-	@include hex-menu();
-	@include alert-box();
-	@include button-row();
-	@include tweets();
-	@include code();
+	@include hexmenu.hex-menu();
+	@include blog.alert-box();
+	@include blog.button-row();
+	@include blog.tweets();
+	@include blog.code();
 
 	.bg-img {
 		background-image: var(--bg-img);

@@ -43,7 +43,12 @@ const inlineStyles = classes.join(", ") + " { visibility: visible; display: inli
 								"member-not-checked:hover:border-t-primary member-not-checked:hover:bg-neutral-950/50 member-not-checked:hover:text-base-content/85"
 							)}
 						>
-							<input class={`radio-${index} member hidden`} type="radio" name={uuid} checked={index === 1 ? "" : undefined} />
+							<input
+								class={`radio-${index} member hidden`}
+								type="radio"
+								name={uuid}
+								checked={index === 1 ? "checked" : undefined}
+							/>
 							<Fragment set:html={render} />
 						</label>
 					);

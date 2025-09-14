@@ -14,7 +14,7 @@ import theme from "./src/theme.json";
 
 // https://astro.build/config
 export default defineConfig({
-	output: "hybrid",
+	output: "static",
 	adapter: node({
 		mode: "standalone"
 	}),
@@ -44,8 +44,5 @@ export default defineConfig({
 	},
 	image: {
 		domains: ["slxazldgfeytirfrculz.supabase.co"]
-	},
-	experimental: {
-		contentCollectionCache: true
 	}
 });
