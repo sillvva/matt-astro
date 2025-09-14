@@ -225,7 +225,11 @@ path: '/level-1/',
 
 ## Using Page Module Exports (SSR)
  
-This method uses the `import.meta.glob` function to import the page modules and extract the `pageTitle` or `getPageTitle` function from each module.
+This method uses the `import.meta.glob` function to import the page modules and extract the `pageTitle` or `getPageTitle` function from each module. If a page module does not export a `pageTitle` or `getPageTitle` function, it will use the corresponding URL pathname segment to generate a title.
+
+<aside class="alert-box warning">
+	Note: this method breaks hot module reloading (HMR) in Bun.
+</aside>
 
 <TabbedCode>
 <Fragment slot="tab-1">$lib/modules.ts</Fragment>
