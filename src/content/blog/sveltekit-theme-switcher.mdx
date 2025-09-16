@@ -1,5 +1,5 @@
 ---
-title: Theme Switcher for SvelteKit
+title: DaisyUI Theme Switcher for SvelteKit
 description: A comprehensive guide to building a global app context store for SvelteKit with a theme switcher example using DaisyUI and cookies for SSR compatibility.
 date: 2024-04-15T13:26:53.989Z
 updated: 2025-06-17T13:27:00.000Z
@@ -551,7 +551,7 @@ To eliminate flash of unstyled content, we need to apply the correct theme class
 <Fragment slot="panel-1">
 ```html
 <!doctype html>
-<html lang="en" %theme%> <!-- [!code focus] --> <!-- [!code highlight] -->
+<html lang="en" %mode% %theme%> <!-- [!code focus] --> <!-- [!code highlight] -->
 	<head>
 		<meta charset="utf-8" />
 		<link rel="icon" href="%sveltekit.assets%/favicon.png" />
@@ -568,7 +568,8 @@ To eliminate flash of unstyled content, we need to apply the correct theme class
 <Fragment slot="tab-2">hooks.server.ts</Fragment>
 <Fragment slot="panel-2">
 ```ts
-import { type Handle } from "@sveltejs/kit";
+import type { Handle } from "@sveltejs/kit";
+import { sequence } from "@sveltejs/kit/hooks";
 import { serverGetCookie } from "$server/cookie.js";
 import { appCookieSchema } from "$lib/schemas";
 
@@ -578,17 +579,17 @@ import { appCookieSchema } from "$lib/schemas";
  * any client-side JavaScript executes.
  */
 const preloadTheme: Handle = async ({ event, resolve }) => {
-	// Load user's theme preferences from cookies
-	const app = serverGetCookie("app", appCookieSchema);
-	const mode = app.settings.mode;
+	// Load user's theme preferences from cookies or wherever you store them
+	const { settings } = event.locals.app;
+	const mode = settings.mode;
 	
 	// Use specific theme for app routes, fallback to mode for others
-	const theme = event.route.id?.startsWith("/(app)") ? app.settings.theme : app.settings.mode;
+	const theme = event.route.id?.startsWith("/(app)") ? settings.theme : settings.mode;
 
 	return await resolve(event, {
 		transformPageChunk: ({ html }) => {
 			// Replace the %theme% placeholder with actual theme classes
-			return html.replace(/%theme%/g, `class="${mode}" data-theme="${theme}"`);
+			return html.replace(/%mode%/g, `class="${mode}"`).replace(/%theme%/g, theme === "system" ? "" : `data-theme="${theme}"`);
 		}
 	});
 };
