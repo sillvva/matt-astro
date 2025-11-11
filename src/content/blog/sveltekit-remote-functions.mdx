@@ -70,10 +70,10 @@ export const schema = v.object({
 
 ### Guarded Remote Functions
 
-Guarded remote functions ensure that your remote functions are only called by authenticated users. This is especially useful in combination with the lint rule to enforce guarded remote functions.
+Guarded remote functions ensure that your remote functions are only called by authenticated users. Copy the following code into a new file called `$lib/server/remote.ts` and import the `guardedQuery()`, `guardedCommand()`, and `guardedForm()` functions into your remote functions code.
 
 <TabbedCode>
-<Fragment slot="tab-1">$lib/server/remote-utils.ts</Fragment>
+<Fragment slot="tab-1">$lib/server/remote.ts</Fragment>
 <Fragment slot="panel-1">
 ```ts
 import { command, form, getRequestEvent, query } from "$app/server";
