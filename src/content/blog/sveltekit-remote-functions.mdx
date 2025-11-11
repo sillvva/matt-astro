@@ -14,11 +14,13 @@ import TabbedCode from "$/components/markdown/code/tabbed.astro";
 
 ## Introduction
 
+This post covers practical tips for using remote queries, commands, and forms in SvelteKit.
+
 ## Forms
 
 ### Discriminated Unions
 
-As the `fields` property of a form instance is a proxy object where the value is returned as a method, you can't use discriminated unions in the normal sense. It will require type assertions to work correctly.
+Because the `fields` property of a form instance is a proxy object (with values returned as methods), you can't use discriminated unions in the usual way. You'll need to use type assertions to make them work properly.
 
 <TabbedCode>
 <Fragment slot="tab-1">forms.remote.ts</Fragment>
@@ -67,6 +69,8 @@ export const schema = v.object({
 ## Utilities
 
 ### Guarded Remote Functions
+
+Guarded remote functions ensure that your remote functions are only called by authenticated users. This is especially useful in combination with the lint rule to enforce guarded remote functions.
 
 <TabbedCode>
 <Fragment slot="tab-1">$lib/server/remote-utils.ts</Fragment>
@@ -267,6 +271,8 @@ export function guardedCommand<Schema extends StandardSchemaV1, Input, Output>(
 </TabbedCode>
 
 #### Lint Rule to Enforce Guarded Remote Functions
+
+The lint rule to enforce guarded remote functions is a simple ESLint rule that checks that all exports in `.remote.ts` files use guardedQuery(), guardedCommand(), or guardedForm(). Direct exports of query(), command(), or form() are not allowed unless you explicitly opt out.
 
 <TabbedCode>
 <Fragment slot="tab-1">eslint.config.js</Fragment>
