@@ -1,7 +1,8 @@
 ---
-title: SvelteKit Remote Functions Techniques
+title: SvelteKit Remote Functions Tips and Techniques
 description: A guide to techniques for using remote functions in SvelteKit
 date: 2025-11-10T18:16:32.502Z
+updated: 2025-11-12T15:40:45.677Z
 image: $/assets/images/svelte.webp
 tags:
   - SvelteKit
@@ -17,6 +18,90 @@ import TabbedCode from "$/components/markdown/code/tabbed.astro";
 This post covers practical tips for using remote queries, commands, and forms in SvelteKit.
 
 ## Forms
+
+### Remote Forms vs Superforms
+
+Superforms is a great library for handling forms in SvelteKit. It can do things that remote forms can't. When using Superforms's `json` mode, it converts the form data into a JSON object that is serialized with the `devalue` library and sent to the server. Unlike `FormData`, which only supports `string | Blob` values, the JSON object can contain any type of value supported by transport hooks.
+
+Superforms also uses JSONSchema adapters to obtain runtime information about your schema. This allows it to provide validation attributes like `required`, `min`, `max`, `minlength`, `maxlength`, and `pattern`. It also allows it to know when a field should be coerced to other types like `null`, `boolean`, `number`, `Date`, etc.
+
+Remote forms, on the other hand, are a bit more limited. They only send `FormData` to the server. Aside from number and boolean checkbox inputs, remote forms does not handle any coercion of values. That is why your schema must only include the following input types: `string`, `string[]`, `number`, `boolean`, `File`, and `File[]`. Coercion to other output types must be handled by your schema. `undefined` is also supported as an input type, because some fields may be excluded from the `FormData` such as boolean checkbox or fields that are conditionally rendered in the UI.
+
+Superforms also uses `StandardSchemaV1`, which is just types. It does not provide any runtime information about your schema. So it cannot automatically provide validation attributes.
+
+### Dates
+
+Dates are a bit tricky to handle. The reason SvelteKit doesn't automatically coerce date inputs to `Date` objects, is because the coercion is handled on the server, which could be in a different timezone than the client. This could cause issues with date parsing and validation.
+
+A `date` input uses the format `YYYY-MM-DD` and the `datetime-local` input uses the format `YYYY-MM-DDTHH:MM`. Since this does not include the client's timezone information, the date should be converted to a UNIX timestamp in the client instead or the form should include the timezone as a hidden input. Otherwise, the conversion to `Date` on the server could be incorrect.
+
+For that, this function could be useful:
+
+<TabbedCode>
+<Fragment slot="tab-1">form.svelte</Fragment>
+<Fragment slot="panel-1">
+```svelte
+<script lang="ts">
+  import { testForm } from '$lib/remote/forms.remote.ts';
+  import { appendTimezone } from '$lib/utils.ts'; // [!code focus]
+
+  let date = $state(''); // [!code focus]
+</script>
+
+<form {...testForm}>
+  <!-- The date input does not have a name. --> <!-- [!code focus] -->
+  <!-- Only the hidden input is submitted to the server. --> <!-- [!code focus] -->
+  <input type="date" bind:value={date} /> <!-- [!code focus] -->
+  <input {...testForm.fields.date.as("hidden", appendTimezone(date))} /> <!-- [!code focus] -->
+
+  <button type="submit">Submit</button>
+</form>
+```
+</Fragment>
+<Fragment slot="tab-2">utils.ts</Fragment>
+<Fragment slot="panel-2">
+```ts
+/**
+ * Appends the local timezone offset to a date string
+ * @param {string} dateString - Date string in format YYYY-MM-DD or YYYY-MM-DDThh:mm
+ * @returns {string} Date string with timezone appended (e.g., "2024-03-15T10:30-05:00")
+ */
+export function appendTimezone(dateString: string): string {
+  if (!dateString) return '';
+
+  // Parse the input date string
+  const date = new Date(dateString);
+  
+  // Check if date is valid
+  if (isNaN(date.getTime())) {
+    throw new Error('Invalid date string');
+  }
+  
+  // Get timezone offset in minutes
+  const offsetMinutes = date.getTimezoneOffset();
+  
+  // Convert to hours and minutes (offset is negative for timezones ahead of UTC)
+  const offsetHours = Math.floor(Math.abs(offsetMinutes) / 60);
+  const offsetMins = Math.abs(offsetMinutes) % 60;
+  
+  // Determine sign (getTimezoneOffset returns positive for zones behind UTC)
+  const sign = offsetMinutes <= 0 ? '+' : '-';
+  
+  // Format timezone string (e.g., "+05:00" or "-08:00")
+  const timezone = `${sign}${String(offsetHours).padStart(2, '0')}:${String(offsetMins).padStart(2, '0')}`;
+  
+  // Handle different input formats
+  if (dateString.includes('T')) {
+    // Already has time component
+    return `${dateString}${timezone}`;
+  } else {
+    // Only has date, append midnight time
+    return `${dateString}T00:00:00${timezone}`;
+  }
+}
+```
+</Fragment>
+</TabbedCode>
 
 ### Discriminated Unions
 
