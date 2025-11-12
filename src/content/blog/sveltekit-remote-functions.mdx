@@ -204,7 +204,7 @@ async function safeParse<I, O>(schema: StandardSchemaV1<I, O>, input: I) {
 export const someForm = form("unchecked", async (input: ExpectedInputType, invalid) => {
   const user = await getUser(input.userId);
   const result = await safeParse(schema(user), input);
-  if (!result.success) invalid(...result.issues);
+  if (!result.success) throw invalid(...result.issues);
 });
 ```
 </Fragment>
