@@ -25,9 +25,11 @@ Superforms is a great library for handling forms in SvelteKit. It can do things 
 
 Superforms also uses JSONSchema adapters to obtain runtime information about your schema. This allows it to provide validation attributes like `required`, `min`, `max`, `minlength`, `maxlength`, and `pattern`. It also allows it to know when a field should be coerced to other types like `null`, `boolean`, `number`, `Date`, etc.
 
-Remote forms, on the other hand, are a bit more limited. They only send `FormData` to the server. Aside from number and boolean checkbox inputs, remote forms does not handle any coercion of values. That is why your schema must only include the following input types: `string`, `string[]`, `number`, `boolean`, `File`, and `File[]`. Coercion to other output types must be handled by your schema. `undefined` is also supported as an input type, because some fields may be excluded from the `FormData` such as boolean checkbox or fields that are conditionally rendered in the UI.
+Remote forms, on the other hand, are a bit more limited. They only send `FormData` to the server. Aside from number and boolean checkbox inputs, remote forms does not handle any coercion of values. That is why your schema must only include the following input types: `string`, `string[]`, `number`, `boolean`, `File`, and `File[]`. Coercion to other output types must be handled by your schema. 
 
-Superforms also uses `StandardSchemaV1`, which is just types. It does not provide any runtime information about your schema. So it cannot automatically provide validation attributes. If you have a field that is nullable, remote forms won't know that until the validation actually runs. The value that the schema receives will always be one of the types mentioned in the previous paragraph.
+`undefined` is also supported as an input type, because some fields may be excluded from the `FormData` such as boolean checkbox or fields that are conditionally rendered in the UI. However, adding `.undefined()` to a field that is always present in the `FormData` doesn't actually do anything. It will still be included in the `FormData` as an empty string. All it does is incorrectly misrepresent the types from the schema.
+
+Superforms also uses `StandardSchemaV1`, which is just types. It does not provide any runtime information about your schema. So it cannot automatically provide validation attributes. If you have a field that is nullable, remote forms won't know that until the validation actually runs. The value that the schema receives will always be one of the types mentioned in the previous two paragraphs.
 
 ### Dates
 
