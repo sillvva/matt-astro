@@ -173,7 +173,7 @@ export const someForm = form(z.object({ userId }), (output) => {
 </Fragment>
 </TabbedCode>
 
-Alternatively, you can use the imperative validation API of remote forms to validate the schema inside the remote function.
+Alternatively, you can use the `invalid` method provided by the remote form to perform additional validation and report the issues to the client.
 
 <TabbedCode>
 <Fragment slot="tab-1">forms.remote.ts</Fragment>
@@ -181,7 +181,7 @@ Alternatively, you can use the imperative validation API of remote forms to vali
 ```ts
 export const someForm = form(z.object({ userId: z.string() }), (output, invalid) => {
   const user = await getUser(input.userId);
-  if (!user) invalid(invalid.userId("User not found"));
+  if (!user) throw invalid(invalid.userId("User not found"));
 
   // ...
 });
@@ -189,7 +189,7 @@ export const someForm = form(z.object({ userId: z.string() }), (output, invalid)
 </Fragment>
 </TabbedCode>
 
-If you want to wait to validate the entire schema until inside the remote function, you can use the standard schema validator and pass the entire issues array to the invalid method.
+If you want to wait to validate the entire schema until inside the remote function, because you want to fetch data before the schema is validated, then you can use the standard schema validator and pass the entire issues array to the `invalid` method.
 
 <TabbedCode>
 <Fragment slot="tab-1">forms.remote.ts</Fragment>
