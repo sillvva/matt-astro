@@ -357,7 +357,7 @@ export function guardedCommand<Schema extends StandardSchemaV1, Input, Output>(
 
 #### Lint Rule to Enforce Guarded Remote Functions
 
-The lint rule to enforce guarded remote functions is a simple ESLint rule that checks that all exports in `.remote.ts` files use guardedQuery(), guardedCommand(), or guardedForm(). Direct exports of query(), command(), or form() are not allowed unless you explicitly opt out.
+The lint rule to enforce guarded remote functions is a simple ESLint rule that checks that all exports in `.remote.ts` files use guardedQuery(), guardedCommand(), or guardedForm(). Direct exports of query(), command(), or form() are not allowed unless you explicitly opt out for a given remote function using `eslint-disable-next-line custom/enforce-guarded-functions`.
 
 <TabbedCode>
 <Fragment slot="tab-1">eslint.config.js</Fragment>
