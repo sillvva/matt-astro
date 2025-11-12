@@ -27,7 +27,7 @@ Superforms also uses JSONSchema adapters to obtain runtime information about you
 
 Remote forms, on the other hand, are a bit more limited. They only send `FormData` to the server. Aside from number and boolean checkbox inputs, remote forms does not handle any coercion of values. That is why your schema must only include the following input types: `string`, `string[]`, `number`, `boolean`, `File`, and `File[]`. Coercion to other output types must be handled by your schema. `undefined` is also supported as an input type, because some fields may be excluded from the `FormData` such as boolean checkbox or fields that are conditionally rendered in the UI.
 
-Superforms also uses `StandardSchemaV1`, which is just types. It does not provide any runtime information about your schema. So it cannot automatically provide validation attributes.
+Superforms also uses `StandardSchemaV1`, which is just types. It does not provide any runtime information about your schema. So it cannot automatically provide validation attributes. If you have a field that is nullable, remote forms won't know that until the validation actually runs. The value that the schema receives will always be one of the types mentioned in the previous paragraph.
 
 ### Dates
 
