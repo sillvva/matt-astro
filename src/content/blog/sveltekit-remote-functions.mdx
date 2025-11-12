@@ -29,7 +29,7 @@ Remote forms, on the other hand, are a bit more limited. They only send `FormDat
 
 `undefined` is also supported as an input type, because some fields may be excluded from the `FormData` such as boolean checkbox or fields that are conditionally rendered in the UI. However, adding `.undefined()` to a field that is always present in the `FormData` doesn't actually do anything. It will still be included in the `FormData` as an empty string. All it does is incorrectly misrepresent the types from the schema.
 
-Superforms also uses `StandardSchemaV1`, which is just types. It does not provide any runtime information about your schema. So it cannot automatically provide validation attributes. If you have a field that is nullable, remote forms won't know that until the validation actually runs. The value that the schema receives will always be one of the types mentioned in the previous two paragraphs.
+Remote forms also use `StandardSchemaV1`, which is just types. It does not provide any runtime information about your schema. So it cannot automatically provide validation attributes. If you have a field that is nullable, remote forms won't know that until the validation actually runs. The value that the schema receives will always be one of the types mentioned in the previous two paragraphs.
 
 ### Dates
 
