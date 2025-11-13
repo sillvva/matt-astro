@@ -159,7 +159,8 @@ module.exports = {
 					secondary: "rgb(0, 220, 199)",
 					accent: "rgb(0, 85, 76)",
 					"error-content": "#4c0519",
-					"primary-content": "#fff"
+					"primary-content": "#fff",
+					"base-300": "oklch(24.8618% 0 0)"
 				}
 			}
 		],
